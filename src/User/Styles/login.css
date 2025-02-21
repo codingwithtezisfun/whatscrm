@@ -1,0 +1,37 @@
+/* General form container styling */
+.login-wrapper {
+    display: flex;
+    height: 100vh;
+    background-color: #67ff9a;
+    color: white;
+  }
+  
+  /* Left div (empty space or promotional content) */
+  .login-left {
+    flex: 1;
+    background: #111111d7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  /* Right div (login/signup form) */
+  .login-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+  }
+  @media (max-width: 768px) {
+    /* Left div (empty space or promotional content) */
+    .login-left {
+      display: none;
+    }    /* Right div (login/signup form) */
+    .login-right {
+      padding: 10px;
+    }
+
+    
+  }
