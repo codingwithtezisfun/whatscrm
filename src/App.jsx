@@ -9,6 +9,11 @@ import Signup from "./User/Auth/Signup";
 import UserLogin from "./User/Auth/UserLogin";
 import Navbar from "./MainPage/Components/Navbar";
 
+
+// mainpage impots 
+import Home from "./MainPage/Pages/Home";
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -17,6 +22,7 @@ function App() {
         <Route path="/user/signup" element={<Signup />} />
         <Route path="/user/login" element={<UserLogin />} />
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+        <Route path="/" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );
