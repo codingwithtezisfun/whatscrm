@@ -12,7 +12,8 @@ import Navbar from "./MainPage/Components/Navbar";
 
 // mainpage impots 
 import Home from "./MainPage/Pages/Home";
-
+import ChatLinkForm from "./MainPage/Pages/ChatLinkForm";
+import Features from "./MainPage/Pages/Features";
 
 function App() {
   return (
@@ -22,7 +23,12 @@ function App() {
         <Route path="/user/signup" element={<Signup />} />
         <Route path="/user/login" element={<UserLogin />} />
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<>
+        <Home />
+        <ChatLinkForm />
+        <Features />
+        </>} />
+        <Route path="/chatlink" element={<ChatLinkForm />} />
       </Routes>
     </BrowserRouter>
   );

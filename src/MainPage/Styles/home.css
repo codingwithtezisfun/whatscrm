@@ -9,6 +9,7 @@
     overflow: hidden;
     position: relative;
     overflow-y: hidden;
+    border-bottom: 1px solid var(--text-color);
  
   }
   
@@ -64,6 +65,7 @@
     .home-container {
       flex-direction: column;
       height: auto;
+      border: none;
     }
   
     .left, .right {
