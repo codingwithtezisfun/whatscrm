@@ -63,8 +63,8 @@ function Pricing() {
                 </li>
               ))}
             </ul>
-            <Link to="/quote" className="btn butto" onClick={scrollToTop}>
-              Request a Quote
+            <Link to="/user/dashboard" className="btn butto" onClick={scrollToTop}>
+              Get Started
             </Link>
           </div>
         ))}

@@ -15,7 +15,7 @@ const Home = () => {
         </p>
         <div className="buttons">
         <div className="buttons mt-5">
-        <Link to="/signup" className="custom-btn try">
+        <Link to="/user/signup" className="custom-btn try">
             Try Now
         </Link>
         <br />
