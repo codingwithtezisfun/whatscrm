@@ -2,7 +2,8 @@
     --primary-color: #084b10;
     --background-color: #032609;
     --text-color: #ffffff;
-    --body-bg:rgba(255, 255, 255, 0.934);
+    --text-color-reverse:black;
+    --body-bg:rgba(142, 231, 167, 0.934);
     --footer-bg:var(--background-color);
     --footer-bg-dark:black;
     --text-light-color: #f8f8f8;
@@ -13,6 +14,8 @@
     --text-dark-color: #000000;
     --gray: #808080;
     --green:rgb(2, 37, 2);
+    --bright-green:rgb(6, 238, 6);
+    --footer-bg:var(--background-color);
   
   }
   
@@ -20,7 +23,8 @@
     --primary-color: #084b10;
     --background-color: #ffffff;
     --text-color: #000000;
-    --body-bg:rgba(240, 250, 232, 0.888);
+    --text-color-reverse:white;
+    --body-bg:rgba(200, 227, 177, 0.888);
     --footer-bg:rgba(250, 250, 250, 0.959);
     --footer-bg-dark:rgba(161, 161, 161, 0.448);
     --text-light-color: #272626;
@@ -31,6 +35,8 @@
     --text-dark-color: #000000;
     --gray: #808080;
     --green:rgb(6, 238, 6);
+    --bright-green:rgb(2, 37, 2);
+    --footer-bg:rgba(0, 0, 0, 0.64);
    
   }
   
