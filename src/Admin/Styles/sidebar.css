@@ -1,0 +1,198 @@
+
+.__sidebar {
+    width: 80px;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    background-color: var(--background-color);
+    height: 100vh;
+    top: 0;
+    left: 0;
+    /* box-shadow: var(--box-shadow); */
+    border-right: 1px solid #d7d7d7e8;
+    overflow-y: auto;
+}
+
+.__sidebar.__expanded {
+    width: 250px;
+}
+.__sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 100%; /* Make sure the ul takes up the full available height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly; /* Distribute li items evenly within the height */
+    overflow-y: auto !important;
+}
+
+::-webkit-scrollbar {
+    width: 1px;
+    background-color: rgb(183, 174, 174);
+}
+
+.__sidebar ul li {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.__sidebar ul li a {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    width: 100%;
+    border-radius: 15px;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    font-weight: bold;
+}
+
+.__sidebar ul li a:hover {
+    background-color: var(--hover-bg-color);
+    color: var(--hover-color);
+}
+
+.__sidebar-toggle {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-color);
+    margin: 16px;
+    display: block;
+  }
+.__icon {
+    font-size: 20px;
+    min-width: 50px; /* Ensures icon remains visible */
+    text-align: center;
+    color: var(--text-color);
+}
+
+.__label {
+    display: none; 
+    white-space: nowrap;
+    color: var(--text-color);
+}
+.__sidebar .__label {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+.__sidebar.__expanded .__label {
+    display: inline;
+    opacity: 1;
+    visibility: visible;
+}
+
+.__sidebar-title {
+    font-size: 30px !important;
+    margin-top: 30px !important;
+    color: var(--theme-color);
+    font-weight: bold   ;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    height: 50px;
+}
+.__logo {
+    width: 30px;
+    height: 30px;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+.__logo-label{
+    margin-left: 10px;
+    font-size: 20px;
+    color: var(--text-color);
+    font-weight: bold;
+}
+.__logo-container{
+    position: fixed;
+    top:0;
+    background-color: var(--background-color);
+    width: 249px;
+    height: 70px;
+}
+.__list-item{
+    margin-top: 70px;
+}
+.__sidebar-list{
+    margin-top: 70px !important;
+}
+
+@keyframes colorChange {
+    0% {
+        color: #ffbf0086; 
+    }
+    10% {
+        color: #ffbf00; 
+    }
+    25% {
+        color: #ffffffba; 
+    }
+    35% {
+        color: #ffffff; 
+    }
+    50% {
+        color: #ff583380;
+    }
+    60% {
+        color: #ff5733;
+    }
+    75% {
+        color: #1de516ae; 
+    }
+    85% {
+        color: #25d44e; 
+    }
+    100% {
+        color: #ffa200; 
+    }
+}
+
+.__sidebar-title .__icon {
+    font-size: 30px !important;
+    margin-bottom: 8px !important;
+    animation: colorChange 8s infinite; 
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .__sidebar {
+        width: 50px;
+    }
+    .__sidebar-list{
+        margin-top: 50px !important;
+    }
+    .__sidebar.__expanded {
+        width: 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+
+    .__icon {
+        font-size: 20px;
+        min-width: 35px;
+    }
+
+    .__sidebar-title {
+        font-size: 20px;
+    }
+    .__sidebar ul li a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .__sidebar-toggle {
+        margin: 8px;
+        display: block;
+        position: fixed;
+      }
+      .__sidebar ul li {
+        padding: 5px;
+    }
+}

@@ -13,7 +13,7 @@ import "../Styles/footer.css";
 
 const Footer = () => {
   return (
-    <footer className="footer-container mt-5">
+    <footer className="footer-container">
       {/* Top Section */}
       <div className="footer-top py-4">
         <div className="container">

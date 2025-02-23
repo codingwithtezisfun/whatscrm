@@ -1,0 +1,170 @@
+
+  .__plan-management-container {
+    background-color: var(--body-bg);
+    color: var(--text-color);
+    padding: 1rem;
+    height: calc(100vh - 70px);
+    width: 100%;
+    overflow-y: auto;
+  }
+  .__group-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+  }
+  
+  .__plan-management-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    background-color: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px var(--card-shadow);
+  }
+  
+  .__plan-management-header h2 {
+    margin: 0;
+  }
+  
+  .__buttons {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .__icon-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--green);
+    color: #fff;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+    border: 1px solid var(--gray);
+  }
+  
+  .__icon-btn:hover {
+    background: var(--bright-green);
+  }
+  
+  /* Plan List */
+  .__plan-list {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px var(--card-shadow);
+  }
+  
+  .__plan-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  .__plan-list th,
+  .__plan-list td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--gray);
+  }
+  
+  /* Forms */
+  .__form-container {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px var(--card-shadow);
+    margin-top: 1rem;
+  }
+  
+  .__form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .__form-group label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: bold;
+  }
+  
+  .__form-group input,
+  .__form-group textarea,
+  .__form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--gray);
+    border-radius: 4px;
+    background: var(--background-color);
+    color: var(--text-color);
+    outline: none;
+  }
+  
+  .__toggle-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+  .__toggle-group label{
+    font-weight: bold;
+    width: 200px;
+  }
+  
+  .__toggle-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #fff;
+    transition: 0.3s;
+  }
+  
+  .__toggle-btn.on {
+    background: #0db04b;
+  }
+  
+  .__toggle-btn.off {
+    background: #555;
+  }
+  
+  .__form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .__submit-btn {
+    background: var(--green);
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid var(--gray);
+  }
+  
+  .__submit-btn:hover {
+    background: var(--bright-green);
+  }
+  
+  .__cancel-btn,
+  .__delete-btn {
+    background: #ff5555;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid var(--gray);
+  }
+  
+  .__cancel-btn:hover,
+  .__delete-btn:hover {
+    background: #ff0000;
+  }
+  

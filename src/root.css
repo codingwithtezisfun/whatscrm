@@ -16,6 +16,8 @@
     --green:rgb(2, 37, 2);
     --bright-green:rgb(6, 238, 6);
     --footer-bg:var(--background-color);
+    --card-bg: #222;
+    --card-shadow: rgba(255, 255, 255, 0.1);
   
   }
   
@@ -37,6 +39,8 @@
     --green:rgb(6, 238, 6);
     --bright-green:rgb(2, 37, 2);
     --footer-bg:rgba(0, 0, 0, 0.64);
+    --card-bg: #ffffff;
+    --card-shadow: rgba(0, 0, 0, 0.1);
    
   }
   
