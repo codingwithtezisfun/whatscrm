@@ -38,22 +38,37 @@ const AdminDashboardHome = () => {
   useEffect(() => {
     fetchDashboardData();
   }, []);
-
+  
   const fetchDashboardData = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/api/admin/get_dashboard_for_user`);
+      const token = localStorage.getItem("adminToken");
+      console.log("Using token:", token);
+      const res = await axios.get(`${BASE_URL}/api/admin/get_dashboard_for_user`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      console.log("API response:", res.data);
       if (res.data.success) {
         setDashboardData(res.data.data);
+        console.log("Fetched data:", res.data.data);
+      } else {
+        console.log("API response not successful:", res.data.msg);
       }
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
     }
   };
+  
+
 
   const monthLabels = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
+
+    // Transforming the arrays to numeric arrays for charting
+    const paidNumbers = dashboardData.paid.map(item => Number(item.numberOfSignups));
+    const unpaidNumbers = dashboardData.unpaid.map(item => Number(item.numberOfSignups));
+    const orderNumbers = dashboardData.orders.map(item => Number(item.numberOfOders));
 
   // Chart Data
   const chartData = {
@@ -61,7 +76,7 @@ const AdminDashboardHome = () => {
     datasets: [
       {
         label: "Paid users",
-        data: dashboardData.paid,
+        data: paidNumbers,
         fill: true,
         backgroundColor: "rgba(3, 201, 98, 0.2)", 
         borderColor: "rgba(3, 201, 98, 1)",      
@@ -72,20 +87,20 @@ const AdminDashboardHome = () => {
       },
       {
         label: "Unpaid users",
-        data: dashboardData.unpaid,
+        data: unpaidNumbers,
         fill: false,
         borderColor: "rgba(255, 153, 0, 1)", 
-        pointBackgroundColor: "rgba(255, 153, 0, 1)",
+        pointBackgroundColor: "rgba(255, 153, 0, 0.82)",
         pointBorderColor: "#fff",
         pointRadius: 5,
         tension: 0.3,
       },
       {
         label: "All orders",
-        data: dashboardData.orders,
+        data: orderNumbers,
         fill: false,
-        borderColor: "rgba(255, 206, 86, 1)", 
-        pointBackgroundColor: "rgba(255, 206, 86, 1)",
+        borderColor: "rgb(0, 17, 254)", 
+        pointBackgroundColor: "rgb(86, 86, 255)",
         pointBorderColor: "#fff",
         pointRadius: 5,
         tension: 0.3,
@@ -109,14 +124,19 @@ const AdminDashboardHome = () => {
         },
       },
     },
+    interaction: {
+      mode: "index", 
+      intersect: false, 
+    },
     scales: {
       y: {
         beginAtZero: true,
         grid: {
-          color: "#e7e7e7", 
+          color: "#e7e7e7",
         },
         ticks: {
           color: "#666",
+          stepSize: 10,
         },
       },
       x: {
@@ -129,12 +149,11 @@ const AdminDashboardHome = () => {
       },
     },
   };
+  
 
   return (
     <div className="admin-dashboard-home">
-
       <div className="chart-container">
-
         <div style={{ width: "100%", height: "400px" }}>
           <Line data={chartData} options={chartOptions} />
         </div>
@@ -155,7 +174,6 @@ const AdminDashboardHome = () => {
           <p>{dashboardData.contactLength}</p>
         </div>
       </div>
-      
     </div>
   );
 };
