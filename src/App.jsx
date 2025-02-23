@@ -32,7 +32,8 @@ import AdminRegister from "./Admin/Auth/AdminRegister";
 import AdminDashboard from "./Admin/Components/AdminDashboard"; 
 import AdminDashboardHome from "./Admin/Pages/AdminDashboardHome";
 import PlanManagement from "./Admin/Pages/PlanManagement";
-
+import ManageUsers from "./Admin/Pages/ManageUsers";
+import EditUser from "./Admin/Pages/EditUser";
 // Private Route Component for Admin Authentication
 const AdminPrivateRoute = ({ element }) => {
   const token = localStorage.getItem("adminToken");
@@ -90,6 +91,8 @@ function AppContent({ theme, setTheme }) {
           <Route index element={<Navigate to="home" />} />
           <Route path="home" element={<AdminDashboardHome />} />
           <Route path="plan-management" element={<PlanManagement />} />
+          <Route path="user-management" element={<ManageUsers />} />
+          <Route path="update-user" element={<EditUser />} />
         </Route>
 
         {/* Admin Auth Routes */}

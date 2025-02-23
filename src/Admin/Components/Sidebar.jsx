@@ -54,7 +54,7 @@ const Sidebar = () => {
   const sidebarItems = [
     { to: "home", icon: <MdDashboard />, label: "Dashboard" },
     { to: "plan-management", icon: <FaBuilding />, label: "Manage Plan" },
-    { to: "account", icon: <FaUser />, label: "Manage User" },
+    { to: "user-management", icon: <FaUser />, label: "Manage User" },
     { to: "wallet", icon: <FaWallet />, label: "Payment Gateway" },
     { to: "partners", icon: <FaUsers />, label: "Front Partner" },
     { to: "faqs", icon: <FaQuestionCircle />, label: "FAQs" },

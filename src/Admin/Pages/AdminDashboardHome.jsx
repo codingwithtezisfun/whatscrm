@@ -3,6 +3,8 @@ import axios from "axios";
 import { Line } from "react-chartjs-2";
 import BASE_URL from "../../BaseUrl";
 import "../Styles/home.css"; 
+import { Link } from 'react-router-dom';
+import { FaUsers, FaShoppingCart, FaCalendarCheck } from 'react-icons/fa';
 
 import {
   Chart as ChartJS,
@@ -159,21 +161,24 @@ const AdminDashboardHome = () => {
         </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="stats-container">
-        <div className="stat-card">
-          <h4>Total Users</h4>
-          <p>{dashboardData.userLength}</p>
+            <Link to="/users" className="stat-card">
+                <FaUsers size={30} />
+                <h4>Total Users</h4>
+                <p>{dashboardData.userLength}</p>
+            </Link>
+            <Link to="/orders" className="stat-card">
+                <FaShoppingCart size={30} />
+                <h4>Total Orders</h4>
+                <p>{dashboardData.orderLength}</p>
+            </Link>
+            <Link to="/" className="stat-card">
+                <FaCalendarCheck size={30} />
+                <h4>Total Leads</h4> 
+                <p>{dashboardData.contactLength}</p> 
+
+            </Link>
         </div>
-        <div className="stat-card">
-          <h4>Total Orders</h4>
-          <p>{dashboardData.orderLength}</p>
-        </div>
-        <div className="stat-card">
-          <h4>Total Leads</h4>
-          <p>{dashboardData.contactLength}</p>
-        </div>
-      </div>
     </div>
   );
 };

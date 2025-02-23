@@ -1,0 +1,30 @@
+
+  .manage-users-container {
+    padding: 1rem;
+    background-color: var(--body-bg);
+    color: var(--text-color);
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    width: 100%;
+  }
+  
+  .manage-users-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .manage-users-table th,
+  .manage-users-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--gray);
+    text-align: left;
+  }
+  
+  .manage-users-table th {
+    background-color: var(--background-color);
+  }
+  
+  .manage-users-table tr:hover {
+    background-color: var(--overlay-color);
+  }
+  
