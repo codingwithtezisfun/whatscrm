@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const { query } = require('../database/dbpromise.js')
 const randomstring = require('randomstring')
+const { v4: uuidv4 } = require("uuid");
 const bcrypt = require('bcrypt')
 const { sign } = require("jsonwebtoken")
 const adminValidator = require('../middlewares/admin.js')
@@ -37,6 +38,42 @@ router.post('/login', async (req, res) => {
         console.log(err)
     }
 })
+
+// Admin Registration Route
+router.post("/register", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.json({ success: false, msg: "Please provide email and password" });
+        }
+
+        // Check if admin exists
+        const existingAdmin = await query(`SELECT * FROM admin WHERE email = ?`, [email]);
+        if (existingAdmin.length > 0) {
+            return res.json({ success: false, msg: "Admin already exists" });
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Generate UID
+        const uid = uuidv4();
+
+        // Insert into database
+        await query(
+            `INSERT INTO admin (email, password, uid, role, createdAt) VALUES (?, ?, ?, 'admin', NOW())`,
+            [email, hashedPassword, uid]
+        );
+
+        res.json({ success: true, msg: "Admin registered successfully" });
+
+    } catch (err) {
+        console.log(err);
+        res.json({ success: false, msg: "Something went wrong..." });
+    }
+});
+
 
 
 // add new plan 
