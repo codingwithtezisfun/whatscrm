@@ -3,6 +3,8 @@ import axios from "axios";
 import BASE_URL from "../../BaseUrl"; 
 import { FaPlus, FaTrash,FaListUl } from "react-icons/fa";
 import "../Styles/planmanagement.css";
+import Swal from "sweetalert2";
+
 
 const PlanManagement = () => {
   const [plans, setPlans] = useState([]);
@@ -72,82 +74,116 @@ const PlanManagement = () => {
   };
 
   // Add Plan Submit
-  const handleAddPlan = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post(
-        `${BASE_URL}/api/admin/add_plan`,
-        {
-          title: addForm.title,
-          short_description: addForm.short_description,
-          allow_tag: addForm.allow_tag,
-          allow_note: addForm.allow_note,
-          allow_chatbot: addForm.allow_chatbot,
-          allow_api: addForm.allow_api,
-          is_trial: addForm.is_trial,
-          contact_limit: addForm.contact_limit,
-          price: addForm.price,
-          price_strike: addForm.price_strike,
-          plan_duration_in_days: addForm.plan_duration_in_days,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      if (res.data.success) {
-        alert("Plan has been created sucessfully!");
-        // Refresh plans
-        fetchPlans();
-        // Reset form
-        setAddForm({
-          title: "",
-          short_description: "",
-          allow_tag: false,
-          allow_note: false,
-          allow_chatbot: false,
-          allow_api: false,
-          is_trial: false,
-          contact_limit: "",
-          price: "",
-          price_strike: "",
-          plan_duration_in_days: "",
-        });
-        // Return to list view
-        setView("list");
-      } else {
-        alert(res.data.msg || "Failed to add plan");
+const handleAddPlan = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post(
+      `${BASE_URL}/api/admin/add_plan`,
+      {
+        title: addForm.title,
+        short_description: addForm.short_description,
+        allow_tag: addForm.allow_tag,
+        allow_note: addForm.allow_note,
+        allow_chatbot: addForm.allow_chatbot,
+        allow_api: addForm.allow_api,
+        is_trial: addForm.is_trial,
+        contact_limit: addForm.contact_limit,
+        price: addForm.price,
+        price_strike: addForm.price_strike,
+        plan_duration_in_days: addForm.plan_duration_in_days,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
       }
-    } catch (error) {
-      console.error("Error adding plan:", error);
-      alert("Something went wrong while adding plan");
+    );
+    if (res.data.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Plan Created",
+        text: "Plan has been created successfully!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      // Refresh plans
+      fetchPlans();
+      // Reset form
+      setAddForm({
+        title: "",
+        short_description: "",
+        allow_tag: false,
+        allow_note: false,
+        allow_chatbot: false,
+        allow_api: false,
+        is_trial: false,
+        contact_limit: "",
+        price: "",
+        price_strike: "",
+        plan_duration_in_days: "",
+      });
+      // Return to list view
+      setView("list");
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Failed to add plan",
+        text: res.data.msg || "Failed to add plan",
+      });
     }
-  };
+  } catch (error) {
+    console.error("Error adding plan:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Something went wrong while adding plan",
+    });
+  }
+};
 
-  // Delete Plan Submit
-  const handleDeletePlan = async (e) => {
-    e.preventDefault();
-    if (!deletePlanId) return alert("Please select a plan to delete");
-    try {
-      const res = await axios.post(
-        `${BASE_URL}/api/admin/del_plan`,
-        { id: deletePlanId },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      if (res.data.success) {
-        alert("Plan has been deleted!");
-        fetchPlans();
-        setDeletePlanId("");
-        setView("list");
-      } else {
-        alert(res.data.msg || "Failed to delete plan");
+// Delete Plan Submit
+const handleDeletePlan = async (e) => {
+  e.preventDefault();
+  if (!deletePlanId)
+    return Swal.fire({
+      icon: "warning",
+      title: "No Plan Selected",
+      text: "Please select a plan to delete",
+    });
+  try {
+    const res = await axios.post(
+      `${BASE_URL}/api/admin/del_plan`,
+      { id: deletePlanId },
+      {
+        headers: { Authorization: `Bearer ${token}` },
       }
-    } catch (error) {
-      console.error("Error deleting plan:", error);
-      alert("Something went wrong while deleting plan");
+    );
+    if (res.data.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Plan Deleted",
+        text: "Plan has been deleted!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      fetchPlans();
+      setDeletePlanId("");
+      setView("list");
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Deletion Failed",
+        text: res.data.msg || "Failed to delete plan",
+      });
     }
-  };
+  } catch (error) {
+    console.error("Error deleting plan:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Something went wrong while deleting plan",
+    });
+  }
+};
+
 
   return (
     <div className="__plan-management-container">
@@ -257,7 +293,7 @@ const PlanManagement = () => {
             <div className="__form-group">
               <label>Short Description</label>
                <textarea
-                    name="description"
+                    name="short_description"
                     value={addForm.short_description}
                     onChange={handleChange}
                     required 
@@ -346,7 +382,7 @@ const PlanManagement = () => {
                 <option value="">-- Select Plan --</option>
                 {plans.map((plan) => (
                   <option key={plan.id} value={plan.id}>
-                    {plan.title} (ID: {plan.id})
+                    {plan.title}
                   </option>
                 ))}
               </select>
