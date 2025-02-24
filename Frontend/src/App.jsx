@@ -37,6 +37,9 @@ import EditUser from "./Admin/Pages/EditUser";
 import PaymentGateways from "./Admin/Pages/PaymentGateways";  
 import Faqs from "./Admin/Pages/FAQs";
 import ManagePage from "./Admin/Pages/ManagePage";
+import TestimonialManagement from "./Admin/Pages/TestimonialManagement";
+import OrdersPage from "./Admin/Pages/OrdersPage";
+import LeadsPage from "./Admin/Pages/LeadsPage";
 
 // Private Route Component for Admin Authentication
 const AdminPrivateRoute = ({ element }) => {
@@ -100,6 +103,9 @@ function AppContent({ theme, setTheme }) {
           <Route path="payment-gateways" element={<PaymentGateways />} />
           <Route path="faqs" element={<Faqs />} />
           <Route path="manage-page" element={<ManagePage />} />
+          <Route path="testimonial-management" element={<TestimonialManagement />} />
+          <Route path="orders" element={<OrdersPage />} />
+          <Route path="leads" element={<LeadsPage />} />
         </Route>
 
         {/* Admin Auth Routes */}

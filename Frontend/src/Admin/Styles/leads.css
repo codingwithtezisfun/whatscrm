@@ -1,0 +1,94 @@
+.leads-container {
+    padding: 1rem;
+    background-color: var(--body-bg);
+    color: var(--text-color);
+    width: 100%;
+    height: calc(100vh - 100px);
+    overflow-y: scroll;
+  }
+  
+  .leads-container h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+  }
+  
+  .leads-container p {
+    margin-bottom: 1rem;
+  }
+  
+  .leads-table-wrapper {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px var(--card-shadow);
+    overflow-y: scroll;
+    height: 500px;
+  }
+  
+  .leads-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .leads-table th,
+  .leads-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--gray);
+    text-align: left;
+  }
+  
+  .leads-table thead {
+    background-color: var(--green);
+    color: #fff;
+  }
+  
+  .no-items {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+  }
+  
+  .delete-btn {
+    background-color: #ff5555;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .delete-btn:hover {
+    background-color: #ff0000;
+  }
+  
+  /* Pagination Footer */
+  .leads-pagination {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .leads-pagination select {
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid var(--gray);
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .arrow-btn {
+    background-color: var(--card-bg);
+    border: 1px solid var(--gray);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: 0.3s;
+  }
+  
+  .arrow-btn:hover:enabled {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  

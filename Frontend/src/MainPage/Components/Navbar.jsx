@@ -41,7 +41,7 @@ const Navbar = () => {
             <button onClick={toggleTheme} className="theme-toggler">
               {theme === "light" ? <FaMoon /> : <FaSun />}
             </button>
-            <Link to="/dashboard">
+            <Link to="/admin/dashboard">
               <FaUserCircle className="user-icon" />
             </Link>
             <button className="sidebar-toggle" onClick={toggleSidebar}>

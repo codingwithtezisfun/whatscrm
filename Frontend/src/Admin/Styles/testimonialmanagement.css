@@ -1,0 +1,128 @@
+.testimonial-management-container {
+    padding: 1rem;
+    color: var(--text-color);
+    height: calc(100vh - 100px);
+    overflow-y: scroll;
+    width: 100%;
+  }
+  
+  .testimonial-management-container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .testimonial-management-container p {
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+  
+  /* Form Styles */
+  .testimonial-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .testimonial-form-row {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .testimonial-form-row label {
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+  }
+  .testimonial-top{
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    min-width: 100%;
+    /* background-color: #ff0000; */
+  }
+  .testimonial-top input{
+    width: 100%;
+  }
+  
+  .testimonial-form-row input,
+  .testimonial-form-row textarea {
+    padding: 0.5rem;
+    border: 1px solid var(--gray);
+    border-radius: 4px;
+    background: var(--background-color);
+    color: var(--text-color);
+
+  }
+  
+  .add-btn {
+    background-color: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem 1.5rem;
+    cursor: pointer;
+    align-self: center;
+    width: 100%;
+  }
+  
+  .add-btn:hover {
+    background-color: var(--bright-green);
+  }
+  
+  /* Slider container */
+  .testimonial-slider {
+    margin-top: 1rem;
+  }
+  
+  /* Testimonial Cards */
+  .testimonial-card {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: relative;
+    margin: 0 10px;
+    box-shadow: 0 4px 10px var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 420px; /* Adjust as needed */
+  }
+  
+  /* Delete icon */
+  .delete-icon {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ff4444;
+    font-size: 1.2rem;
+  }
+  
+  .delete-icon:hover {
+    color: #ff0000;
+  }
+  
+  .testimonial-description {
+    font-style: italic;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+    overflow: hidden;
+  }
+  
+  .testimonial-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+  
+  .testimonial-reviewer {
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  
+  .testimonial-position {
+    font-size: 0.85rem;
+    color: #666;
+  }
+  

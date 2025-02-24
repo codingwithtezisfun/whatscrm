@@ -1,0 +1,43 @@
+.order-container {
+    padding: 1rem;
+    color: var(--text-color);
+    background-color: var(--body-bg);
+    width: 100%;
+    height: calc(100vh - 100px);
+    overflow-y: scroll;
+  }
+  
+  .order-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .order-container p {
+    margin-bottom: 1rem;
+  }
+  
+  .order-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--card-bg);
+    box-shadow: 0 4px 10px var(--card-shadow);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .order-table thead {
+    background-color: var(--green);
+    color: #fff;
+  }
+  
+  .order-table th,
+  .order-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--gray);
+  }
+  
+  .order-table tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
