@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from 'axios';
 import { Link, useNavigate } from "react-router-dom";
 import { FaSignInAlt, FaTrash, FaEdit } from "react-icons/fa";
 import BASE_URL from "../../BaseUrl";
@@ -64,7 +64,7 @@ const ManageUsers = () => {
   const handleAutoLogin = async (uid) => {
     try {
       const res = await axios.post(
-        `${BASE_URL}/api/auto_agent_login`,
+        `${BASE_URL}/api/admin/auto_login`,
         { uid },
         { headers: { Authorization: `Bearer ${token}` } }
       );
