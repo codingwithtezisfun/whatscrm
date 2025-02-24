@@ -8,7 +8,7 @@
   }
 
   .payment-gateway-container label{
-    width: 100px;
+    min-width: 100px;
   }
   .payment-gateway-container input{
     width: 100%;
@@ -27,8 +27,9 @@
   .update-btn,
   .update-mpesa-btn {
     background-color: var(--primary-color);
-    color: var(--text-color-reverse);
+    color: var(--text-color);
     cursor: pointer;
+    border: 1px solid gray;  
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
@@ -55,4 +56,13 @@
     margin-left: 0.5rem;
     width: 20px;
     font-size: 50px;
+  }
+  .description-box{
+    text-align: left;
+    margin-top: 1rem;
+  }
+  .description-box textarea{
+    width: 100%;
+    background-color: var(--card-bg);
+    color: var(--text-color);
   }

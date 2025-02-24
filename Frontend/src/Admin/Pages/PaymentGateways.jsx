@@ -13,6 +13,14 @@ const PaymentGatewayForm = () => {
     pay_stripe_id: '',
     pay_stripe_key: '',
     stripe_active: false,
+    // PayPal payment fields
+    pay_paypal_id: '',
+    pay_paypal_key: '',
+    paypal_active: false,
+    // Razorpay payment fields
+    pay_razorpay_id: '',
+    pay_razorpay_key: '',
+    razorpay_active: false,
     // M-Pesa fields
     mpesa_consumer_key: '',
     mpesa_consumer_secret: '',
@@ -32,10 +40,11 @@ const PaymentGatewayForm = () => {
           setPaymentData((prev) => ({
             ...prev,
             ...res.data.data,
-            offline_active:
-              res.data.data.offline_active === 1 || res.data.data.offline_active === true,
-            stripe_active:
-              res.data.data.stripe_active === 1 || res.data.data.stripe_active === true,
+            // Convert numeric statuses (1/0) to booleans if needed
+            offline_active: res.data.data.offline_active === 1 || res.data.data.offline_active === true,
+            stripe_active: res.data.data.stripe_active === 1 || res.data.data.stripe_active === true,
+            paypal_active: res.data.data.paypal_active === 1 || res.data.data.paypal_active === true,
+            razorpay_active: res.data.data.razorpay_active === 1 || res.data.data.razorpay_active === true,
           }));
         }
         setLoading(false);
@@ -57,7 +66,7 @@ const PaymentGatewayForm = () => {
     setPaymentData((prev) => ({ ...prev, [field]: !prev[field] }));
   };
 
-  // Update offline and stripe gateways
+  // Update all payment gateways (offline, stripe, PayPal, and Razorpay)
   const updatePaymentGateway = () => {
     const payload = {
       pay_offline_id: paymentData.pay_offline_id,
@@ -66,6 +75,12 @@ const PaymentGatewayForm = () => {
       pay_stripe_id: paymentData.pay_stripe_id,
       pay_stripe_key: paymentData.pay_stripe_key,
       stripe_active: paymentData.stripe_active ? 1 : 0,
+      pay_paypal_id: paymentData.pay_paypal_id,
+      pay_paypal_key: paymentData.pay_paypal_key,
+      paypal_active: paymentData.paypal_active ? 1 : 0,
+      pay_razorpay_id: paymentData.pay_razorpay_id,
+      pay_razorpay_key: paymentData.pay_razorpay_key,
+      razorpay_active: paymentData.razorpay_active ? 1 : 0,
     };
 
     axios.post(`${BASE_URL}/api/admin/update_pay_gateway`, payload, {
@@ -114,8 +129,8 @@ const PaymentGatewayForm = () => {
 
       {/* Offline Payment Section */}
       <div className="mb-8 p-4 border rounded shadow payment-section">
-        <h3 className="text-xl mb-2">Offline Payment</h3>
-        <div className="mb-2">
+        <h3 className="text-xl mb-2">Pay Offline</h3>
+        {/* <div className="mb-2">
           <label className="block mb-1">Account ID:</label>
           <input
             type="text"
@@ -134,6 +149,27 @@ const PaymentGatewayForm = () => {
             onChange={handleChange}
             className="w-full p-2 border rounded"
           />
+        </div> */}
+        <div className="mb-2">
+          <label className="block mb-1">Title:</label>
+          <input
+            type="text"
+            name="pay_offline_id"
+            value={paymentData.pay_offline_id}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            placeholder="eg offline payment"
+          />
+        </div>
+        <div className="mb-2 description-box">
+          <label className="block mb-1">Description:</label>
+          <textarea
+            name="pay_offline_key"
+            value={paymentData.pay_offline_key}
+            onChange={handleChange}
+            className="w-full p-2 border rounded w-100"
+            placeholder="eg : Pay offline on this account number xxxxxxxxx and send a screenshot to us on this email xxx@xxx.com"
+          ></textarea>
         </div>
         <div className="flex items-center mb-2 active-section">
           <label className="mr-2">Active:</label>
@@ -147,25 +183,27 @@ const PaymentGatewayForm = () => {
 
       {/* Stripe Payment Section */}
       <div className="mb-8 p-4 border rounded shadow payment-section">
-        <h3 className="text-xl mb-2">Stripe Payment</h3>
+        <h3 className="text-xl mb-2">Stripe Gateway</h3>
         <div className="mb-2">
-          <label className="block mb-1">Stripe ID:</label>
+          <label className="block mb-1">ID:</label>
           <input
             type="text"
             name="pay_stripe_id"
             value={paymentData.pay_stripe_id}
             onChange={handleChange}
             className="w-full p-2 border rounded"
+            placeholder="eg : pk_test_51NGI3WSJ7RHyuQ0ARpYwHAK6WJYygcXmJTwwcVZsvus..."
           />
         </div>
         <div className="mb-2">
-          <label className="block mb-1">Stripe Key:</label>
+          <label className="block mb-1">KEYS:</label>
           <input
             type="text"
             name="pay_stripe_key"
             value={paymentData.pay_stripe_key}
             onChange={handleChange}
             className="w-full p-2 border rounded"
+            placeholder="eg : sk_test_51NGI3WSJ7RHyuQ0AG7eC7wD7kJrpTFKCnNaj3IwIIUVbJcPx..."
           />
         </div>
         <div className="flex items-center mb-2 active-section">
@@ -174,6 +212,76 @@ const PaymentGatewayForm = () => {
             type="checkbox"
             checked={paymentData.stripe_active}
             onChange={() => handleToggle('stripe_active')}
+          />
+        </div>
+      </div>
+
+      {/* PayPal Payment Section */}
+      <div className="mb-8 p-4 border rounded shadow payment-section">
+        <h3 className="text-xl mb-2">PayPal Gateway</h3>
+        <div className="mb-2">
+          <label className="block mb-1">ID:</label>
+          <input
+            type="text"
+            name="pay_paypal_id"
+            value={paymentData.pay_paypal_id}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            placeholder="eg : EDqUS14FS084QnzFH7RA7FEzBGXIRUEJ31XL2tkGOe0qmLbt8DunPjj_O0Gb721q-..."
+          />
+        </div>
+        <div className="mb-2">
+          <label className="block mb-1">KEYS:</label>
+          <input
+            type="text"
+            name="pay_paypal_key"
+            value={paymentData.pay_paypal_key}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            placeholder="eg : AaYOfHVy-uNKyKa0FO-7tb6_hST-hToVAFqGgIuQ2yhWxolZkaXANI2oQBEoOBg9I..."
+          />
+        </div>
+        <div className="flex items-center mb-2 active-section">
+          <label className="mr-2">Active:</label>
+          <input
+            type="checkbox"
+            checked={paymentData.paypal_active}
+            onChange={() => handleToggle('paypal_active')}
+          />
+        </div>
+      </div>
+
+      {/* Razorpay Payment Section */}
+      <div className="mb-8 p-4 border rounded shadow payment-section">
+        <h3 className="text-xl mb-2">Razorpay Gateway</h3>
+        <div className="mb-2">
+          <label className="block mb-1">ID:</label>
+          <input
+            type="text"
+            name="pay_razorpay_id"
+            value={paymentData.pay_razorpay_id}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            placeholder="Razorpay ID..."
+          />
+        </div>
+        <div className="mb-2">
+          <label className="block mb-1">KEYS:</label>
+          <input
+            type="text"
+            name="pay_razorpay_key"
+            value={paymentData.pay_razorpay_key}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            placeholder="Razorpay Keys..."
+          />
+        </div>
+        <div className="flex items-center mb-2 active-section">
+          <label className="mr-2">Active:</label>
+          <input
+            type="checkbox"
+            checked={paymentData.razorpay_active}
+            onChange={() => handleToggle('razorpay_active')}
           />
         </div>
       </div>
