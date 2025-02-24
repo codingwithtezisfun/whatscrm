@@ -1,0 +1,124 @@
+.chatlink-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    color: var(--text-color);
+    padding-left: 70px;
+    padding-right: 70px;
+  }
+  
+  /* Left Side */
+  .chatlink-left {
+    width: 50vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .chatlink-left img {
+    width: 100%;
+    height: 80vh;
+    object-fit: cover;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+
+  }
+  
+  /* Right Side */
+  .chatlink-right {
+    width: 50vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .right-link-con{
+    height: 80vh;
+    background-color: var(--background-color) !important;
+    padding: 2rem;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-right: 1px solid var(--text-color);
+    border-top:1px solid var(--text-color);
+    border-bottom:1px solid var(--text-color);
+
+  }
+  
+  .chatlink-right h2 {
+    color: var(--primary-color);
+  }
+  
+  .chatlink-right p {
+    margin-bottom: 1rem;
+  }
+  
+  /* Input Fields */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .input-container {
+    position: relative;
+  }
+  
+  .input-container .icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray);
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid var(--gray);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-color);
+  }
+  
+  /* Generate Button */
+  .generate-btn {
+    background: var(--primary-color);
+    color: var(--text-white);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+  
+  .generate-btn:hover {
+    background: #0052cc;
+  }
+  
+  @media (max-width: 768px) {
+    .chatlink-container {
+      flex-direction: column;
+      height: auto;
+    }
+  
+    .chatlink-left, .chatlink-right {
+      width: 100%;
+      height: auto;
+    }
+  
+    .chatlink-left  {
+      display: none;
+
+    }
+  
+    .chatlink-right {
+      padding: 2rem;
+    }
+    .right-link-con{
+        height: auto;
+        border-radius: 25px;
+        border: 1px solid var(--text-color);
+    }
+    .generate-btn {
+       width: 100%;
+      }
+  }
+  

@@ -1,0 +1,51 @@
+:root {
+    --primary-color: #084b10;
+    --background-color: #032609;
+    --text-color: #ffffff;
+    --text-color-reverse:black;
+    --body-bg:rgba(142, 231, 167, 0.934);
+    --footer-bg:var(--background-color);
+    --footer-bg-dark:black;
+    --text-light-color: #f8f8f8;
+    --overlay-color: rgba(0, 0, 0, 0.223);
+    --text-white: #ffffff;
+    --home-theme-color: rgba(34, 114, 69, 0.681);
+    --home-theme-color-dark: rgba(1, 2, 4, 0.638);
+    --text-dark-color: #000000;
+    --gray: #808080;
+    --green:rgb(2, 37, 2);
+    --bright-green:rgb(6, 238, 6);
+    --footer-bg:var(--background-color);
+    --card-bg: #222;
+    --card-shadow: rgba(255, 255, 255, 0.1);
+  
+  }
+  
+  [data-theme="dark"] {
+    --primary-color: #084b10;
+    --background-color: #ffffff;
+    --text-color: #000000;
+    --text-color-reverse:white;
+    --body-bg:rgba(200, 227, 177, 0.888);
+    --footer-bg:rgba(250, 250, 250, 0.959);
+    --footer-bg-dark:rgba(161, 161, 161, 0.448);
+    --text-light-color: #272626;
+    --overlay-color: rgba(255, 255, 255, 0.118);
+    --text-white: #ffffff;
+    --home-theme-color: rgb(255, 255, 255);
+    --home-theme-color-dark: rgba(250, 250, 250, 0.975);
+    --text-dark-color: #000000;
+    --gray: #808080;
+    --green:rgb(6, 238, 6);
+    --bright-green:rgb(2, 37, 2);
+    --footer-bg:rgba(0, 0, 0, 0.64);
+    --card-bg: #ffffff;
+    --card-shadow: rgba(0, 0, 0, 0.1);
+   
+  }
+  
+  body {
+    background-color: var(--home-theme-color);
+    color: var(--text-color);
+  }
+  

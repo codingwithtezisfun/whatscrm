@@ -1,0 +1,96 @@
+
+  
+  .edit-user-container {
+    width: 100%;
+    margin: auto;
+    padding: 20px;
+    /* background: var(--background-color); */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px var(--card-shadow);
+    overflow-y: auto;
+    height: calc(100vh - 70px);
+  }
+  .form-group-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+  }
+  h2 {
+    text-align: center;
+    color: var(--text-light-color);
+  }
+  
+  .theme-toggle {
+    text-align: right;
+  }
+  
+  .theme-toggle button {
+    background: var(--primary-color);
+    color: var(--text-white);
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  
+  .edit-user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    color: var(--text-light-color);
+  }
+  
+  input,
+  select {
+    padding: 8px;
+    border: 1px solid var(--text-color);
+    background: var(--card-bg);
+    color: var(--text-color);
+    border-radius: 5px;
+  }
+  
+  .plans-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .plan-card {
+    background: var(--card-bg);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px var(--card-shadow);
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .plan-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .plan-card.selected {
+    border: 2px solid red;
+  }
+  
+  .submit-btn {
+    background: var(--bright-green);
+    color: var(--text-white);
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .submit-btn:hover {
+    background: var(--green);
+  }
+  
