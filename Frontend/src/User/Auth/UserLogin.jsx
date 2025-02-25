@@ -31,9 +31,9 @@ const UserLogin = () => {
     try {
       const response = await axios.post(`${BASE_URL}/api/user/login`, formData);
       if (response.data.success) {
-        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userToken", response.data.token);
         Swal.fire({ icon: "success", title: "Login successful" });
-        navigate("/dashboard");
+        navigate("/user/dashboard");
       } else {
         Swal.fire({ icon: "error", title: response.data.msg });
       }

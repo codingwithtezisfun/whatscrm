@@ -1,0 +1,94 @@
+.user-home {
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+  
+  /* Top Graph is 100% width */
+  .top-graph {
+    width: 100%;
+    margin-bottom: 1rem;
+    min-height: calc(50vh - 30px);
+  }
+  
+  /* Shared styling for each graph container */
+  .graph-wrapper {
+    width: 100%;
+    height: 400px; /* Adjust as needed */
+    background-color: var(--card-bg);
+    box-shadow: 0 4px 10px var(--card-shadow);
+    border-radius: 8px;
+    padding: 1rem;
+  }
+  
+  /* Bottom Graphs (two side-by-side on large screens) */
+  .bottom-graphs {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+     min-height: calc(50vh - 30px);
+  }
+  
+  /* Each bottom graph box is 50% wide on large screens */
+  .graph-box {
+    flex: 1;
+    min-width: 0; /* helps flex item to shrink properly */
+  }
+  
+  /* Stats Card */
+  .stats-card {
+    background-color: var(--card-bg);
+    box-shadow: 0 4px 10px var(--card-shadow);
+    border-radius: 8px;
+    padding: 0.7rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  
+  .stats-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+  
+  .stats-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--background-color);
+    padding: 0.6rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px var(--card-shadow);
+  }
+  
+  .stats-label {
+    font-size: 1rem;
+    color: var(--text-color);
+    font-weight: bold;
+  }
+  
+  .stats-value {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--text-color);
+  }
+  
+  .stats-icon {
+    font-size: 1.2rem;
+    color: rgb(255, 204, 0); /* gold-ish coin color */
+  }
+  
+  /* Responsive: stack them on small screens */
+  @media (max-width: 768px) {
+    .bottom-graphs {
+      flex-direction: column;
+    }
+    .graph-box {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
+  

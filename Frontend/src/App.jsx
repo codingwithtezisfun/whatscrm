@@ -24,7 +24,10 @@ import AdvantagesSlider from "./MainPage/Pages/AdvantagesSlider";
 // User components
 import Signup from "./User/Auth/Signup";
 import UserLogin from "./User/Auth/UserLogin";
-// import UserDashboard from "./User/Pages/UserDashboard"; 
+import UserDashboard from "./User/Components/UserDashboard";
+import UserHome from "./User/Pages/UserHome";
+import Chatbot from "./User/Components/Chatbot";
+import AutoChatbot from "./User/Pages/AutoChatbot";
 
 // Admin components
 import AdminLogin from "./Admin/Auth/AdminLogin";
@@ -40,12 +43,19 @@ import ManagePage from "./Admin/Pages/ManagePage";
 import TestimonialManagement from "./Admin/Pages/TestimonialManagement";
 import OrdersPage from "./Admin/Pages/OrdersPage";
 import LeadsPage from "./Admin/Pages/LeadsPage";
+import SocialLogin from "./Admin/Pages/SocialLogin";
 
 // Private Route Component for Admin Authentication
 const AdminPrivateRoute = ({ element }) => {
   const token = localStorage.getItem("adminToken");
 
   return token ? element : <Navigate to="/admin/login" />;
+};
+// Private Route Component for User Authentication
+const UserPrivateRoute = ({ element }) => {
+  const token = localStorage.getItem("userToken");
+
+  return token ? element : <Navigate to="/user/login" />;
 };
 
 function App() {
@@ -90,8 +100,17 @@ function AppContent({ theme, setTheme }) {
             </>
           }
         />
+        {/* user routes  */}
         <Route path="/user/signup" element={<Signup />} />
         <Route path="/user/login" element={<UserLogin />} />
+
+        <Route path="/user/dashboard" element={<UserPrivateRoute element={<UserDashboard />} />}>
+          <Route index element={<Navigate to="userhome" />} />
+          <Route path="userhome" element={<UserHome />} />
+          <Route path="chatbot" element={<Chatbot />} />
+          <Route path="auto-chatbot" element={<AutoChatbot />} />
+          
+        </Route>
 
         {/* Admin Dashboard - Protected Route */}
         <Route path="/admin/dashboard" element={<AdminPrivateRoute element={<AdminDashboard />} />}>
@@ -106,6 +125,7 @@ function AppContent({ theme, setTheme }) {
           <Route path="testimonial-management" element={<TestimonialManagement />} />
           <Route path="orders" element={<OrdersPage />} />
           <Route path="leads" element={<LeadsPage />} />
+          <Route path="social-login" element={<SocialLogin />} />
         </Route>
 
         {/* Admin Auth Routes */}

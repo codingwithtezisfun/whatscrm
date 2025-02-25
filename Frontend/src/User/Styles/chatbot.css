@@ -1,0 +1,40 @@
+.chatbot-layout {
+    display: flex;
+    height: calc(100vh - 100px); /* if you have a navbar above */
+  }
+  
+  .chatbot-sidebar {
+    width: 250px;
+    background-color:rgba(158, 187, 171, 0.885);
+    box-shadow: 0 2px 5px var(--card-shadow);
+    padding: 1rem;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+  }
+  
+  .sidebar-link {
+    display: block;
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 0.5rem 0;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s;
+  }
+  
+  .sidebar-link:hover {
+    color: var(--bright-green);
+  }
+  
+  .sidebar-link.active {
+    font-weight: bold;
+    color: var(--bright-green);
+  }
+  
+  .chatbot-content {
+    flex: 1;
+    background-color: var(--body-bg);
+    overflow-y: auto;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+  
