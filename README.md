@@ -2,7 +2,7 @@
 
 ** **Insert a Chat Record in the Database with your id**  
    Use the SQL statement below to insert a row into your `chats` table.  
-   - Replace `xlmtxvmbxii` with your desired **chat_id**.  
+   - Replace `xlmtxvmbxii` with your desired **chat_id** and ensure it matches your coversation json file.  
    - Replace `DutSMyuYOBugqF55KRO5e2UohdMVil1L` with your **user_id**.  
    - The other fields can remain the same.
 
