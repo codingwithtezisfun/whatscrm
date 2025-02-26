@@ -60,6 +60,8 @@ const UserHome = () => {
       });
       if (res.data.success) {
         setDashboard(res.data);
+        console.log("Fetched data:", res.data);
+        
       } else {
         console.log("Failed to fetch user dashboard:", res.data.msg);
       }

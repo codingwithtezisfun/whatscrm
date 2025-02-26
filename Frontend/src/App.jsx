@@ -28,6 +28,7 @@ import UserDashboard from "./User/Components/UserDashboard";
 import UserHome from "./User/Pages/UserHome";
 import Chatbot from "./User/Components/Chatbot";
 import AutoChatbot from "./User/Pages/AutoChatbot";
+import ChatComponent from "./User/Pages/ChatComponent";
 
 // Admin components
 import AdminLogin from "./Admin/Auth/AdminLogin";
@@ -109,6 +110,7 @@ function AppContent({ theme, setTheme }) {
           <Route path="userhome" element={<UserHome />} />
           <Route path="chatbot" element={<Chatbot />} />
           <Route path="auto-chatbot" element={<AutoChatbot />} />
+          <Route path="chat-component" element={<ChatComponent />} />
           
         </Route>
 

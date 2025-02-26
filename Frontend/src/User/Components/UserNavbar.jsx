@@ -37,7 +37,7 @@ const UserNavbar = () => {
             <FaHome className="user-icons" />
             <span>Dashboard</span>
           </Link>
-          <Link to="/inbox" className="_agent-nav-link">
+          <Link to="chat-component" className="_agent-nav-link">
             <FaEnvelope className="user-icons" />
             <span>Inbox</span>
           </Link>

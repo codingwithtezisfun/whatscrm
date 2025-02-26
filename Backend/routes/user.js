@@ -130,7 +130,6 @@ router.get('/get_me', validateUser, async (req, res) => {
     }
 })
 
-
 // update notes 
 router.post("/save_note", validateUser, checkPlan, checkNote, async (req, res) => {
     try {
@@ -171,7 +170,6 @@ router.post('/push_tag', validateUser, checkPlan, checkTags, async (req, res) =>
         console.log(err)
     }
 })
-
 
 // del a tag 
 router.post('/del_tag', validateUser, async (req, res) => {

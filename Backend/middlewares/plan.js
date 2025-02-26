@@ -13,7 +13,7 @@ const checkPlan = async (req, res, next) => {
         const plan = getUser[0]?.plan
 
         if (!plan) {
-            return res.json({ success: false, msg: "Please subscribe a plan to proceed this." })
+            return res.json({ success: false, msg: "Please subscribe a plan to proceed this...!" })
         }
 
         const numOfDyaLeft = getNumberOfDaysFromTimestamp(getUser[0]?.plan_expire)
