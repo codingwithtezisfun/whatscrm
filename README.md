@@ -23,4 +23,4 @@
    );
  ```
 
--create a folder in the coversations folder with your user id and place the coversations json file in it
+- create a folder in the coversations folder with your user_id as the folder name  and place the coversations json file in it
