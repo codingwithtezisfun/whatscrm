@@ -1,21 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { FaSearch, FaFilter, FaBell, FaPaperclip, FaPaperPlane } from "react-icons/fa";
-import "../Styles/chat.css";
+import {
+  FaSearch,
+  FaFilter,
+  FaBell,
+  FaPaperclip,
+  FaPaperPlane,
+  FaCheck,
+  FaStar
+} from "react-icons/fa";
+import { LiaCheckDoubleSolid } from "react-icons/lia";
+import { MdCheck } from "react-icons/md";
 import BASE_URL from "../../BaseUrl";
+import "../Styles/chat.css";
 
 const ChatComponent = () => {
-  // State
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
-
   const [messageText, setMessageText] = useState("");
 
   const token = localStorage.getItem("userToken");
-
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -23,14 +30,10 @@ const ChatComponent = () => {
   }, []);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
     }
-  };
+  }, [messages]);
 
   const fetchChats = async () => {
     try {
@@ -53,9 +56,7 @@ const ChatComponent = () => {
       const response = await axios.post(
         `${BASE_URL}/api/inbox/get_convo`,
         { chatId },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       if (response.data.success) {
         setMessages(response.data.data);
@@ -76,24 +77,50 @@ const ChatComponent = () => {
     (chat?.sender_name || "").toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = (e) => {
+    e.preventDefault();
     if (!messageText.trim()) return;
     const newMessage = {
       senderName: "You",
-      msgContext: {
-        text: {
-          body: messageText,
-        },
-      },
+      msgContext: { text: { body: messageText } },
       route: "OUTGOING",
+      status: "sent",
+      star: false,
+      reaction: ""
     };
     setMessages((prev) => [...prev, newMessage]);
     setMessageText("");
+    // Optionally, send the message to backend API
+  };
+
+  const renderMessageStatus = (msg) => {
+    if (msg.route === "OUTGOING") {
+      return msg.status === "delivered" ? (
+        <LiaCheckDoubleSolid  className="message-status-read" />
+      ) : (
+        <MdCheck className="message-status-unread" />
+      );
+    }
+    return null;
+  };
+
+  const renderInteractiveReply = (msg) => {
+    if (msg.type === "button" && msg.msgContext?.interactive) {
+      return (
+        <div className="reply-options">
+          {msg.msgContext.interactive.action.buttons.map((btn, idx) => (
+            <button key={idx} className="reply-btn">
+              {btn.reply.title}
+            </button>
+          ))}
+        </div>
+      );
+    }
+    return null;
   };
 
   return (
     <div className="chat-container">
-      {/* Sidebar */}
       <div className="chat-sidebar">
         <div className="sidebar-top">
           <div className="search-box">
@@ -108,18 +135,14 @@ const ChatComponent = () => {
           <FaFilter className="icon filter-icon" />
           <FaBell className="icon bell-icon" onClick={() => setShowModal(true)} />
         </div>
-
-        {/* Chat List */}
         <div className="chat-list">
           {filteredChats.length === 0 && (
-            <p className="no-chats">Oops, there is no chat list found</p>
+            <p className="no-chats">No chats found</p>
           )}
           {filteredChats.map((chat) => (
             <div
               key={chat.chat_id}
-              className={`chat-item ${
-                selectedChat?.chat_id === chat.chat_id ? "active" : ""
-              }`}
+              className={`chat-item ${selectedChat?.chat_id === chat.chat_id ? "active" : ""}`}
               onClick={() => handleChatClick(chat)}
             >
               <div className="chat-avatar">
@@ -133,43 +156,65 @@ const ChatComponent = () => {
           ))}
         </div>
       </div>
-
-      {/* Main Chat Window */}
       <div className="chat-main">
         {selectedChat ? (
           <div className="chat-window">
-            <h2 className="chat-title">{selectedChat.sender_name}</h2>
+            <div className="chat-header">
+              <div className="header-avatar">
+                <AvatarPlaceholder seed={selectedChat.sender_name} />
+              </div>
+              <div className="header-info">
+                <h3 className="chat-room-name">{selectedChat.sender_name}</h3>
+                <p className="chat-room-last-seen">Last seen recently</p>
+              </div>
+              <div className="header-right"></div>
+            </div>
+            <div className="chat-body" ref={messagesEndRef}>
+              {messages.length === 0 ? (
+                <p className="no-messages">No messages yet</p>
+              ) : (
+                messages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`chat_message mt-4 ${msg.route === "OUTGOING" ? "chat_receiver" : "chat-sender"}`}
+                  >
+                    <span className="chat_name">{msg.senderName}</span>
+                    {msg.star && <FaStar className="star-icon" />}
 
-            {/* Messages Area */}
-            <div className="chat-messages" ref={messagesEndRef}>
-              {messages.length === 0 && <p className="no-messages">No messages yet</p>}
-              {messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`message-bubble ${
-                    msg.route === "INCOMING" ? "incoming" : "outgoing"
-                  }`}
-                >
-                  <p className="message-text">{msg.msgContext?.text?.body}</p>
-                </div>
-              ))}
+                    <span className="message-text">{msg.msgContext?.text?.body}</span>
+                    {renderInteractiveReply(msg)}
+                    <span className="chat_timestemp">
+                      {new Date(msg.timestamp * 1000).toLocaleTimeString()}
+                    </span>
+                    {renderMessageStatus(msg)}
+
+                    <div className="message-reaction">
+                      {msg.reaction}
+                    </div>
+                  </div>
+
+                
+                ))
+              )}
             </div>
 
-            {/* Input Bar */}
-            <div className="chat-input-bar">
+            {/* Chat Input Bar */}
+            <div className="chat-footer">
               <button className="attach-btn">
                 <FaPaperclip />
               </button>
-              <input
-                type="text"
-                className="chat-input"
-                placeholder="Type a message..."
-                value={messageText}
-                onChange={(e) => setMessageText(e.target.value)}
-              />
-              <button className="send-btn" onClick={handleSendMessage}>
-                <FaPaperPlane />
-              </button>
+              <form onSubmit={handleSendMessage} className="chat-form">
+                <input
+                  type="text"
+                  className="chat-input"
+                  placeholder="Type a message..."
+                  value={messageText}
+                  onChange={(e) => setMessageText(e.target.value)}
+                />
+                <button type="submit" className="send-btn">
+                  <FaPaperPlane />
+                </button>
+              </form>
             </div>
           </div>
         ) : (
@@ -179,7 +224,7 @@ const ChatComponent = () => {
         )}
       </div>
 
-      {/* Notification Sound Modal */}
+      {/* Notification Modal */}      
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -193,6 +238,15 @@ const ChatComponent = () => {
           </div>
         </div>
       )}
+    </div>
+  );
+};
+
+const AvatarPlaceholder = ({ seed }) => {
+  const letter = seed ? seed.charAt(0).toUpperCase() : "?";
+  return (
+    <div className="avatar-placeholder">
+      {letter}
     </div>
   );
 };

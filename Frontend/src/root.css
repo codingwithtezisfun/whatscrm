@@ -18,6 +18,8 @@
     --footer-bg:var(--background-color);
     --card-bg: #222;
     --card-shadow: rgba(255, 255, 255, 0.1);
+    --chat-receiver-bg:#000000;
+    --chat-sender-bg:#113a16;
   
   }
   
@@ -25,7 +27,7 @@
     --primary-color: #084b10;
     --background-color: #ffffff;
     --text-color: #000000;
-    --text-color-reverse:white;
+    --text-color-reverse:rgb(255, 255, 255);
     --body-bg:rgba(200, 227, 177, 0.888);
     --footer-bg:rgba(250, 250, 250, 0.959);
     --footer-bg-dark:rgba(161, 161, 161, 0.448);
@@ -41,6 +43,9 @@
     --footer-bg:rgba(0, 0, 0, 0.64);
     --card-bg: #ffffff;
     --card-shadow: rgba(0, 0, 0, 0.1);
+    --chat-receiver-bg:#d9fdd3;
+    --chat-sender-bg:#f0f0f0;
+
    
   }
   
