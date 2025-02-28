@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ManageTemplate from "./ManageTemplate";
-
+import BroadcastManager from "./BroadcastManager";
 const Broadcast = () => {
   const [activeComponent, setActiveComponent] = useState("template");
 
@@ -25,7 +25,7 @@ const Broadcast = () => {
 
       {/* Main content area */}
       <div className="_content">
-        {activeComponent === "template" ? <ManageTemplate /> : <h1>Broadcast</h1>}
+        {activeComponent === "template" ? <ManageTemplate /> : <BroadcastManager />}
       </div>
     </div>
   );

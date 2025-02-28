@@ -255,7 +255,7 @@
   background-color: #ff0000;
 }
 
-.modal-overlay {
+._modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -268,7 +268,7 @@
   justify-content: center;
 }
 
-.modal-content {
+._modal-content {
   background: var(--card-bg);
   color: var(--text-color);
   padding: 2rem;
@@ -279,7 +279,7 @@
   position: relative;
 }
 
-.modal-content h3 {
+._modal-content h3 {
   margin-top: 0;
   margin-bottom: 1rem;
   font-size: 1.5rem;

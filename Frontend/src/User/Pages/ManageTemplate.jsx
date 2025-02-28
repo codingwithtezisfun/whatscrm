@@ -17,10 +17,10 @@ export default function ManageTemplate() {
 
   // Form fields
   const [templateName, setTemplateName] = useState("");
-  const [language, setLanguage] = useState("en");
-  const [category, setCategory] = useState("Marketing");
+  const [language, setLanguage] = useState("English");
+  const [category, setCategory] = useState("");
   const [componentType, setComponentType] = useState("Body");
-  const [mediaType, setMediaType] = useState("Image");
+  const [mediaType, setMediaType] = useState("");
   const [componentText, setComponentText] = useState("");
 
   // Components array for emulator (each has type, text, mediaType, etc.)
@@ -32,14 +32,24 @@ export default function ManageTemplate() {
     loadTemplates();
   }, []);
 
-  // GET /get_templets
   const loadTemplates = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/templet/get_templets`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.data.success) {
-        setTemplates(res.data.data || []);
+        // Parse the content for each template
+        const parsedTemplates = res.data.data.map((tmpl) => {
+          let contentData = {};
+          try {
+            contentData = JSON.parse(tmpl.content); // Assuming tmpl.content is a JSON string
+          } catch (error) {
+            console.error("Error parsing JSON:", error);
+        
+          }
+          return { ...tmpl, contentData }; // Add parsed contentData to the template object
+        });
+        setTemplates(parsedTemplates);
       } else {
         setTemplates([]);
       }
@@ -52,10 +62,10 @@ export default function ManageTemplate() {
   // "Add New Template" button
   const openAddModal = () => {
     setTemplateName("");
-    setLanguage("en");
-    setCategory("Marketing");
+    setLanguage("English");
+    setCategory("");
     setComponentType("Body");
-    setMediaType("Image");
+    setMediaType("");
     setComponentText("");
     setComponents([]);
     setUploadedFiles([]);
@@ -89,7 +99,6 @@ export default function ManageTemplate() {
     setUploadedFiles([...uploadedFiles, ...files]);
   };
 
-  // POST /add_new including attachments (here we send file names as placeholders)
   const handleSendForReview = async () => {
     if (!templateName.trim()) {
       Swal.fire("Error", "Please provide a template name.", "error");
@@ -99,7 +108,6 @@ export default function ManageTemplate() {
       language,
       category,
       components,
-      // Note: In a real upload scenario you might convert files or upload them separately.
       attachments: uploadedFiles.map((file) => file.name),
     };
     try {
@@ -167,15 +175,6 @@ export default function ManageTemplate() {
     }
   };
 
-  const renderTemplateView = () => {
-    if (!viewingTemplate) return null;
-
-    const { content } = viewingTemplate;
-    const body = content?.components?.find((c) => c.type === "Body")?.text || "";
-    const footer = content?.components?.find((c) => c.type === "Footer")?.text || "";
-    const buttons = content?.components?.filter((c) => c.type === "Buttons") || [];
-    const media = content?.attachments || [];
-  }
 
   // For the bubble timestamp
   const getCurrentTime = () => {
@@ -294,8 +293,8 @@ export default function ManageTemplate() {
                   </td>
                   <td>{tmpl.id}</td>
                   <td>{tmpl.title}</td>
-                  <td>{tmpl.content?.language || "en"}</td>
-                  <td>{tmpl.content?.category || "Marketing"}</td>
+                  <td>{tmpl.contentData?.language}</td>
+                  <td>{tmpl.contentData?.category}</td>
                   <td>{tmpl.status || "Draft"}</td>
                   <td>
                     <button className="btn btn-sm btn-outline-info">View</button>

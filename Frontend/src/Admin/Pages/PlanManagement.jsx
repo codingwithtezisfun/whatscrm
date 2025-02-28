@@ -264,8 +264,8 @@ const PlanManagement = () => {
 
       {/* Add Plan Modal */}
       {showAddModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className="modal-overlay _modal-overlay">
+          <div className="modal-content _modal-content">
             <h3>Add Plan</h3>
             <form onSubmit={handleAddPlan}>
               <div className="__group-container">
