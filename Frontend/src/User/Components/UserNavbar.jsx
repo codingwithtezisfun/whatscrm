@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { 
   FaBars, FaTimes, FaHome, FaEnvelope, FaComments, FaAddressBook, 
-  FaBullhorn, FaKey, FaEllipsisH, FaMoon, FaSun, FaUserCircle 
+  FaBullhorn, FaKey, FaEllipsisH, FaMoon, FaSun, FaUserCircle , FaRobot
 } from "react-icons/fa";
 import "../Styles/usernavbar.css";
 
@@ -42,14 +42,18 @@ const UserNavbar = () => {
             <span>Inbox</span>
           </Link>
           <Link to="/user/dashboard/chatbot" className="_agent-nav-link">
+           <FaRobot className="user-icons" />
+            <span>Chatbot Bot</span>
+          </Link>
+          <Link to="/user/dashboard/chat-flow" className="_agent-nav-link">
             <FaComments className="user-icons" />
             <span>Chatbot Flow</span>
           </Link>
-          <Link to="/phonebook" className="_agent-nav-link">
+          <Link to="phonebook" className="_agent-nav-link">
             <FaAddressBook className="user-icons" />
             <span>Phonebook</span>
           </Link>
-          <Link to="/broadcast" className="_agent-nav-link">
+          <Link to="manage-template" className="_agent-nav-link">
             <FaBullhorn className="user-icons" />
             <span>Broadcast</span>
           </Link>

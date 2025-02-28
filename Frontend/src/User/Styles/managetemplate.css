@@ -1,0 +1,109 @@
+.manage-template-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 220px;
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+    padding: 1rem;
+  }
+  .sidebar-item {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  .sidebar-item.active,
+  .sidebar-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Main content */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+  }
+  .template-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .template-table-container {
+    flex: 1;
+    overflow: auto;
+  }
+  .template-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .template-table th,
+  .template-table td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+  }
+  
+  /* Broadcast placeholder */
+  .broadcast-placeholder {
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
+  /* Modal overlay */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  .modal-content {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 600px;
+    max-width: 90%;
+    position: relative;
+  }
+  .modal-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .emulator-preview {
+    margin-top: 1rem;
+  }
+  .preview-box {
+    background-color: #f6f6f6;
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    border-radius: 6px;
+    min-height: 80px;
+    position: relative;
+  }
+  .timestamp {
+    position: absolute;
+    bottom: 4px;
+    right: 6px;
+    font-size: 0.8rem;
+    color: #888;
+  }
+  .modal-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  

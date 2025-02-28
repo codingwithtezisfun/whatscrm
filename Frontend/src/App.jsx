@@ -29,6 +29,10 @@ import UserHome from "./User/Pages/UserHome";
 import Chatbot from "./User/Components/Chatbot";
 import AutoChatbot from "./User/Pages/AutoChatbot";
 import ChatComponent from "./User/Pages/ChatComponent";
+import ChatFlow from "./User/Pages/ChatFlow";
+import { ReactFlowProvider } from "@xyflow/react";
+import Phonebook from "./User/Pages/Phonebook";
+import ManageTemplate from "./User/Pages/ManageTemplate";
 
 // Admin components
 import AdminLogin from "./Admin/Auth/AdminLogin";
@@ -111,6 +115,12 @@ function AppContent({ theme, setTheme }) {
           <Route path="chatbot" element={<Chatbot />} />
           <Route path="auto-chatbot" element={<AutoChatbot />} />
           <Route path="chat-component" element={<ChatComponent />} />
+          <Route path="chat-flow" element={
+             <ReactFlowProvider>
+            <ChatFlow />
+            </ReactFlowProvider>} />
+          <Route path="phonebook" element={<Phonebook />} />
+          <Route path="manage-template" element={<ManageTemplate />} />
           
         </Route>
 

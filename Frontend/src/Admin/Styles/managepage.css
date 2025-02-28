@@ -20,7 +20,7 @@
     margin-bottom: 2rem;
   }
   
-  .card {
+  .__top-card {
     border: 1px solid #ccc;
     border-radius: 6px;
     padding: 1rem;
@@ -30,7 +30,7 @@
     transition: box-shadow 0.3s ease;
   }
   
-  .card.active, .card:hover {
+  .__top-card.active, .__top-card:hover {
     box-shadow: 0 0 10px var(--card-shadow);
   }
   

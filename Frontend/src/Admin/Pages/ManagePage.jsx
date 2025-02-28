@@ -142,7 +142,7 @@ const ManagePage = () => {
       {/* Selection Cards */}
       <div className="selection-cards">
         <div
-          className={`card ${selectedType === "Privacy Policy" ? "active" : ""}`}
+          className={`card __top=card ${selectedType === "Privacy Policy" ? "active" : ""}`}
           onClick={() => handleTypeSelect("Privacy Policy")}
         >
           <div className="card-label">
@@ -150,7 +150,7 @@ const ManagePage = () => {
           </div>
         </div>
         <div
-          className={`card ${selectedType === "Terms and Conditions" ? "active" : ""}`}
+          className={`card __top-card${selectedType === "Terms and Conditions" ? "active" : ""}`}
           onClick={() => handleTypeSelect("Terms and Conditions")}
         >
           <div className="card-label">

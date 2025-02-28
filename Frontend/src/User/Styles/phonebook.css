@@ -1,0 +1,119 @@
+/* Container for entire phonebook page */
+.phonebook-container {
+    width: 100%;
+    max-height: calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
+    background: var(--body-bg);
+  }
+  
+  /* Top Bar */
+  .top-bar {
+    background: var(--background-color);
+    border-bottom: 1px solid #ddd;
+  }
+  .top-bar input {
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    min-width: 50%;
+    color: var(--text-color);
+  }
+  .top-bar input::placeholder {
+    color: var(--text-color);
+  }
+  .top-bar .btn.btn-success {
+    border-radius: 4px;
+    width: 200px;
+    color: var(--text-color);
+    font-weight: bold;
+  }
+  
+  /* Main Layout */
+  .left-sidebar {
+    width: 300px;
+    background:var(--background-color);
+    border-right: 1px solid #ddd;
+    height: calc(100vh - 170px);
+    overflow-y: auto;
+  }
+  .left-sidebar .sidebar-illustration {
+    text-align: center;
+  }
+  .left-sidebar .sidebar-title {
+    font-weight: 600;
+    margin-top: 10px;
+  }
+  .phonebook-item {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .phonebook-item:hover {
+    background: var(--body-bg);
+  }
+  .del-btn-contact{
+    border: none;
+    background: transparent;
+    color: red;
+  }
+  
+  /* Flow for main area */
+  .flow-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Card & Table */
+  .__phonebook-card{
+    height: 100%;
+    background-color: var(--home-theme-color);
+  }
+  .card-header {
+    background: var(--background-color);
+    border-bottom: 1px solid #ddd;
+    color: var(--text-color);
+  }
+  .card-header h5 {
+    margin: 0;
+  }
+  .card-header .btn.btn-outline-success.btn-sm {
+    border-radius: 4px;
+    font-size: 0.85rem;
+    border: 1px solid gray;
+    width: 100px;
+    color: var(--text-color);
+    font-weight: bold;
+  }
+  .table.contact-table th,
+  .table.contact-table td {
+    vertical-align: middle;
+  }
+  
+  /* Modals */
+  .modal.show.d-block {
+    display: block !important;
+  }
+  .modal-backdrop.show {
+    opacity: 0.5;
+  }
+  .contact-table {
+    overflow-y: auto;
+    background-color: var(--home-theme-color) !important;
+    color: var(--text-color);
+  } 
+  .phonebook-modal{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .phonebook-dialog-box{
+    min-width: 700px !important;
+  }
+  .plus-icon{
+    font-size: 25px;
+  }
+  .btn-close{
+    color: var(--text-color) !important;
+  }

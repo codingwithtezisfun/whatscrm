@@ -226,8 +226,8 @@ const ChatComponent = () => {
 
       {/* Notification Modal */}      
       {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="__modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="__modal-content" onClick={(e) => e.stopPropagation()}>
             <h3>Select Notification Sound</h3>
             <ul>
               <li>Sound 1</li>
