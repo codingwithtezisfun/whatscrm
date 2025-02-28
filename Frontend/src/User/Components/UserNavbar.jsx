@@ -53,7 +53,7 @@ const UserNavbar = () => {
             <FaAddressBook className="user-icons" />
             <span>Phonebook</span>
           </Link>
-          <Link to="manage-template" className="_agent-nav-link">
+          <Link to="broadcast" className="_agent-nav-link">
             <FaBullhorn className="user-icons" />
             <span>Broadcast</span>
           </Link>

@@ -1,109 +1,244 @@
-.manage-template-container {
-    display: flex;
-    height: 100vh;
-  }
-  
-  /* Sidebar */
-  .sidebar {
-    width: 220px;
-    background-color: #fff;
-    border-right: 1px solid #ddd;
-    padding: 1rem;
-  }
-  .sidebar-item {
-    padding: 0.5rem;
-    margin-bottom: 0.5rem;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.2s;
-  }
-  .sidebar-item.active,
-  .sidebar-item:hover {
-    background-color: #f0f0f0;
-  }
-  
-  /* Main content */
-  .main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-  }
-  .template-top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-  .template-table-container {
-    flex: 1;
-    overflow: auto;
-  }
-  .template-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .template-table th,
-  .template-table td {
-    border: 1px solid #ddd;
-    padding: 0.5rem;
-  }
-  
-  /* Broadcast placeholder */
-  .broadcast-placeholder {
-    text-align: center;
-    margin-top: 2rem;
-  }
-  
-  /* Modal overlay */
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-  }
-  .modal-content {
-    background: #fff;
-    padding: 1rem;
-    border-radius: 8px;
-    width: 600px;
-    max-width: 90%;
-    position: relative;
-  }
-  .modal-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 0.75rem;
-  }
-  .emulator-preview {
-    margin-top: 1rem;
-  }
-  .preview-box {
-    background-color: #f6f6f6;
-    border: 1px solid #ddd;
-    padding: 0.75rem;
-    border-radius: 6px;
-    min-height: 80px;
-    position: relative;
-  }
-  .timestamp {
-    position: absolute;
-    bottom: 4px;
-    right: 6px;
-    font-size: 0.8rem;
-    color: #888;
-  }
-  .modal-actions {
-    margin-top: 1rem;
-    display: flex;
-    gap: 0.5rem;
-    justify-content: flex-end;
-  }
-  
+.whatsapp-bubble {
+  background:var(--background-color);
+  border: 1px solid #ddd;
+  color: var(--text-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+.bubble-section {
+  margin-bottom: 0.5rem;
+}
+.attachments-section {
+  display: flex;
+  gap: 0.5rem;
+}
+.attachment {
+  border: 1px solid #ccc;
+  padding: 0.25rem;
+  border-radius: 4px;
+  width: 100%;
+  height: 100px;
+}
+.attachment-thumbnail {
+  max-width: 100%;
+  max-height: 100%;
+}
+.buttons-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.preview-button {
+  background: #c7ecee;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+.time-section {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #888;
+}
+/* Floating Labels */
+.floating-label-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.floating-input {
+  min-width: 250px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  background: transparent;
+}
+.floating-input-name {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  background: transparent;
+}
+
+.floating-label {
+  position: absolute;
+  top: 0px;
+  left: 12px;
+  background: var(--card-bg) !important;
+  padding: 0 4px;
+  color: var(--text-color);
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+/* .floating-input:focus + .floating-label,
+.floating-input:not(:placeholder-shown) + .floating-label {
+  top: -8px;
+  left: 8px;
+  font-size: 12px;
+  color: #007bff;
+} */
+
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  color: var(--text-color);
+}
+.custom-modal-overlay option{
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+.custom-modal-content {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 8px;
+  max-width:80vw;
+
+}
+
+.modal-title {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Layout for modal body */
+.custom-modal-body {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Form Side (2-column grid) */
+.custom-form-side {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.custom-modal-row {
+  display: flex;
+  flex-direction: column;
+}
+.custom-modal-row textarea{
+  color: var(--text-color);
+}
+.custom-modal-row.full-width {
+  grid-column: span 2;
+}
+
+/* Emulator Side */
+.custom-emulator-side {
+  flex: 1;
+}
+
+/* Smartphone Preview Styles */
+.smartphone-preview {
+  border: 2px solid #ffca0a7e;
+  border-radius: 20px;
+  padding: 0.7rem;
+  background: black;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 320px;
+  height: 550px;
+  margin-left: 50px;
+}
+
+.preview-box {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  height: 96%;
+  position: relative;
+}
+.preview-box-camera{
+  position: absolute;
+  top: 5px;
+  left: 49%;
+  z-index: 10;
+  color: black;
+}
+
+/* Modal Actions */
+.custom-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+.custom-modal-actions button {
+  width: 300px;
+}
+
+/* File Input */
+.file-input {
+  margin-top: 0.5rem;
+}
+
+
+
+
+
+/* broadcast css  */
+._broadcast-container {
+  display: flex;
+  height: calc(100vh - 100px);
+  background-color: var(--background-color);
+}
+
+/* Sidebar Styles */
+._sidebar {
+  width: 250px;
+  background-color: var(--card-bg);
+  box-shadow: 0 0px 5px black;
+  border-radius: 1px;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+._sidebar-title {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+._sidebar-button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  text-align: left;
+  transition: background 0.3s ease;
+}
+
+._sidebar-button:hover {
+  background-color: #495057;
+}
+
+._sidebar-button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Content Area */
+._content {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}

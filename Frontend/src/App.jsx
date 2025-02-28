@@ -32,7 +32,8 @@ import ChatComponent from "./User/Pages/ChatComponent";
 import ChatFlow from "./User/Pages/ChatFlow";
 import { ReactFlowProvider } from "@xyflow/react";
 import Phonebook from "./User/Pages/Phonebook";
-import ManageTemplate from "./User/Pages/ManageTemplate";
+import Broadcast from "./User/Pages/Broadcast";
+
 
 // Admin components
 import AdminLogin from "./Admin/Auth/AdminLogin";
@@ -120,8 +121,7 @@ function AppContent({ theme, setTheme }) {
             <ChatFlow />
             </ReactFlowProvider>} />
           <Route path="phonebook" element={<Phonebook />} />
-          <Route path="manage-template" element={<ManageTemplate />} />
-          
+          <Route path="broadcast" element={<Broadcast/>}/>
         </Route>
 
         {/* Admin Dashboard - Protected Route */}
