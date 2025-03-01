@@ -20,7 +20,11 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(fileUpload());
 
 // ✅ Configure CORS (Allow multiple origins)
-const allowedOrigins = ["http://localhost:5173", "http://yourdomain.com"];
+const allowedOrigins = [
+    "http://localhost:5173",
+    /^http:\/\/localhost:\d+$/ 
+  ];
+  
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
