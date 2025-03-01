@@ -364,10 +364,9 @@ const saveMetaKeys = async () => {
                   </div>
                 </div>
                 <div className="modal-footer d-flex justify-content-between">
-                  <button className="btn btn-success" onClick={saveMetaKeys}>
+                  <button className="btn btn-success w-100" onClick={saveMetaKeys}>
                     Save
                   </button>
-                 <Link to="/plans" className="btn btn-primary">Check Plans</Link>
                 </div>
               </div>
             </div>
@@ -447,10 +446,10 @@ const saveMetaKeys = async () => {
                   </div>
                 </div>
                 <div className="modal-footer d-flex justify-content-between">
-                  <button className="btn btn-success" onClick={saveProfile}>
+                  <button className="btn btn-success w-100" onClick={saveProfile}>
                     Save
                   </button>
-                  <Link to="/plans" className="btn btn-primary">Check Plans</Link>
+                  <Link to="/plans" className="btn btn-primary w-100">Check Plans</Link>
                 </div>
               </div>
             </div>
@@ -511,7 +510,7 @@ const saveMetaKeys = async () => {
                   )}
                 </div>
                 <div className="modal-footer d-flex justify-content-center">
-                  <Link to="/plans" className="btn btn-primary">Check Plans</Link>
+                  <Link to="/plans" className="btn btn-primary w-100">Check Plans</Link>
                 </div>
               </div>
             </div>

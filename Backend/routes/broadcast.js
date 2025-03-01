@@ -34,7 +34,7 @@ router.post('/add_new', validateUser, checkPlan, async (req, res) => {
             return res.json({ success: false, msg: "The phonebook you have selected does not have any mobile number in it" })
         }
 
-        const getMetaMobileDetails = await getMetaNumberDetail("v18.0", getMetaAPI[0]?.business_phone_number_id, getMetaAPI[0]?.access_token)
+        const getMetaMobileDetails = await getMetaNumberDetail("v22.0", getMetaAPI[0]?.business_phone_number_id, getMetaAPI[0]?.access_token)
 
         if (getMetaMobileDetails.error) {
             return res.json({ success: false, msg: "Either your meta API are invalid or your access token has been expired" })
