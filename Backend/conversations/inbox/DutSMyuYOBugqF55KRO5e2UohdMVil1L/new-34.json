@@ -1,0 +1,20 @@
+[
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSOTE0OTc5NTYyQjVGM0RCNjRFAA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "hello james"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1740833835,
+    "senderName": "james ",
+    "senderMobile": "254723479444",
+    "status": "sent",
+    "star": false,
+    "route": "OUTGOING"
+  }
+]

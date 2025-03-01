@@ -1,0 +1,20 @@
+[
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSNUZENjc3RjBBRUNCNjI0NUQ0AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "hello"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1740833918,
+    "senderName": "abel",
+    "senderMobile": "254723479444",
+    "status": "sent",
+    "star": false,
+    "route": "OUTGOING"
+  }
+]

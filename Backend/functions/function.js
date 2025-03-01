@@ -1072,7 +1072,7 @@ function sendMetaMsg(uid, msgObj, toNumber, savObj, chatId) {
         });
       }
 
-      const url = `https://graph.facebook.com/v17.0/${waNumId}/messages`;
+      const url = `https://graph.facebook.com/v22.0/${waNumId}/messages`;
 
       const payload = {
         messaging_product: "whatsapp",
@@ -1109,10 +1109,28 @@ function sendMetaMsg(uid, msgObj, toNumber, savObj, chatId) {
         const chatPath = `${__dirname}/../conversations/inbox/${uid}/${chatId}.json`;
         addObjectToFile(finalSaveMsg, chatPath);
 
-        await query(
-          `UPDATE chats SET last_message_came = ?, last_message = ?, is_opened = ? WHERE chat_id = ?`,
-          [userTimezone, JSON.stringify(finalSaveMsg), 1, chatId]
-        );
+        // await query(
+        //   `UPDATE chats SET last_message_came = ?, last_message = ?, is_opened = ? WHERE chat_id = ?`,
+        //   [userTimezone, JSON.stringify(finalSaveMsg), 1, chatId]
+        // );
+
+        const existingChat = await query(`SELECT * FROM chats WHERE chat_id = ?`, [chatId]);
+
+        if (existingChat.length > 0) {
+          // Chat exists, update it
+          await query(
+            `UPDATE chats SET last_message_came = ?, last_message = ?, is_opened = ? WHERE chat_id = ?`,
+            [userTimezone, JSON.stringify(finalSaveMsg), 1, chatId]
+          );
+        } else {
+          // Chat does not exist, create a new entry
+          await query(
+            `INSERT INTO chats (chat_id, uid, sender_name, sender_mobile, last_message_came, last_message, is_opened) 
+             VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [chatId, uid, savObj.senderName || "", savObj.senderMobile || "", userTimezone, JSON.stringify(finalSaveMsg), 1]
+          );
+        }
+
 
         const io = getIOInstance();
 

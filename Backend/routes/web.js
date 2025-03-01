@@ -8,6 +8,7 @@ const path = require('path')
 const { appVersion, addON } = require('../env.js')
 const bcrypt = require('bcrypt')
 const mysql = require('mysql2/promise');
+const validateUser = require('../middlewares/user.js')
 
 router.get('/return_module', async (req, res) => {
     try {
@@ -104,6 +105,18 @@ router.post('/submit_contact_form', async (req, res) => {
         console.log(err);
     }
 })
+
+router.get('/get_contacts', async (req, res) => {
+    try {
+      // Fetch all records from the contact_form table
+      const data = await query(`SELECT * FROM contact_form`);
+      res.json({ success: true, data });
+      console.log(data);
+    } catch (err) {
+      console.error(err);
+      res.json({ success: false, msg: "Something went wrong", err });
+    }
+  });
 
 
 // update  web config

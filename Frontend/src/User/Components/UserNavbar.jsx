@@ -5,6 +5,7 @@ import {
   FaBullhorn, FaKey, FaEllipsisH, FaMoon, FaSun, FaUserCircle , FaRobot
 } from "react-icons/fa";
 import "../Styles/usernavbar.css";
+import UserMenu from "./UserMenu";
 
 const UserNavbar = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -41,11 +42,11 @@ const UserNavbar = () => {
             <FaEnvelope className="user-icons" />
             <span>Inbox</span>
           </Link>
-          <Link to="/user/dashboard/chatbot" className="_agent-nav-link">
+          <Link to="chatbot" className="_agent-nav-link">
            <FaRobot className="user-icons" />
             <span>Chatbot Bot</span>
           </Link>
-          <Link to="/user/dashboard/chat-flow" className="_agent-nav-link">
+          <Link to="chat-flow" className="_agent-nav-link">
             <FaComments className="user-icons" />
             <span>Chatbot Flow</span>
           </Link>
@@ -57,11 +58,11 @@ const UserNavbar = () => {
             <FaBullhorn className="user-icons" />
             <span>Broadcast</span>
           </Link>
-          <Link to="/api-access" className="_agent-nav-link">
+          <Link to="api-access" className="_agent-nav-link">
             <FaKey className="user-icons" />
             <span>API Access</span>
           </Link>
-          <Link to="/more-features" className="_agent-nav-link">
+          <Link to="more-features" className="_agent-nav-link">
             <FaEllipsisH className="user-icons" />
             <span>More Features</span>
           </Link>
@@ -73,7 +74,7 @@ const UserNavbar = () => {
             {darkMode ? <FaMoon /> : <FaSun />}
           </div>
           <div className="_agent-user-avatar">
-            <FaUserCircle />
+            <UserMenu/>
           </div>
         </div>
       </header>
@@ -84,31 +85,35 @@ const UserNavbar = () => {
           <FaTimes />
         </div>
         <nav className="_agent-sidebar-links">
-          <Link to="/dashboard" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
+          <Link to="userhome" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
             <FaHome className="user-icons" />
             <span>Dashboard</span>
           </Link>
-          <Link to="/inbox" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
+          <Link to="chat-component" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
             <FaEnvelope className="user-icons" />
             <span>Inbox</span>
           </Link>
-          <Link to="/chatbot-flow" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
+          <Link to="chatbot" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
+            <FaComments className="user-icons" />
+            <span>Chatbot</span>
+          </Link>
+          <Link to="chatbot-flow" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
             <FaComments className="user-icons" />
             <span>Chatbot Flow</span>
           </Link>
-          <Link to="/phonebook" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
+          <Link to="phonebook" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
             <FaAddressBook className="user-icons" />
             <span>Phonebook</span>
           </Link>
-          <Link to="/broadcast" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
+          <Link to="broadcast" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
             <FaBullhorn className="user-icons" />
             <span>Broadcast</span>
           </Link>
-          <Link to="/api-access" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
+          <Link to="api-access" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
             <FaKey className="user-icons" />
             <span>API Access</span>
           </Link>
-          <Link to="/more-features" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
+          <Link to="more-features" className="_agent-nav-link" onClick={() => setSidebarOpen(false)}>
             <FaEllipsisH className="user-icons" />
             <span>More Features</span>
           </Link>

@@ -1,0 +1,85 @@
+/* Minimal custom classes for layout, avoiding direct styling of Bootstrap elements */
+
+/* Container for the user icon and dropdown */
+.usermenu-container {
+    margin-right: 1rem;
+  }
+  
+  /* Custom dropdown menu overrides */
+  .custom-dropdown-menu {
+    min-width: 180px;
+    right: 0;
+    z-index: 1000;
+  }
+  
+  /* 
+    Two-column grid for the forms inside each modal
+    Avoid styling .form-control or .modal-content directly
+  */
+  .two-column-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem; /* Space between columns */
+  }
+  
+  /* 
+    If you want some extra styling for your modals 
+    without overriding Bootstrap classes:
+  */
+  .custom-modal-content {
+    border-radius: 8px;
+    min-width: 1000px !important;
+    width: 100%;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+  }
+  .custom-modal-content label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+
+  }
+  .input-cons{
+    position: relative;
+  }
+  
+  
+  .input-cons input:focus {
+    border-color: var(--primary-color);
+  }
+  
+  .input-cons label {
+    position: absolute;
+    top: -19px;
+    left: 10px;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    background-color: var(--card-bg) !important;
+    z-index: 100;
+    border-radius: 4px;
+  }
+  
+  .input-cons input:focus + label {
+    top: -1.5rem;
+    left: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-color);
+    background-color: var(--card-bg) !important;
+  }
+  .input-cons input:focus {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color);
+  }
+  
+.timezone-select {
+    border: 1px solid #ced4da !important;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+    width: 100%;
+    background-color: var(--card-bg) !important;
+    color: black;
+  }
+  

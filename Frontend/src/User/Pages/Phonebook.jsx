@@ -452,7 +452,7 @@ const handleUpload = async (contacts) => {
           style={{ background: "rgba(0,0,0,0.5)" }}
           tabIndex="-1"
         >
-          <div className="modal-dialog phonebook-dialog-box">
+          <div className="modal-dialog _phonebook-dialog-box">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">

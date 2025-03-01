@@ -107,9 +107,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--background-color);
   }
-  .phonebook-dialog-box{
-    min-width: 700px !important;
+  ._phonebook-dialog-box{
+    min-width: 800px !important;
+    background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
   }
   .plus-icon{
     font-size: 25px;

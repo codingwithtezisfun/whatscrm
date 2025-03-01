@@ -33,6 +33,7 @@ import ChatFlow from "./User/Pages/ChatFlow";
 import { ReactFlowProvider } from "@xyflow/react";
 import Phonebook from "./User/Pages/Phonebook";
 import Broadcast from "./User/Pages/Broadcast";
+import NewChatModal from "./User/Pages/NewChatModal";
 
 
 // Admin components
@@ -105,10 +106,12 @@ function AppContent({ theme, setTheme }) {
               <AdvantagesSlider />
             </>
           }
-        />
+        >
+        </Route>
         {/* user routes  */}
         <Route path="/user/signup" element={<Signup />} />
         <Route path="/user/login" element={<UserLogin />} />
+        <Route path="/plans" element={<Pricing />} />
 
         <Route path="/user/dashboard" element={<UserPrivateRoute element={<UserDashboard />} />}>
           <Route index element={<Navigate to="userhome" />} />
@@ -122,6 +125,7 @@ function AppContent({ theme, setTheme }) {
             </ReactFlowProvider>} />
           <Route path="phonebook" element={<Phonebook />} />
           <Route path="broadcast" element={<Broadcast/>}/>
+          <Route path="new-chat" element={<NewChatModal />} />
         </Route>
 
         {/* Admin Dashboard - Protected Route */}

@@ -1,0 +1,20 @@
+[
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSQzRBQUE0M0MxNTAyN0Q5QjI0AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "hello"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1740843320,
+    "senderName": "Tarus",
+    "senderMobile": "+254723479444",
+    "status": "sent",
+    "star": false,
+    "route": "OUTGOING"
+  }
+]
