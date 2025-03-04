@@ -1,0 +1,38 @@
+[
+  {
+    "id": "audioMessage_1741092097592",
+    "type": "audioMessage",
+    "position": {
+      "x": -0.6666717529296875,
+      "y": 108.53330993652344
+    },
+    "data": {
+      "audioUrl": "http://hsk.cm/7qihajx"
+    },
+    "draggable": true,
+    "width": 220,
+    "height": 127,
+    "selected": false,
+    "dragging": false,
+    "positionAbsolute": {
+      "x": -0.6666717529296875,
+      "y": 108.53330993652344
+    }
+  },
+  {
+    "id": "audioMessage_1741092233548",
+    "type": "audioMessage",
+    "position": {
+      "x": 250,
+      "y": 100
+    },
+    "data": {
+      "audioUrl": "http://hsk.cm/7qihajx"
+    },
+    "draggable": true,
+    "width": 220,
+    "height": 127,
+    "selected": false,
+    "dragging": false
+  }
+]

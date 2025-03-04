@@ -34,6 +34,8 @@ import { ReactFlowProvider } from "@xyflow/react";
 import Phonebook from "./User/Pages/Phonebook";
 import Broadcast from "./User/Pages/Broadcast";
 import NewChatModal from "./User/Pages/NewChatModal";
+import MoreFeatures from "./User/Pages/MoreFeatures";
+import ApiAccess from "./User/Pages/ApiAccess";
 
 
 // Admin components
@@ -52,6 +54,11 @@ import OrdersPage from "./Admin/Pages/OrdersPage";
 import LeadsPage from "./Admin/Pages/LeadsPage";
 import SocialLogin from "./Admin/Pages/SocialLogin";
 
+
+// Agent Components 
+import AgentChatComponent from "./Agent/Components/AgentChatComponent";
+import AgentDashboard from "./Agent/Components/AgentDashboard";
+
 // Private Route Component for Admin Authentication
 const AdminPrivateRoute = ({ element }) => {
   const token = localStorage.getItem("adminToken");
@@ -65,6 +72,12 @@ const UserPrivateRoute = ({ element }) => {
   return token ? element : <Navigate to="/user/login" />;
 };
 
+// Private Route Component for Agent Authentication
+const AgentPrivateRoute = ({ element }) => {
+  const token = localStorage.getItem("agentToken");
+
+  return token ? element : <Navigate to="/agent/login" />;
+};
 function App() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
@@ -126,6 +139,8 @@ function AppContent({ theme, setTheme }) {
           <Route path="phonebook" element={<Phonebook />} />
           <Route path="broadcast" element={<Broadcast/>}/>
           <Route path="new-chat" element={<NewChatModal />} />
+          <Route path="more-features" element={<MoreFeatures />} />
+          <Route path ="api-access" element={<ApiAccess />} />
         </Route>
 
         {/* Admin Dashboard - Protected Route */}
@@ -142,6 +157,12 @@ function AppContent({ theme, setTheme }) {
           <Route path="orders" element={<OrdersPage />} />
           <Route path="leads" element={<LeadsPage />} />
           <Route path="social-login" element={<SocialLogin />} />
+        </Route>
+
+        {/* agent dashboard routes  */}
+        <Route path="/agent/dashboard" element={<AgentPrivateRoute element={<AgentDashboard />} />}>
+          <Route index element={<Navigate to="chat-component" />} />
+          <Route path="chat-component" element={<AgentChatComponent />} />
         </Route>
 
         {/* Admin Auth Routes */}

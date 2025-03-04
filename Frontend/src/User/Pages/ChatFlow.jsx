@@ -1,166 +1,252 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
-import {
-  ReactFlow,
-  Background,
-  MiniMap,
-  Controls,
+import React, { useCallback, useState, useRef } from "react";
+import ReactFlow, {
   addEdge,
   useNodesState,
   useEdgesState,
-  useReactFlow,
-} from "@xyflow/react";
-import Modal from "react-modal";
+  Controls,
+  Background,
+  MiniMap,
+} from "reactflow";
+import "reactflow/dist/style.css";
 import "../Styles/chatflow.css";
+import "../Styles/nodes.css";
+import axios from "axios";
+import Swal from "sweetalert2";
+import BASE_URL from "../../BaseUrl";
 
-// Node Components
-const SimpleTextNode = ({ data, id, removeNode }) => (
-  <div className="node simple-text">
-    <button className="close-node" onClick={() => removeNode(id)}>✖</button>
-    <h4>Simple Text</h4>
-    <textarea placeholder="Type message..." defaultValue={data?.message} />
-  </div>
-);
+import {
+  SimpleTextNode,
+  ImageMessageNode,
+  AudioMessageNode,
+  VideoMessageNode,
+  DocumentMessageNode,
+  ButtonMessageNode,
+  ListMessageNode,
+  SendLocationNode,
+  AssignChatToAgentNode,
+  DisableChatbotNode,
+  ReceiveApiNode,
+  TakeInputNode,
+  ConditionNode,
+  SetVariableNode,
+  CloseChatNode,
+  OpenAiNode,
+  Gpt4Node,
+  AddMsgHistoryNode,
+} from "./NodeForms";
 
-const LocationNode = ({ data, id, removeNode }) => (
-  <div className="node location-node">
-    <button className="close-node" onClick={() => removeNode(id)}>✖</button>
-    <h4>Location</h4>
-    <input type="text" placeholder="Name" defaultValue={data?.name} />
-    <input type="text" placeholder="Address" defaultValue={data?.address} />
-    <input type="text" placeholder="Latitude" defaultValue={data?.lat} />
-    <input type="text" placeholder="Longitude" defaultValue={data?.lng} />
-  </div>
-);
-
-const ImageNode = ({ data, id, removeNode }) => (
-  <div className="node image-node">
-    <button className="close-node" onClick={() => removeNode(id)}>✖</button>
-    <h4>Image</h4>
-    <button>+ Upload</button>
-    <textarea placeholder="Caption" defaultValue={data?.caption} />
-  </div>
-);
-
+// Map each node type to its corresponding component
 const nodeTypes = {
   simpleText: SimpleTextNode,
-  location: LocationNode,
-  image: ImageNode,
+  imageMessage: ImageMessageNode,
+  audioMessage: AudioMessageNode,
+  videoMessage: VideoMessageNode,
+  documentMessage: DocumentMessageNode,
+  buttonMessage: ButtonMessageNode,
+  listMessage: ListMessageNode,
+  sendLocation: SendLocationNode,
+  assignChatToAgent: AssignChatToAgentNode,
+  disableChatbot: DisableChatbotNode,
+  receiveApi: ReceiveApiNode,
+  takeInput: TakeInputNode,
+  condition: ConditionNode,
+  setVariable: SetVariableNode,
+  closeChat: CloseChatNode,
+  openAi: OpenAiNode,
+  gpt4: Gpt4Node,
+  addMsgHistory: AddMsgHistoryNode,
 };
 
-export default function ChatFlow() {
+import { FaFont, FaImage, FaMusic, FaVideo, FaFileAlt, FaRegListAlt, FaLocationArrow, FaUserTie, FaBan, FaPlug, FaKeyboard, FaCodeBranch, FaExchangeAlt, FaTimesCircle, FaRobot, FaBrain, FaHistory } from "react-icons/fa";
+import { MdSmartButton, MdOutlineAccessibility  } from "react-icons/md";
+
+const nodeDefinitions = [
+  { label: "Simple Text", type: "simpleText", color: "#ff6b6b", icon: <FaFont size={24} /> },
+  { label: "Image Message", type: "imageMessage", color: "#4dabf7", icon: <FaImage size={24} /> },
+  { label: "Audio Message", type: "audioMessage", color: "#f06292", icon: <FaMusic size={24} /> },
+  { label: "Video Message", type: "videoMessage", color: "#ba68c8", icon: <FaVideo size={24} /> },
+  { label: "Document Message", type: "documentMessage", color: "#ffd54f", icon: <FaFileAlt size={24} /> },
+  { label: "Button Message", type: "buttonMessage", color: "#64b5f6", icon: <MdSmartButton size={24} /> },
+  { label: "List Message", type: "listMessage", color: "#9575cd", icon: <FaRegListAlt size={24} /> },
+  { label: "Send Location", type: "sendLocation", color: "#4caf50", icon: <FaLocationArrow size={24} /> },
+  { label: "Assign Chat to Agent", type: "assignChatToAgent", color: "#ff8a65", icon: <FaUserTie size={24} /> },
+  { label: "Disable Chatbot", type: "disableChatbot", color: "#90a4ae", icon: <FaBan size={24} /> },
+  { label: "Receive the API", type: "receiveApi", color: "#e91e63", icon: <FaPlug size={24} /> },
+  { label: "Take Input", type: "takeInput", color: "#ff9800", icon: <FaKeyboard size={24} /> },
+  { label: "Condition", type: "condition", color: "#673ab7", icon: <FaCodeBranch size={24} /> },
+  { label: "Set Variable", type: "setVariable", color: "#8bc34a", icon: <MdOutlineAccessibility  size={24} /> },
+  { label: "Close Chat", type: "closeChat", color: "#03a9f4", icon: <FaTimesCircle size={24} /> },
+  { label: "OpenAI", type: "openAi", color: "#3f51b5", icon: <FaRobot size={24} /> },
+  { label: "GPT-4", type: "gpt4", color: "#9c27b0", icon: <FaBrain size={24} /> },
+  { label: "Add Msg History", type: "addMsgHistory", color: "#ff5722", icon: <FaHistory size={24} /> },
+];
+
+
+const ChatFlow = () => {
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [templateName, setTemplateName] = useState("");
-  const { zoomIn, zoomOut, project } = useReactFlow();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [flowTitle, setFlowTitle] = useState("");
 
-  useEffect(() => {
-    const savedTemplate = localStorage.getItem('chatTemplate');
-    if (savedTemplate) {
-      const { nodes: savedNodes, edges: savedEdges } = JSON.parse(savedTemplate);
-      setNodes(savedNodes);
-      setEdges(savedEdges);
-    }
+  // Keep a ref to the ReactFlow instance so we can do fitView, etc.
+  const onInit = useCallback((instance) => {
+    // Example: automatically fit view on init
+    instance.fitView();
   }, []);
 
-  const addNode = (type) => {
-    const newId = Date.now().toString();
-    const newNode = {
-      id: newId,
-      type,
-      position: project({ x: window.innerWidth / 2 - 100, y: window.innerHeight / 2 - 50 }),
-      data: {},
-      draggable: true,
-    };
-    setNodes((prev) => [...prev, newNode]);
-    setModalOpen(false);
-  };
-
-  const removeNode = (id) => {
-    setNodes((prevNodes) => prevNodes.filter((node) => node.id !== id));
-  };
-
-  const saveTemplate = () => {
-    const template = { nodes, edges };
-    localStorage.setItem('chatTemplate', JSON.stringify(template));
-    alert('Template saved successfully!');
-    setTemplateName("");
-  };
-
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
+    (connection) => setEdges((eds) => addEdge(connection, eds)),
+    []
   );
+
+  const handleRemoveNode = (nodeId) => {
+    setNodes((nds) => nds.filter((node) => node.id !== nodeId));
+  };
+  
+  // Generic function to create a new node by type
+  const handleAddNode = (nodeType) => {
+    setNodes((nds) => [
+      ...nds,
+      {
+        id: `${nodeType}_${Date.now()}`,
+        type: nodeType,
+        position: { x: 250, y: 100 },
+        data: {
+          onChange: (newData) => handleNodeDataChange(newData),
+          onRemove: handleRemoveNode, 
+        },
+        draggable: true,
+      },
+    ]);
+    setIsModalOpen(false);
+  };
+
+  // Merge updated data from node into the node array
+  const handleNodeDataChange = (newData) => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.data && node.data.onChange === newData.onChange) {
+          return {
+            ...node,
+            data: {
+              ...newData,
+              onChange: node.data.onChange, // keep the callback
+            },
+          };
+        }
+        return node;
+      })
+    );
+  };
+
+  const handleSaveFlow = async () => {
+    try {
+      const token = localStorage.getItem("userToken");
+  
+      if (!flowTitle) {
+        Swal.fire("Error", "Please provide a title for your flow.", "error");
+        return;
+      }
+  
+      if (!nodes.length || !edges.length) {
+        Swal.fire("Error", "At least one node and one edge are required.", "error");
+        return;
+      }
+  
+      const flowId = `flow_${Date.now()}`; // Generate a unique flow ID
+  
+      const payload = {
+        title: flowTitle,
+        nodes,
+        edges,
+        flowId,
+      };
+  
+      console.log("Saving Flow Payload:", payload); // Debugging
+  
+      const response = await axios.post(`${BASE_URL}/api/chat_flow/add_new`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      if (response.data.success) {
+        Swal.fire("Success", "Flow was saved successfully!", "success");
+      } else {
+        Swal.fire("Error", response.data.msg || "Failed to save flow", "error");
+      }
+    } catch (err) {
+      console.error("Save Flow Error:", err);
+      Swal.fire("Error", err.message || "Unexpected error occurred", "error");
+    }
+  };
+  
 
   return (
     <div className="chatflow-container">
-      <div className="left-sidebar">
-        <h2>Chat Flow Builder</h2>
-        <div className="sidebar-controls">
-          <input
-            type="text"
-            placeholder="Template name"
-            value={templateName}
-            onChange={(e) => setTemplateName(e.target.value)}
-          />
-          <button className="save-button" onClick={saveTemplate}>
-            Save Template
-          </button>
-          <button className="add-node-button" onClick={() => setModalOpen(true)}>
-            + Add Node
-          </button>
-        </div>
+      <div className="chatflow-header">
+        <input
+          type="text"
+          placeholder="Flow Title"
+          value={flowTitle}
+          onChange={(e) => setFlowTitle(e.target.value)}
+          className="flow-title-input"
+        />
+
+        <button onClick={() => setIsModalOpen(true)}>+ Add New</button>
+        <button onClick={handleSaveFlow}>Save Flow</button>
       </div>
 
-      <div className="flow-area" ref={reactFlowWrapper}>
-        <div className="flow-controls">
-          <button onClick={() => zoomIn()}>Zoom In</button>
-          <button onClick={() => zoomOut()}>Zoom Out</button>
+      {/* Modal for selecting a node type */}
+      {isModalOpen && (
+        <div className="_modal-overlay">
+          <div className="_modal-content">
+            <div className="d-flex justify-content-between align-items-center">
+              <h3>Select a Node Type</h3>
+              <button className="close-modal-btn" onClick={() => setIsModalOpen(false)}>
+                Close
+              </button>
+            </div>
+            <div className="node-types-grid">
+              {nodeDefinitions.map((def) => (
+                <div
+                  key={def.type}
+                  className="node-type-card d-flex flex-row align-items-left"
+                  style={{ backgroundColor: def.color }}
+                  onClick={() => handleAddNode(def.type)}
+                >
+                   <span className="node-type-icon">{def.icon}</span>
+                   <span className="node-type-label">{def.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+      )}
 
+
+      <div className="chatflow-wrapper" ref={reactFlowWrapper}>
         <ReactFlow
-          nodes={nodes.map((node) => ({
-            ...node,
-            data: { ...node.data, removeNode },
-          }))}
+          nodes={nodes}
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
+          onInit={onInit}
           fitView
-          minZoom={0.1}
-          maxZoom={2}
+          proOptions={{ hideAttribution: true }}
         >
-          <Background variant="dots" gap={20} size={1} />
-          <Controls className="flow-controls" />
-          <MiniMap className="flow-minimap" />
+          <MiniMap
+            style={{ height: 80, width: 120, bottom: 10, left: 10 }}
+            zoomable
+            pannable
+          />
+          <Controls style={{ top: 10, left: 10, width: 20, height: 200 }} />
+          <Background />
         </ReactFlow>
       </div>
-
-      <Modal
-        isOpen={modalOpen}
-        onRequestClose={() => setModalOpen(false)}
-        className="node-modal"
-        overlayClassName="node-overlay"
-      >
-        <div className="modal-header">
-          <h3>Select Node Type</h3>
-          <button className="close-btn" onClick={() => setModalOpen(false)}>✖</button>
-        </div>
-        <div className="modal-content">
-          <button className="node-type-btn" onClick={() => addNode("simpleText")}>
-            Simple Text
-          </button>
-          <button className="node-type-btn" onClick={() => addNode("location")}>
-            Send Location
-          </button>
-          <button className="node-type-btn" onClick={() => addNode("image")}>
-            Image Message
-          </button>
-        </div>
-      </Modal>
     </div>
   );
-}
+};
+
+export default ChatFlow;

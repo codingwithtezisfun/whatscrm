@@ -1,0 +1,29 @@
+.api-access .btn {
+    min-width: 150px;
+  }
+  
+  .api-access pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+.api-access{
+    background-color: var(--background-color);
+    height: calc(100vh - 100px);
+    width: 100%;
+    padding: 20px;
+    overflow-y: auto;
+    border-radius: 15px;
+    border: 1px solid var(--gray);
+}  
+.api-key-display{
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    width: 80%;
+}
+.copy-btn{
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
