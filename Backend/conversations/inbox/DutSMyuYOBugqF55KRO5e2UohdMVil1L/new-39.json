@@ -1,0 +1,56 @@
+[
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzkyOTMyMDc3FQIAERgSQjQ0Mjg0MDA2NjIxNDU5NUI5AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "heey"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1740918960,
+    "senderName": "Melvin 2",
+    "senderMobile": "254 792 932077",
+    "status": "sent",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzkyOTMyMDc3FQIAERgSRDJFQTkyQ0RCQzczNkY3RTk2AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "hellooo"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1740918980,
+    "senderName": "Melvin 2",
+    "senderMobile": "254 792 932077",
+    "status": "sent",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzkyOTMyMDc3FQIAERgSRkNCNjY0Q0RGQzUwM0VBRDI3AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "heey"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1740921503,
+    "senderName": "Melvin 2",
+    "senderMobile": "254 792 932077",
+    "status": "sent",
+    "star": false,
+    "route": "OUTGOING"
+  }
+]

@@ -440,7 +440,7 @@ function updateMessageObjectInFile(filePath, metaChatId, key, value) {
 
 async function downloadAndSaveMedia(token, mediaId) {
     try {
-        const url = `https://graph.facebook.com/v19.0/${mediaId}/`;
+        const url = `https://graph.facebook.com/v22.0/${mediaId}/`;
         // retriving url 
         const getUrl = await axios(url, {
             headers: {
@@ -705,7 +705,7 @@ function sendAPIMessage(obj, waNumId, waToken) {
     return new Promise(async (resolve) => {
         try {
 
-            const url = `https://graph.facebook.com/v17.0/${waNumId}/messages`;
+            const url = `https://graph.facebook.com/v22.0/${waNumId}/messages`;
 
             const payload = {
                 messaging_product: 'whatsapp',
@@ -757,7 +757,7 @@ function sendMetaMsg(uid, msgObj, toNumber, savObj, chatId) {
                 return resolve({ success: false, msg: "Please add your meta token and phone number ID" })
             }
 
-            const url = `https://graph.facebook.com/v17.0/${waNumId}/messages`;
+            const url = `https://graph.facebook.com/v22.0/${waNumId}/messages`;
 
             const payload = {
                 messaging_product: 'whatsapp',
@@ -1314,7 +1314,7 @@ function fetchProfileFun(mobileId, token) {
     return new Promise(async (resolve, reject) => {
         try {
 
-            const response = await fetch(`https://graph.facebook.com/v17.0/${mobileId}`, {
+            const response = await fetch(`https://graph.facebook.com/v22.0/${mobileId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

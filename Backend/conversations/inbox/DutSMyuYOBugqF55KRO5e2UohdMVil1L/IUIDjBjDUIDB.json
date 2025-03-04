@@ -1,0 +1,20 @@
+[
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzE4MTc1Mjc4FQIAEhggNjhEMUNDNkE1QTM2NzdDQjVERjBENjZFREM2RTk4NzYA",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "Hi"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741006738,
+    "senderName": "Agui🤠",
+    "senderMobile": "254718175278",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  }
+]

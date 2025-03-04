@@ -1,0 +1,307 @@
+[
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAEhgUM0ZDNTIxNjdGQzM1MUVDNUZDQ0IA",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "heeey"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741006366,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSNzJDRkMxMDk1MUJBMEM1MjY2AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "hello tyarus"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741008631,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "delivered",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSNzE1NkRCMkFCOUEwQUFGMzUzAA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "did you send the money for the products"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741009167,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "read",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSNTIzNURCQTg5Q0JBQzVGNzYwAA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "hey answer please"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741009953,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "read",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSODREMkFGOENFMEYwRDVDODQ0AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "hey answer please"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741009954,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "read",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSNkVGNEFEODAzNzFBQzBEQUI1AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "woah"
+      }
+    },
+    "reaction": "🙏",
+    "timestamp": 1741009991,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "read",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSMTUyMUM0MjZDQUNERUQwOEE2AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "test 2"
+      }
+    },
+    "reaction": "😂",
+    "timestamp": 1741011051,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "read",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAEhggQjRFMjk5QjQ0N0I1REE3OUFFRTM4OTYwMEU3QTJCNEEA",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "Heey"
+      }
+    },
+    "reaction": "💔",
+    "timestamp": 1741011241,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSRkI4MTUzNzBDNkNGQUVENEQ1AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "hello"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741012827,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "read",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSRUZFMjFGRDM3Nzg0NUQwNTEyAA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "heeey"
+      }
+    },
+    "reaction": "💔",
+    "timestamp": 1741012950,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "read",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAEhggNjlEQTREMEMxQjk1OUNDMEMxNTgzQThDREMzRDVDREEA",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "Hhhe"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741013016,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSODYwMkVFMjZFQTA4OTU5QjY2AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "morning"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741067337,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "read",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "image",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAEhggMjdGMzM2RkEzODQxOTMzMEI0NDhFMzlCRDQ0NDJERjcA",
+    "msgContext": {
+      "type": "image",
+      "image": {
+        "link": "https://www.bing.com/images/search?view=detailV2&ccid=6Ckm4MGX&id=8B16A483BB93A6C6DCC3F4F277DA8268B8B223FF&thid=OIP.6Ckm4MGXRjZgWQyRkjDDPgHaEK&mediaurl=https%3a%2f%2fsamples-files.com%2fsamples%2fimages%2fjpg%2f1920-1080-sample.jpg&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.e82926e0c197463660590c919230c33e%3frik%3d%252fyOyuGiC2nfy9A%26pid%3dImgRaw%26r%3d0&exph=1080&expw=1920&q=image&simid=608054794770460589&FORM=IRPRST&ck=D8E93BCABE390CDC603E1FADED36F5B2&selectedIndex=0&itb=0&idpp=overlayview&ajaxhist=0&ajaxserp=0",
+        "caption": ""
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741067889,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAEhggNkI5RjNFMTMxNzgzMzMzOEVFQTM3QkU0ODBCRTQ4MzMA",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "😂"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741067903,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSMUM2MzI0OTg2NUQ0MzZDMkU3AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "undefined"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741069154,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "read",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAERgSRDI4Qzc0RkVBMTYyQTFGRTA0AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "😘"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741069963,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "read",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "video",
+    "metaChatId": "wamid.HBgMMjU0NzIzNDc5NDQ0FQIAEhggREE1NzNFNkJBNjFGNzM1QkJCOEE3RDY3NzkxMzZGNkEA",
+    "msgContext": {
+      "type": "video",
+      "video": {
+        "link": "http://localhost:5173/meta-media/undefined"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741070889,
+    "senderName": "Tez🔥",
+    "senderMobile": "254723479444",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  }
+]

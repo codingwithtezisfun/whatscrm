@@ -1,0 +1,56 @@
+[
+  {
+    "type": "text",
+    "metaChatId": "ABGGFlA5Fpa",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "this is a text message"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741004352,
+    "senderName": "test user name",
+    "senderMobile": "16315551181",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "ABGGFlA5Fpa",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "this is a text message"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741004521,
+    "senderName": "test user name",
+    "senderMobile": "16315551181",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "ABGGFlA5Fpa",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "this is a text message"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741006343,
+    "senderName": "test user name",
+    "senderMobile": "16315551181",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  }
+]

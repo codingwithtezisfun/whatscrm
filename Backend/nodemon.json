@@ -1,0 +1,4 @@
+{
+    "ignore": ["*.log", "public/*", "uploads/*", "node_modules/*","conversations/*"]
+  }
+  

@@ -8,32 +8,6 @@ const validateUser = require('../middlewares/user.js')
 const { getIOInstance } = require('../socket.js');
 const { checkPlan } = require('../middlewares/plan.js')
 
-// handle post webhook 
-router.post('/webhook/:uid', async (req, res) => {
-    try {
-        const body = req.body
-        const userUID = req.params.uid;
-        // console.log({ userUID, body: JSON.stringify(body) })
-
-        res.sendStatus(200);
-
-        console.log({
-            body: JSON.stringify(body)
-        })
-
-        const getDays = await getUserPlayDays(userUID)
-        if (getDays < 1) {
-            return
-        }
-        // save message 
-        await saveWebhookConversation(body, userUID)
-
-    } catch (err) {
-        console.log(err);
-        res.json({ err, success: false, msg: "Something went wrong" });
-    }
-})
-
 
 // getting chat lists 
 router.get('/get_chats', validateUser, async (req, res) => {
@@ -66,6 +40,32 @@ router.post('/get_convo', validateUser, async (req, res) => {
         const filePath = `${__dirname}/../conversations/inbox/${req.decode.uid}/${chatId}.json`
         const data = readJSONFile(filePath, 100)
         res.json({ data, success: true })
+    } catch (err) {
+        console.log(err);
+        res.json({ err, success: false, msg: "Something went wrong" });
+    }
+})
+
+// handle post webhook 
+router.post('/webhook/:uid', async (req, res) => {
+    try {
+        const body = req.body
+        const userUID = req.params.uid;
+        console.log({ userUID, body: JSON.stringify(body) })
+
+        res.sendStatus(200);
+
+        console.log({
+            body: JSON.stringify(body)
+        })
+
+        const getDays = await getUserPlayDays(userUID)
+        if (getDays < 1) {
+            return
+        }
+        // save message 
+        await saveWebhookConversation(body, userUID)
+
     } catch (err) {
         console.log(err);
         res.json({ err, success: false, msg: "Something went wrong" });
@@ -373,7 +373,6 @@ router.post('/send_text', validateUser, checkPlan, async (req, res) => {
                 "body": text
             }
         }
-
         const savObj = {
             "type": "text",
             "metaChatId": "",
@@ -392,7 +391,6 @@ router.post('/send_text', validateUser, checkPlan, async (req, res) => {
             "star": false,
             "route": "OUTGOING"
         }
-
         const resp = await sendMetaMsg(req.decode.uid, msgObj, toNumber, savObj, chatId)
         res.json(resp)
     } catch (err) {

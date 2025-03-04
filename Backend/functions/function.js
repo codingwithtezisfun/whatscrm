@@ -175,6 +175,7 @@ async function botWebhook(incomingMsg, uid, senderNumber, toName) {
 async function saveMessage(body, uid, type, msgContext) {
   try {
     console.log("CAME HERE");
+    console.log("🚀 Saving message:", { body, uid, type, msgContext });
 
     const getUser = await query(`SELECT * FROM user WHERE uid = ?`, [uid]);
     const userTimezone = getCurrentTimestampInTimeZone(
@@ -703,7 +704,7 @@ function updateMessageObjectInFile(filePath, metaChatId, key, value) {
 
 async function downloadAndSaveMedia(token, mediaId) {
   try {
-    const url = `https://graph.facebook.com/v19.0/${mediaId}/`;
+    const url = `https://graph.facebook.com/v22.0/${mediaId}/`;
     // retriving url
     const getUrl = await axios(url, {
       headers: {
@@ -1015,7 +1016,7 @@ function updateMetaTempletInMsg(uid, savObj, chatId, msgId) {
 function sendAPIMessage(obj, waNumId, waToken) {
   return new Promise(async (resolve) => {
     try {
-      const url = `https://graph.facebook.com/v17.0/${waNumId}/messages`;
+      const url = `https://graph.facebook.com/v22.0/${waNumId}/messages`;
 
       const payload = {
         messaging_product: "whatsapp",
@@ -1393,7 +1394,7 @@ async function sendMetatemplet(
     });
   }
 
-  const url = `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`;
+  const url = `https://graph.facebook.com/v22.0/${business_phone_number_id}/messages`;
 
   // console.log({ templ: JSON.stringify(templ) })
 
@@ -1763,7 +1764,7 @@ function fetchProfileFun(mobileId, token) {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await fetch(
-        `https://graph.facebook.com/v17.0/${mobileId}`,
+        `https://graph.facebook.com/v22.0/${mobileId}`,
         {
           method: "GET",
           headers: {

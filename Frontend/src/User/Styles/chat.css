@@ -251,16 +251,24 @@
   font-weight: 800;
 }
 
-
+/* whatsapp ticks  */
 .message-status-read {
   margin-left: 5px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: bold !important;
-  color: #007aff;
+  color: #006eff;
 }
-.message-status-unread {
+.message-status-sent {
   margin-left: 5px;
   font-size: 1.2rem;
+  font-weight: bold !important;
+  color: #585858;
+}
+.message-status-delivered {
+  margin-left: 5px;
+  font-size: 1.2rem;
+  font-weight: bold !important;
+  color: #585858;
 }
 
 .reply-options {
@@ -374,4 +382,122 @@
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   cursor: pointer;
+}
+/* Container for the attachment preview */
+.attachment-preview {
+  position: relative;
+  border: 1px solid #ddd;
+  background-color: #f5f5f5;
+  padding: 10px;
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* Container for the file preview content */
+.attachment-content {
+  width: 100%;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Styling for image preview */
+.attachment-img {
+  max-width: 100%;
+  max-height: 200px;
+  display: block;
+  border-radius: 4px;
+}
+
+/* Styling for video and audio previews */
+.attachment-video,
+.attachment-audio {
+  width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+}
+
+/* Styling for document preview (shows file name) */
+.attachment-doc {
+  font-size: 16px;
+  color: #555;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+/* Close button for cancelling the attachment */
+.attachment-close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: #999;
+  cursor: pointer;
+}
+
+/* Button for sending the attachment */
+.send-attachment-btn {
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+.send-attachment-btn:hover {
+  background-color: #0056b3;
+}
+
+.chat_message {
+  position: relative;
+}
+
+
+.chat_message:hover .reaction-btn {
+  display: block;
+  right:-30px;
+}
+
+.emoji-picker-container {
+  position: absolute;
+  bottom: 60px;
+  right: 20px;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+}
+.emoji-btn{
+  color: var(--text-color);
+  background-color: var(--background-color);
+  border: none;
+  font-size: 1.5rem;
+}
+.emoji-btn:hover{
+  color: red;
+}
+.mic-btn{
+  color: var(--text-color);
+  background-color: var(--background-color);
+  border: none;
+  font-size: 1.5rem;
+
+}
+.attach-btn{
+  color: var(--text-color);
+  background-color: var(--background-color);
+  border: none;
+  font-size: 1.5rem;
+}
+.send-btn{
+  color: var(--text-color);
+  background-color: var(--background-color);  
+  border: none;
+  font-size: 1.5rem;
 }

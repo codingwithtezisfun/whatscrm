@@ -29,7 +29,7 @@ export default function UserMenu() {
   const [timezone, setTimezone] = useState("Asia/Kolkata");
 
   // Meta API Keys fields
-  const [webhookUri, setWebhookUri] = useState("https://localhost:3010/api/inbound");
+  const [webhookUri, setWebhookUri] = useState("https://localhost:3010/api/inbox/webhook");
   const [wabaId, setWabaId] = useState("");
   const [businessAccountId, setBusinessAccountId] = useState("");
   const [accessToken, setAccessToken] = useState("");
@@ -303,7 +303,7 @@ const saveMetaKeys = async () => {
                     </div>
 
                     <div className="mb-3 input-cons">
-                      <label className="form-label">WhatsApp account ID</label>
+                      <label className="form-label">WhatsApp Business Account ID</label>
                       <input
                         type="text"
                         className="form-control"
@@ -313,7 +313,7 @@ const saveMetaKeys = async () => {
                     </div>
 
                     <div className="mb-3 input-cons">
-                      <label className="form-label">Business account ID</label>
+                      <label className="form-label">Business ID</label>
                       <input
                         type="text"
                         className="form-control"
@@ -333,17 +333,7 @@ const saveMetaKeys = async () => {
                     </div>
 
                     <div className="mb-3 input-cons">
-                      <label className="form-label">Permanent token recommended</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={permanentToken}
-                        onChange={(e) => setPermanentToken(e.target.value)}
-                      />
-                    </div>
-
-                    <div className="mb-3 input-cons">
-                      <label className="form-label">WhatsApp phone ID</label>
+                      <label className="form-label">Phone Number ID</label>
                       <input
                         type="text"
                         className="form-control"

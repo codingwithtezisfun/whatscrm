@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta WhatsApp API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        form { max-width: 400px; margin: auto; }
+        input, button { display: block; width: 100%; margin: 10px 0; padding: 10px ;
+        }
+        button{
+            background-color: rgb(14, 94, 215);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h2>Test Meta WhatsApp API</h2>
+    <form id="metaTestForm">
+        <label>Access Token:</label>
+        <input type="text" id="accessToken" placeholder="Enter Access Token" required>
+
+        <label>Phone Number ID:</label>
+        <input type="text" id="phoneNumberId" placeholder="Enter Phone Number ID" required>
+
+        <label>Recipient Number:</label>
+        <input type="text" id="toNumber" placeholder="Enter Recipient Number" required>
+
+        <label>Template Name:</label>
+        <input type="text" id="templateName" value="hello_world" required placeholder="hello_world">
+
+        <button type="button" onclick="sendMessage()">Send Message</button>
+    </form>
+
+    <h3>Response:</h3>
+    <pre id="response"></pre>
+
+    <script>
+        async function sendMessage() {
+            const accessToken = document.getElementById('accessToken').value;
+            const phoneNumberId = document.getElementById('phoneNumberId').value;
+            const toNumber = document.getElementById('toNumber').value;
+            const templateName = document.getElementById('templateName').value;
+
+            const url = `https://graph.facebook.com/v22.0/${phoneNumberId}/messages`;
+            const payload = {
+                messaging_product: "whatsapp",
+                to: toNumber,
+                type: "template",
+                template: {
+                    name: templateName,
+                    language: { code: "en_US" }
+                }
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('response').textContent = "Error: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
