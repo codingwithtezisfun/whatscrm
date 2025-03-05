@@ -32,7 +32,8 @@
     "randomstring": "^1.2.3",
     "socket.io": "^4.7.4",
     "stripe": "^12.13.0",
-    "unzipper": "^0.10.14"
+    "unzipper": "^0.10.14",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
