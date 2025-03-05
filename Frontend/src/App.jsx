@@ -58,6 +58,7 @@ import SocialLogin from "./Admin/Pages/SocialLogin";
 // Agent Components 
 import AgentChatComponent from "./Agent/Components/AgentChatComponent";
 import AgentDashboard from "./Agent/Components/AgentDashboard";
+import AgentLogin from "./Agent/Auth/AgentLoginForm";
 
 // Private Route Component for Admin Authentication
 const AdminPrivateRoute = ({ element }) => {
@@ -122,8 +123,6 @@ function AppContent({ theme, setTheme }) {
         >
         </Route>
         {/* user routes  */}
-        <Route path="/user/signup" element={<Signup />} />
-        <Route path="/user/login" element={<UserLogin />} />
         <Route path="/plans" element={<Pricing />} />
 
         <Route path="/user/dashboard" element={<UserPrivateRoute element={<UserDashboard />} />}>
@@ -165,9 +164,12 @@ function AppContent({ theme, setTheme }) {
           <Route path="chat-component" element={<AgentChatComponent />} />
         </Route>
 
-        {/* Admin Auth Routes */}
+        {/*Auth Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/register" element={<AdminRegister />} />
+        <Route path="/agent/login" element={<AgentLogin />} />
+        <Route path="/user/signup" element={<Signup />} />
+        <Route path="/user/login" element={<UserLogin />} />
 
         {/* Fallback Route */}
         <Route path="*" element={<Navigate to="/" />} />
