@@ -20,21 +20,35 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(fileUpload());
 
+
 const allowedOrigins = [
-    "https://whatscrm-api.web.app", 
+    "https://whatscrm-api.web.app",
     "https://whatscrm-sigma.vercel.app"
 ];
 
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, origin || "*");
+        } else {
+            callback(new Error("CORS not allowed"));
+        }
+    },
+    credentials: true
+}));
+
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", allowedOrigins.includes(req.headers.origin) ? req.headers.origin : ""); 
+    const origin = allowedOrigins.includes(req.headers.origin) ? req.headers.origin : "";
+    res.header("Access-Control-Allow-Origin", origin);
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.header("Access-Control-Allow-Credentials", "true");
 
     if (req.method === "OPTIONS") {
-        return res.sendStatus(200); 
+        return res.sendStatus(204); 
     }
-    
+
     next();
 });
 
