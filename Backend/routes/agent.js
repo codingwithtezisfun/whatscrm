@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { query } = require('../database/dbpromise.js')
 const randomstring = require('randomstring')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const { isValidEmail, getFileExtension, getBusinessPhoneNumber, createMetaTemplet, getAllTempletsMeta, delMetaTemplet, getFileInfo, getSessionUploadMediaMeta, uploadFileMeta, updateUserPlan, getUserOrderssByMonth, sendEmail, fetchProfileFun, mergeArrays, readJSONFile, sendMetaMsg } = require('../functions/function.js')
 const { sign } = require('jsonwebtoken')
 const validateUser = require('../middlewares/user.js')

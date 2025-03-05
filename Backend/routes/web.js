@@ -6,7 +6,7 @@ const fs = require('fs')
 const randomstring = require('randomstring')
 const path = require('path')
 const { appVersion, addON } = require('../env.js')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const mysql = require('mysql2/promise');
 const validateUser = require('../middlewares/user.js')
 
