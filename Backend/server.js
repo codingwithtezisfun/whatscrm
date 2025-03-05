@@ -111,15 +111,23 @@ app.get('*', (req, res) => {
 
 // ✅ Start Server
 const PORT = process.env.PORT || 3010;
-const server = app.listen(PORT, () => {
-    console.log(`🚀 WaCrm server is running on port ${PORT}`);
 
-    // Run campaign after 1 second
-    setTimeout(() => {
-        runCampaign();
-    }, 1000);
-});
+// Start only if not in Vercel serverless mode
+if (!process.env.VERCEL) {
+    const server = app.listen(PORT, () => {
+        console.log(`🚀 WaCrm server is running on port ${PORT}`);
 
-// ✅ Initialize Socket.IO
-const io = initializeSocket(server);
-module.exports = { io, pool };
+        // Run campaign after 1 second
+        setTimeout(() => {
+            runCampaign();
+        }, 1000);
+    });
+
+    // ✅ Initialize Socket.IO
+    const io = initializeSocket(server);
+    module.exports = { io, pool };
+}
+
+// ✅ Export Express App for Vercel
+module.exports = app;
+
