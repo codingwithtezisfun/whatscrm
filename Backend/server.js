@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
 const fileUpload = require('express-fileupload');
+const mysql = require('mysql2/promise');
 const { initializeSocket } = require('./socket.js');
 const { runCampaign } = require('./loops/campaignLoop.js');
 
@@ -19,15 +20,16 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(fileUpload());
 
-// ✅ Configure CORS (Allow multiple origins)
+// ✅ Configure CORS (Allow frontend requests)
 const allowedOrigins = [
     "http://localhost:5173",
+    "https://your-frontend.vercel.app",
     /^http:\/\/localhost:\d+$/ 
-  ];
-  
+];
+
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin || allowedOrigins.includes(origin) || allowedOrigins.some(pattern => pattern.test(origin))) {
             callback(null, true);
         } else {
             callback(new Error('CORS not allowed'));
@@ -38,6 +40,35 @@ app.use(cors({
 
 // ✅ Serve Static Files (React Build)
 app.use(express.static(path.join(__dirname, 'client')));
+
+// ✅ Setup MySQL Connection Pool
+const pool = mysql.createPool({
+    host: process.env.DBHOST,
+    user: process.env.DBUSER,
+    password: process.env.DBPASSWORD,
+    database: process.env.DBNAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
+
+// ✅ Test Database Connection
+async function testDBConnection() {
+    try {
+        const [rows] = await pool.query('SELECT 1 + 1 AS result');
+        console.log("✅ Database Connected Successfully!", rows);
+    } catch (error) {
+        console.error("❌ Database Connection Failed!", error);
+        process.exit(1); // Stop app if DB is not connecting
+    }
+}
+testDBConnection();
+
+// ✅ Inject Database Pool into Routes
+app.use((req, res, next) => {
+    req.db = pool;
+    next();
+});
 
 // ✅ Routers
 const userRoute = require('./routes/user');
@@ -81,7 +112,7 @@ app.get('*', (req, res) => {
 // ✅ Start Server
 const PORT = process.env.PORT || 3010;
 const server = app.listen(PORT, () => {
-    console.log(`WaCrm server is running on port ${PORT}`);
+    console.log(`🚀 WaCrm server is running on port ${PORT}`);
 
     // Run campaign after 1 second
     setTimeout(() => {
@@ -91,4 +122,4 @@ const server = app.listen(PORT, () => {
 
 // ✅ Initialize Socket.IO
 const io = initializeSocket(server);
-module.exports = io;
+module.exports = { io, pool };
