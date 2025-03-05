@@ -23,7 +23,8 @@ app.use(fileUpload());
 
 const allowedOrigins = [
     "https://whatscrm-api.web.app",
-    "https://whatscrm-sigma.vercel.app"
+    "https://whatscrm-sigma.vercel.app",
+     "https://whatscrm-sigma.vercel.app/api"
 ];
 
 

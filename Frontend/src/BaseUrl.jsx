@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3010";
+const BASE_URL = "https://whatscrm-sigma.vercel.app";
 
 export default BASE_URL;
 
