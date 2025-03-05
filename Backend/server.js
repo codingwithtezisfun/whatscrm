@@ -22,21 +22,22 @@ app.use(fileUpload());
 
 const allowedOrigins = [
     "https://whatscrm-api.web.app", 
-    "https://whatscrm-sigma.vercel.app", // Add backend URL
+    "https://whatscrm-sigma.vercel.app"
 ];
 
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin) || allowedOrigins.some(pattern => pattern.test(origin))) {
-            callback(null, true);
-        } else {
-            callback(new Error('CORS not allowed'));
-        }
-    },
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-}));
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", allowedOrigins.includes(req.headers.origin) ? req.headers.origin : ""); 
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.header("Access-Control-Allow-Credentials", "true");
+
+    if (req.method === "OPTIONS") {
+        return res.sendStatus(200); 
+    }
+    
+    next();
+});
+
 
 
 // ✅ Serve Static Files (React Build)
