@@ -23,10 +23,13 @@ app.use(fileUpload());
 
 const allowedOrigins = [
     "https://whatscrm-api.web.app",
-    "https://whatscrm-sigma.vercel.app",
-     "https://whatscrm-sigma.vercel.app/api"
+    "https://whatscrm-api.web.app/api",
+    "https://whatscrm-api.web.app/api/admin",
+    "https://whatscrm-api.web.app/api/users",
+    "https://whatscrm-api.web.app/api/inbox",
+    "https://whatscrm-api.web.app/api/phonebook",
+    "https://whatscrm-api.web.app/api/chatFlow"
 ];
-
 
 app.use(cors({
     origin: function (origin, callback) {
