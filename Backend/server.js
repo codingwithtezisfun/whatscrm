@@ -22,9 +22,7 @@ app.use(fileUpload());
 
 // ✅ Configure CORS (Allow frontend requests)
 const allowedOrigins = [
-    "http://localhost:5173",
-    "https://your-frontend.vercel.app",
-    /^http:\/\/localhost:\d+$/ 
+    "https://whatscrm-api.web.app",
 ];
 
 app.use(cors({
