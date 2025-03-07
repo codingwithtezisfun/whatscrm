@@ -500,5 +500,4 @@ router.post('/update_chat_status', validateUser, async (req, res) => {
     }
 });
 
-  
 module.exports = router;
