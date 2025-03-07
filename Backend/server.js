@@ -1,34 +1,25 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const path = require('path');
-const fileUpload = require('express-fileupload');
-const mysql = require('mysql2/promise');
+require('dotenv').config()
+const express = require('express')
+const app = express()
+const cors = require('cors')
+const fileUpload = require('express-fileupload')
 const { initializeSocket } = require('./socket.js');
-const { runCampaign } = require('./loops/campaignLoop.js');
+const { runCampaign } = require('./loops/campaignLoop.js')
 
-const app = express();
-
-// ✅ Security Middleware
-app.use(helmet()); // Security headers
-app.use(morgan('dev')); // Logging
-
-// ✅ Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
-app.use(fileUpload());
 
+app.use(express.urlencoded({ extended: true }))
+app.use(cors())
+app.use(express.json())
+app.use(fileUpload())
 
 const allowedOrigins = [
     "https://whatscrm-api.web.app",
     "https://whatscrm-api.web.app/api",
-    "https://whatscrm-api.web.app/api/admin",
-    "https://whatscrm-api.web.app/api/users",
-    "https://whatscrm-api.web.app/api/inbox",
-    "https://whatscrm-api.web.app/api/phonebook",
-    "https://whatscrm-api.web.app/api/chatFlow"
+    "https://whatscrm.dotcreative.co.ke",
+    "https://whatscrm.dotcreative.co.ke/api",
+    "http://localhost:5173"
 ];
 
 app.use(cors({
@@ -56,12 +47,7 @@ app.use((req, res, next) => {
     next();
 });
 
-
-
-// ✅ Serve Static Files (React Build)
-app.use(express.static(path.join(__dirname, 'client')));
-
-// ✅ Setup MySQL Connection Pool
+// Setup MySQL Connection Pool
 const pool = mysql.createPool({
     host: process.env.DBHOST,
     user: process.env.DBUSER,
@@ -72,82 +58,75 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-// ✅ Test Database Connection
 async function testDBConnection() {
     try {
         const [rows] = await pool.query('SELECT 1 + 1 AS result');
-        console.log("✅ Database Connected Successfully!", rows);
+        console.log("Database Connected Successfully!", rows);
     } catch (error) {
-        console.error("❌ Database Connection Failed!", error);
-        process.exit(1); // Stop app if DB is not connecting
+        console.error("Database Connection Failed!", error);
+        process.exit(1);
     }
 }
 testDBConnection();
 
-// ✅ Inject Database Pool into Routes
 app.use((req, res, next) => {
     req.db = pool;
     next();
 });
 
-// ✅ Routers
-const userRoute = require('./routes/user');
-app.use('/api/user', userRoute);
 
-const webRoute = require('./routes/web');
-app.use('/api/web', webRoute);
+// routers 
+const userRoute = require('./routes/user')
+app.use('/api/user', userRoute)
 
-const adminRoute = require('./routes/admin');
-app.use('/api/admin', adminRoute);
+const webRoute = require('./routes/web')
+app.use('/api/web', webRoute)
 
-const phonebookRoute = require('./routes/phonebook');
-app.use('/api/phonebook', phonebookRoute);
+const adminRoute = require('./routes/admin')
+app.use('/api/admin', adminRoute)
 
-const chat_flowRoute = require('./routes/chatFlow');
-app.use('/api/chat_flow', chat_flowRoute);
+const phonebookRoute = require('./routes/phonebook')
+app.use('/api/phonebook', phonebookRoute)
 
-const inboxRoute = require('./routes/inbox');
-app.use('/api/inbox', inboxRoute);
+const chat_flowRoute = require('./routes/chatFlow')
+app.use('/api/chat_flow', chat_flowRoute)
 
-const templetRoute = require('./routes/templet');
-app.use('/api/templet', templetRoute);
+const inboxRoute = require('./routes/inbox')
+app.use('/api/inbox', inboxRoute)
 
-const chatbotRoute = require('./routes/chatbot');
-app.use('/api/chatbot', chatbotRoute);
+const templetRoute = require('./routes/templet')
+app.use('/api/templet', templetRoute)
 
-const broadcastRoute = require('./routes/broadcast');
-app.use('/api/broadcast', broadcastRoute);
+const chatbotRoute = require('./routes/chatbot')
+app.use('/api/chatbot', chatbotRoute)
 
-const apiRoute = require('./routes/apiv2');
-app.use('/api/v1', apiRoute);
+const broadcastRoute = require('./routes/broadcast')
+app.use('/api/broadcast', broadcastRoute)
 
-const agentRoute = require('./routes/agent');
-app.use('/api/agent', agentRoute);
+const apiRoute = require('./routes/apiv2')
+app.use('/api/v1', apiRoute)
 
-// ✅ Serve React App for all unknown routes
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'index.html'));
+const agentRoute = require('./routes/agent')
+app.use('/api/agent', agentRoute)
+
+const path = require("path");
+
+const currentDir = process.cwd();
+
+app.use(express.static(path.resolve(currentDir, "./client/public")));
+
+app.get("*", function (request, response) {
+    response.sendFile(path.resolve(currentDir, "./client/public", "index.html"));
 });
 
-// ✅ Start Server
-const PORT = process.env.PORT || 3010;
+const server = app.listen(process.env.PORT || 3010, () => {
+    console.log(`WaCrm server is running on port ${process.env.PORT}`);
+    setTimeout(() => {
+        runCampaign()
+    }, 1000);
+});
 
-// Start only if not in Vercel serverless mode
-if (!process.env.VERCEL) {
-    const server = app.listen(PORT, () => {
-        console.log(`🚀 WaCrm server is running on port ${PORT}`);
+// Initialize Socket.IO and export it
+const io = initializeSocket(server);
 
-        // Run campaign after 1 second
-        setTimeout(() => {
-            runCampaign();
-        }, 1000);
-    });
-
-    // ✅ Initialize Socket.IO
-    const io = initializeSocket(server);
-    module.exports = { io, pool };
-}
-
-// ✅ Export Express App for Vercel
-module.exports = app;
-
+module.exports = io;

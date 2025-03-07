@@ -1,0 +1,68 @@
+.mytasks-container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  h2 {
+    text-align: center;
+  }
+  
+  .tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+  
+  .task-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #28a745;
+  }
+  
+  .task-card h4 {
+    margin-bottom: 10px;
+  }
+  
+  .task-date {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .task-complete-checkbox {
+    margin-top: 10px;
+  }
+  
+  .task-complete-checkbox label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+  }
+  
+  .task-complete-checkbox input {
+    margin-right: 5px;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination button {
+    padding: 8px 15px;
+    margin: 0 5px;
+    border: none;
+    background: #28a745;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .pagination button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  

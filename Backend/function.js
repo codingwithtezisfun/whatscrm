@@ -208,6 +208,7 @@ async function saveMessage(body, uid, type, msgContext) {
 }
 
 async function saveWebhookConversation(body, uid) {
+    const io = getIOInstance();
 
     //  saving simple text
     if (body?.entry[0]?.changes[0]?.value?.messages && body?.entry[0]?.changes[0]?.value?.messages[0]?.type === "text") {
@@ -220,6 +221,8 @@ async function saveWebhookConversation(body, uid) {
         })
 
         botWebhook(body?.entry[0]?.changes[0]?.value?.messages[0]?.text?.body, uid, body?.entry[0]?.changes[0]?.value?.contacts[0]?.wa_id, body?.entry[0]?.changes ? body?.entry[0]?.changes[0]?.value?.contacts[0]?.profile?.name : "NA")
+        io.to(getId[0]?.socket_id).emit('update_conversations', { chats: chats, notificationOff: true });
+
     }
 
     // images 
@@ -260,6 +263,7 @@ async function saveWebhookConversation(body, uid) {
                     "caption": body?.entry[0]?.changes[0]?.value?.messages[0]?.video?.caption
                 }
             })
+
         }
 
         botWebhook(body?.entry[0]?.changes[0]?.value?.messages[0]?.video?.caption || "aU1uLzohPGMncyrwlPIb", uid, body?.entry[0]?.changes[0]?.value?.contacts[0]?.wa_id, body?.entry[0]?.changes ? body?.entry[0]?.changes[0]?.value?.contacts[0]?.profile?.name : "NA")
@@ -399,6 +403,9 @@ async function saveWebhookConversation(body, uid) {
         })
         botWebhook(body?.entry[0]?.changes[0]?.value?.messages[0]?.interactive?.list_reply?.title || "aU1uLzohPGMncyrwlPIb", uid, body?.entry[0]?.changes[0]?.value?.contacts[0]?.wa_id, body?.entry[0]?.changes ? body?.entry[0]?.changes[0]?.value?.contacts[0]?.profile?.name : "NA")
     }
+
+
+
 }
 
 function updateMessageObjectInFile(filePath, metaChatId, key, value) {
@@ -792,13 +799,14 @@ function sendMetaMsg(uid, msgObj, toNumber, savObj, chatId) {
 
                 await query(`UPDATE chats SET last_message_came = ?, last_message = ?, is_opened = ? WHERE chat_id = ?`, [userTimezone, JSON.stringify(finalSaveMsg), 1, chatId])
 
-                const io = getIOInstance();
+               
 
                 const getId = await query(`SELECT * FROM rooms WHERE uid = ?`, [uid])
 
                 await query(`UPDATE chats SET is_opened = ? WHERE chat_id = ?`, [1, chatId])
 
                 const chats = await query(`SELECT * FROM chats WHERE uid = ?`, [uid])
+                const io = getIOInstance();
 
                 io.to(getId[0]?.socket_id).emit('update_conversations', { chats: chats, notificationOff: true });
 

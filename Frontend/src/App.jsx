@@ -59,6 +59,7 @@ import SocialLogin from "./Admin/Pages/SocialLogin";
 import AgentChatComponent from "./Agent/Components/AgentChatComponent";
 import AgentDashboard from "./Agent/Components/AgentDashboard";
 import AgentLogin from "./Agent/Auth/AgentLoginForm";
+import MyTasks from "./Agent/Pages/MyTasks";
 
 // Private Route Component for Admin Authentication
 const AdminPrivateRoute = ({ element }) => {
@@ -162,6 +163,7 @@ function AppContent({ theme, setTheme }) {
         <Route path="/agent/dashboard" element={<AgentPrivateRoute element={<AgentDashboard />} />}>
           <Route index element={<Navigate to="chat-component" />} />
           <Route path="chat-component" element={<AgentChatComponent />} />
+          <Route path="my-tasks" element={<MyTasks />} />
         </Route>
 
         {/*Auth Routes */}

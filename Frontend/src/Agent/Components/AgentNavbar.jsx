@@ -45,7 +45,7 @@ const AgentNavbar = () => {
             <FaEnvelope className="user-icons" />
             <span>Chats</span>
           </Link>
-          <Link to="userhome" className="_agent-nav-link">
+          <Link to="my-tasks" className="_agent-nav-link">
             <FaHome className="user-icons" />
             <span>My Tasks</span>
           </Link>

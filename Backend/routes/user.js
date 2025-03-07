@@ -171,6 +171,28 @@ router.post('/push_tag', validateUser, checkPlan, checkTags, async (req, res) =>
     }
 })
 
+router.get('/get_tags/:chatId', validateUser, async (req, res) => {
+    try {
+        const { chatId } = req.params;
+
+        // Fetch the chat's tags
+        const getChat = await query(`SELECT chat_tags FROM chats WHERE chat_id = ?`, [chatId]);
+
+        if (getChat.length < 1) {
+            return res.json({ success: false, msg: "Chat not found" });
+        }
+
+        // Parse the JSON string stored in `chat_tags`
+        const tags = getChat[0]?.chat_tags ? JSON.parse(getChat[0]?.chat_tags) : [];
+
+        res.json({ success: true, tags });
+    } catch (err) {
+        console.error("Error fetching tags:", err);
+        res.json({ success: false, msg: "Something went wrong", err });
+    }
+});
+
+
 // del a tag 
 router.post('/del_tag', validateUser, async (req, res) => {
     try {

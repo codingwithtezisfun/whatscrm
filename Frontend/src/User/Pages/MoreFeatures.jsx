@@ -4,17 +4,8 @@ import Swal from 'sweetalert2';
 import "../Styles/morefeatures.css";
 import AgentLogin from "../../Agent/Auth/AgentLogin";
 import { FaUserTie, FaTasks, FaCommentDots } from "react-icons/fa";
+import AssignTask from "./AssignTask";
 
-
-// --- Dummy components for Agent Tasks and Chat Widget ---
-const AgentTasks = () => {
-  return (
-    <div>
-      <h2>Agent Tasks</h2>
-      <p>Manage tasks for agents here...</p>
-    </div>
-  );
-};
 
 const ChatWidget = () => {
   return (
@@ -34,7 +25,7 @@ const MoreFeatures = () => {
       case "login":
         return <AgentLogin />;
       case "tasks":
-        return <AgentTasks />;
+        return <AssignTask/>;
       case "widget":
         return <ChatWidget />;
       default:

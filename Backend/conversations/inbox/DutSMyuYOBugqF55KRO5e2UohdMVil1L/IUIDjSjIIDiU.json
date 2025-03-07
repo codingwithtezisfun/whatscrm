@@ -1,0 +1,92 @@
+[
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0Nzk2OTIyNzA1FQIAEhggMThEQTBFRjZGOEUxN0RGOUMxMjMyM0EwODkwMzY2MkUA",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "Jambo"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741280283,
+    "senderName": "Nduati 🖤",
+    "senderMobile": "254796922705",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0Nzk2OTIyNzA1FQIAERgSNTRBOTJDMzNDQkZCODFGQ0EyAA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "heey"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741280405,
+    "senderName": "Nduati 🖤",
+    "senderMobile": "254796922705",
+    "status": "read",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0Nzk2OTIyNzA1FQIAERgSMzhBODc0OEZGN0M5REUxMEM0AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "😁"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741280480,
+    "senderName": "Nduati 🖤",
+    "senderMobile": "254796922705",
+    "status": "read",
+    "star": false,
+    "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0Nzk2OTIyNzA1FQIAEhggRjBFMzhEODI1NUE5NEYwOTNGNzUyOEU4NUU5OEEwNkQA",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "Yoooh😂"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741283034,
+    "senderName": "Nduati 🖤",
+    "senderMobile": "254796922705",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0Nzk2OTIyNzA1FQIAEhggQkU0QjcxN0I2NDBDOTlBNEVERDE4OUY5REU5MDMzREYA",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "Sijui nikuwe na chat apa😪"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741283056,
+    "senderName": "Nduati 🖤",
+    "senderMobile": "254796922705",
+    "status": "",
+    "star": false,
+    "route": "INCOMING"
+  }
+]

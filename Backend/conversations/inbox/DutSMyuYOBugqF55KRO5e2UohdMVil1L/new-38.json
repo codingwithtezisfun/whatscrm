@@ -34,5 +34,23 @@
     "status": "sent",
     "star": false,
     "route": "OUTGOING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0NzE4MTc1Mjc4FQIAERgSNEZDRjg1RkQ4RDk1MTFDNUQ0AA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "heey"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741267508,
+    "senderName": "melvin",
+    "senderMobile": "254 718 175278",
+    "status": "sent",
+    "star": false,
+    "route": "OUTGOING"
   }
 ]

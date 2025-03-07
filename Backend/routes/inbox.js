@@ -467,4 +467,38 @@ router.post("/del_chat", validateUser, async (req, res) => {
     }
 })
 
+router.post('/update_chat_status', validateUser, async (req, res) => {
+    try {
+      const { chatId, status } = req.body;
+      await query(
+        `UPDATE chats SET chat_status = ? WHERE chat_id = ? AND uid = ?`,
+        [status, chatId, req.decode.uid]
+      );
+      res.json({ success: true, msg: "Chat status updated" });
+    } catch (err) {
+      console.error(err);
+      res.json({ success: false, msg: "Failed to update chat status", err });
+    }
+  });
+
+  router.get('/get_chat_status/:chatId', validateUser, async (req, res) => {
+    try {
+        const { chatId } = req.params;
+        const result = await query(
+            `SELECT chat_status FROM chats WHERE chat_id = ? AND uid = ?`,
+            [chatId, req.decode.uid]
+        );
+        
+        if (result.length > 0) {
+            res.json({ success: true, status: result[0].chat_status });
+        } else {
+            res.json({ success: false, msg: "Chat not found" });
+        }
+    } catch (err) {
+        console.error("Error fetching chat status:", err);
+        res.json({ success: false, msg: "Failed to fetch chat status", err });
+    }
+});
+
+  
 module.exports = router;

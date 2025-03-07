@@ -17,7 +17,6 @@ import { FaCoins,} from "react-icons/fa";
 import { FaRobot, FaAddressBook, FaProjectDiagram, FaBroadcastTower, FaFileAlt } from 'react-icons/fa';
 import { IoChatbubbleEllipses } from "react-icons/io5";
 
-// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -75,11 +74,12 @@ const UserHome = () => {
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
 
-  const openedData = dashboard.opened.map(item => Number(item.count || 0));
-  const pendingData = dashboard.pending.map(item => Number(item.count || 0));
-  const resolvedData = dashboard.resolved.map(item => Number(item.count || 0));
-  const activeBotData = dashboard.activeBot.map(item => Number(item.count || 0));
-  const dActiveBotData = dashboard.dActiveBot.map(item => Number(item.count || 0));
+  const openedData = dashboard.opened.map(item => Number(item.numberOfOders || 0));
+  const pendingData = dashboard.pending.map(item => Number(item.numberOfOders || 0));
+  const resolvedData = dashboard.resolved.map(item => Number(item.numberOfOders || 0));
+  const activeBotData = dashboard.activeBot.map(item => Number(item.numberOfOders || 0));
+  const dActiveBotData = dashboard.dActiveBot.map(item => Number(item.numberOfOders || 0));
+  
 
   // ============================
   // 1) Top Graph (Opened/Pending/Resolved)
