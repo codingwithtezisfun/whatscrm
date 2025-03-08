@@ -1,0 +1,49 @@
+[
+  {
+    "id": "simpleText_1741385619404",
+    "type": "simpleText",
+    "position": {
+      "x": 103.6443063877648,
+      "y": 117.60578832596815
+    },
+    "data": {
+      "options": [
+        {
+          "text": "d"
+        }
+      ]
+    },
+    "draggable": true,
+    "width": 232,
+    "height": 256,
+    "selected": true,
+    "dragging": false,
+    "positionAbsolute": {
+      "x": 103.6443063877648,
+      "y": 117.60578832596815
+    }
+  },
+  {
+    "id": "imageMessage_1741385623152",
+    "type": "imageMessage",
+    "position": {
+      "x": 408.85877598521176,
+      "y": 135.09497491404795
+    },
+    "data": {
+      "subCaptions": [
+        "h",
+        "j"
+      ]
+    },
+    "draggable": true,
+    "width": 275,
+    "height": 376,
+    "selected": false,
+    "positionAbsolute": {
+      "x": 408.85877598521176,
+      "y": 135.09497491404795
+    },
+    "dragging": false
+  }
+]

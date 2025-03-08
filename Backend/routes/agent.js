@@ -148,7 +148,6 @@ router.post('/get_agent_chats_owner', validateUser, async (req, res) => {
 router.post('/get_assigned_chat_agent', validateUser, async (req, res) => {
     try {
         const { chatId } = req.body
-
         let data
 
         data = await query(`SELECT * FROM agent_chats WHERE chat_id = ? AND owner_uid = ?`, [

@@ -1,8 +1,9 @@
 .node-container {
-    min-width: 220px;
+    min-width: 150px;
     max-width: 280px;
     background-color: var(--background-color);
-    border: 2px solid #eee;
+    border: 1px solid #eee;
+    border-left: 3px solid #eee;
     border-radius: 6px;
     font-size: 0.9rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.15);
@@ -57,6 +58,17 @@
     background-color: var(--card-bg) !important;
     color: var(--text-color) !important;
   }
+  .option-row{
+    width: 100%;
+    /* background-color: #292040; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.2rem;
+    border-radius: 4px;
+    color: var(--text-color) !important;
+    border: 1px solid #ccc;
+  }
   
   .close-modal-btn {
     background-color: #dd1a1a;
@@ -88,13 +100,19 @@
   .node-save-btn:hover{
     color: green;
   }
-  
+  .delete-option-btn{
+    color: var(--text-color);
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    background-color: transparent;
+  }
   /* Simple Text Node */
   .simple-text-node {
     border-color: #f44336;
   }
   .simple-text-node .node-header-1 {
-    background-color: #f44336;
+    /* background-color: #f44336; */
   }
   
   /* Image Message Node */
@@ -102,7 +120,7 @@
     border-color: #2196f3;
   }
   .image-message-node .node-header-2 {
-    background-color: #2196f3;
+    /* background-color: #2196f3; */
   }
   
   /* Audio Message Node */
@@ -110,7 +128,7 @@
     border-color: #f06292;
   }
   .audio-message-node .node-header-3 {
-    background-color: #f06292;
+    /* background-color: #f06292; */
   }
   
   /* Video Message Node */
@@ -118,7 +136,7 @@
     border-color: #ba68c8;
   }
   .video-message-node .node-header-4 {
-    background-color: #ba68c8;
+    /* background-color: #ba68c8; */
   }
   
   /* Document Message Node */
@@ -126,7 +144,7 @@
     border-color: #ffd54f;
   }
   .document-message-node .node-header-5 {
-    background-color: #ffd54f;
+    /* background-color: #ffd54f; */
     color: black; 
   }
   
@@ -135,7 +153,7 @@
     border-color: #64b5f6;
   }
   .button-message-node .node-header-6 {
-    background-color: #64b5f6;
+    /* background-color: #64b5f6; */
   }
   
   /* List Message Node */
@@ -143,7 +161,7 @@
     border-color: #9575cd;
   }
   .list-message-node .node-header-7 {
-    background-color: #9575cd;
+    /* background-color: #9575cd; */
   }
   
   /* Send Location Node */
@@ -151,7 +169,7 @@
     border-color: #4caf50;
   }
   .send-location-node .node-header-8 {
-    background-color: #4caf50;
+    /* background-color: #4caf50; */
   }
   
   /* Assign Chat to Agent Node */
@@ -159,7 +177,7 @@
     border-color: #ff8a65;
   }
   .assign-chat-agent-node .node-header-9 {
-    background-color: #ff8a65;
+    /* background-color: #ff8a65; */
   }
   
   /* Disable Chatbot Node */
@@ -167,7 +185,7 @@
     border-color: #90a4ae;
   }
   .disable-chatbot-node .node-header-10 {
-    background-color: #90a4ae;
+    /* background-color: #90a4ae; */
   }
   
   /* Receive API Node */
@@ -175,7 +193,7 @@
     border-color: #e91e63;
   }
   .receive-api-node .node-header-11 {
-    background-color: #e91e63;
+    /* background-color: #e91e63; */
   }
   
   /* Take Input Node */
@@ -183,7 +201,7 @@
     border-color: #ff9800;
   }
   .take-input-node .node-header-12 {
-    background-color: #ff9800;
+    /* background-color: #ff9800; */
   }
   
   /* Condition Node */
@@ -191,7 +209,7 @@
     border-color: #673ab7;
   }
   .condition-node .node-header-13 {
-    background-color: #673ab7;
+    /* background-color: #673ab7; */
   }
   
   /* Set Variable Node */
@@ -199,7 +217,7 @@
     border-color: #8bc34a;
   }
   .set-variable-node .node-header-14 {
-    background-color: #8bc34a;
+    /* background-color: #8bc34a; */
   }
   
   /* Close Chat Node */
@@ -207,7 +225,7 @@
     border-color: #03a9f4;
   }
   .close-chat-node .node-header-15 {
-    background-color: #03a9f4;
+    /* background-color: #03a9f4; */
   }
   
   /* OpenAI Node */
@@ -215,7 +233,7 @@
     border-color: #3f51b5;
   }
   .openai-node .node-header-16 {
-    background-color: #3f51b5;
+    /* background-color: #3f51b5; */
   }
   
   /* GPT-4 Node */
@@ -223,7 +241,7 @@
     border-color: #9c27b0;
   }
   .gpt4-node .node-header-17 {
-    background-color: #9c27b0;
+    /* background-color: #9c27b0; */
   }
   
   /* Add Message History Node */
@@ -231,7 +249,7 @@
     border-color: #ff5722;
   }
   .add-msg-history-node .node-header-18 {
-    background-color: #ff5722;
+    /* background-color: #ff5722; */
   }
   
   

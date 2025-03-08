@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 import { FaPlus } from "react-icons/fa";
 import "../Styles/broadcastmanager.css";
 import BASE_URL from "../../BaseUrl";
@@ -7,19 +8,18 @@ import BASE_URL from "../../BaseUrl";
 export default function BroadcastManager() {
   const token = localStorage.getItem("userToken");
 
-  // Broadcast list and modal visibility
   const [broadcasts, setBroadcasts] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
-  // Fields for add/edit broadcast
   const [broadcastId, setBroadcastId] = useState("");
   const [title, setTitle] = useState("");
-  // For comboboxes we'll store the selected id (as string)
   const [templet, setTemplet] = useState("");
   const [phonebook, setPhonebook] = useState("");
   const [schedule, setSchedule] = useState(false);
+  const [scheduledTime, setScheduledTime] = useState(
+    new Date().toISOString().substring(0, 16)
+  );
 
-  // Options for comboboxes fetched from API endpoints
   const [templetOptions, setTempletOptions] = useState([]);
   const [phonebookOptions, setPhonebookOptions] = useState([]);
 
@@ -29,7 +29,6 @@ export default function BroadcastManager() {
     fetchPhonebookOptions();
   }, []);
 
-  // Fetch broadcasts
   const fetchBroadcasts = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/broadcast/get_broadcast`, {
@@ -43,14 +42,12 @@ export default function BroadcastManager() {
     }
   };
 
-  // Fetch available templets from database with parsed content
   const fetchTempletOptions = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/templet/get_templets`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.data.success) {
-        // Parse the content for each template
         const parsedTemplates = res.data.data.map((tmpl) => {
           let contentData = {};
           try {
@@ -58,7 +55,7 @@ export default function BroadcastManager() {
           } catch (error) {
             console.error("Error parsing JSON:", error);
           }
-          return { ...tmpl, contentData }; 
+          return { ...tmpl, contentData };
         });
         setTempletOptions(parsedTemplates);
       } else {
@@ -70,7 +67,6 @@ export default function BroadcastManager() {
     }
   };
 
-  // Fetch available phonebooks from database
   const fetchPhonebookOptions = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/phonebook/get_by_uid`, {
@@ -84,16 +80,13 @@ export default function BroadcastManager() {
     }
   };
 
-  // Open modal for add or edit
   const openModal = (broadcast = null) => {
     if (broadcast) {
-      // Edit mode: set fields from the broadcast record
       setBroadcastId(broadcast.broadcast_id);
       setTitle(broadcast.title);
       try {
         const parsedTemplet = JSON.parse(broadcast.templet);
         const parsedPhonebook = JSON.parse(broadcast.phonebook);
-        // Store the id (assuming the DB record has an id field)
         setTemplet(parsedTemplet?.id ? String(parsedTemplet.id) : "");
         setPhonebook(parsedPhonebook?.id ? String(parsedPhonebook.id) : "");
       } catch (e) {
@@ -103,25 +96,22 @@ export default function BroadcastManager() {
       }
       setSchedule(false);
     } else {
-      // Add mode: clear all fields
       setBroadcastId("");
       setTitle("");
       setTemplet("");
       setPhonebook("");
       setSchedule(false);
+      setScheduledTime(new Date().toISOString().substring(0, 16));
     }
     setShowModal(true);
   };
 
-  // Close modal
   const closeModal = () => {
     setShowModal(false);
   };
 
-  // Handle form submission for add/edit broadcast
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Find the selected templet and phonebook objects from the options
     const selectedTemplet = templetOptions.find(
       (opt) => String(opt.id) === templet
     );
@@ -130,58 +120,90 @@ export default function BroadcastManager() {
     );
 
     const payload = {
-      broadcast_id: broadcastId, // empty if new
+      broadcast_id: broadcastId, 
       title,
-      // Sending both id and name in the object
       templet: selectedTemplet || { name: "" },
       phonebook: selectedPhonebook || { name: "" },
-      scheduleTimestamp: schedule ? new Date().toISOString() : null,
+      scheduleTimestamp: schedule
+        ? new Date(scheduledTime).toISOString()
+        : new Date().toISOString(),
     };
+
+    console.log(payload + "payload");
+    
 
     try {
       if (broadcastId) {
-        // Edit existing broadcast
         await axios.post(`${BASE_URL}/api/broadcast/edit_broadcast`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        Swal.fire({
+          icon: "success",
+          title: "Broadcast Updated",
+          text: "Your broadcast has been updated successfully.",
+        });
+        log
       } else {
-        // Add new broadcast
         await axios.post(`${BASE_URL}/api/broadcast/add_new`, payload, {
           headers: { Authorization: `Bearer ${token}` },
+        });
+        Swal.fire({
+          icon: "success",
+          title: "Broadcast Added",
+          text: "Your broadcast has been added successfully.",
         });
       }
       fetchBroadcasts();
       closeModal();
     } catch (err) {
       console.error("Error saving broadcast:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "There was an error saving the broadcast. Please try again.",
+      });
     }
   };
 
-  // Delete a broadcast
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this broadcast?"))
-      return;
-    try {
-      await axios.post(
-        `${BASE_URL}/api/broadcast/del_broadcast`,
-        { broadcast_id: id },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      fetchBroadcasts();
-    } catch (err) {
-      console.error("Error deleting broadcast:", err);
-    }
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to delete this broadcast?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.post(
+            `${BASE_URL}/api/broadcast/del_broadcast`,
+            { broadcast_id: id },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          fetchBroadcasts();
+          Swal.fire("Deleted!", "The broadcast has been deleted.", "success");
+        } catch (err) {
+          console.error("Error deleting broadcast:", err);
+          Swal.fire(
+            "Error!",
+            "There was an error deleting the broadcast. Please try again.",
+            "error"
+          );
+        }
+      }
+    });
   };
 
   return (
     <div className="broadcast-manager-container">
-      {/* Header area */}
       <div className="broadcast-header d-flex align-items-center justify-content-between">
         <div className="broadcast-intro">
           <h4>
             Effortlessly broadcast your message to multiple WhatsApp numbers
           </h4>
-          <p className="">
+          <p>
             Just a single click. Our streamlined solution empowers you to reach
             numerous contacts instantly.
           </p>
@@ -257,34 +279,28 @@ export default function BroadcastManager() {
         </table>
       </div>
 
-      {/* Footer pagination area (example) */}
       <div className="pagination-footer d-flex justify-content-end align-items-center">
         <span className="me-3">Records per page: 100</span>
         <span>0-0 of 0</span>
       </div>
 
-      {/* MODAL (standard Bootstrap with custom classes) */}
+      MODAL
       {showModal && (
         <>
-          {/* Backdrop */}
           <div className="modal-backdrop fade show"></div>
 
-          {/* Modal */}
           <div
             className="modal fade show"
             tabIndex="-1"
             style={{ display: "block" }}
             role="dialog"
           >
-            <div
-              className="modal-dialog modal-dialog-centered"
-              role="document"
-            >
+            <div className="modal-dialog modal-dialog-centered" role="document">
               <div className="modal-content broadcast-modal">
                 <form onSubmit={handleSubmit}>
                   <div className="modal-header">
                     <h5 className="modal-title">
-                      {broadcastId ? "Edit Broadcast" : "Add new broadcast"}
+                      {broadcastId ? "Edit Broadcast" : "Add New Broadcast"}
                     </h5>
                     <button
                       type="button"
@@ -295,9 +311,8 @@ export default function BroadcastManager() {
                     </button>
                   </div>
                   <div className="modal-body">
-                    {/* Broadcast title */}
                     <div className="mb-3">
-                      <label className="form-label">Broadcast title</label>
+                      <label className="form-label">Broadcast Title</label>
                       <input
                         type="text"
                         className="form-control"
@@ -308,38 +323,34 @@ export default function BroadcastManager() {
                       />
                     </div>
 
-                    {/* Variables note */}
                     <div className="mb-3 p-3 variables-note">
                       <p className="mb-0">
                         You can use phonebook variables like{" "}
-                        <code>{"{{{var1}}}"}</code>, <code>{"{{{var2}}}"}</code>, etc.
-                        Use <code>{"{{{name}}}"}</code> for the name and{" "}
+                        <code>{"{{{var1}}}"}</code>, <code>{"{{{var2}}}"}</code>,
+                        etc. Use <code>{"{{{name}}}"}</code> for the name and{" "}
                         <code>{"{{{mobile}}}"}</code> for the mobile number.
                       </p>
                     </div>
 
-                    {/* Select templet combobox */}
                     <div className="mb-3 broadcast-combobox">
-                      <label className="form-label">Select templet</label>
+                      <label className="form-label">Select Templet</label>
                       <select
                         className="form-control"
                         value={templet}
                         onChange={(e) => setTemplet(e.target.value)}
                         required
-                        >
+                      >
                         <option value="">Select a templet</option>
                         {templetOptions.map((opt) => (
-                            <option key={opt.id} value={opt.id}>
+                          <option key={opt.id} value={opt.id}>
                             {opt.title}
-                            </option>
+                          </option>
                         ))}
-                        </select>
-
+                      </select>
                     </div>
 
-                    {/* Select phonebook combobox */}
                     <div className="mb-3 broadcast-combobox">
-                      <label className="form-label">Select phonebook</label>
+                      <label className="form-label">Select Phonebook</label>
                       <select
                         className="form-control"
                         value={phonebook}
@@ -355,7 +366,6 @@ export default function BroadcastManager() {
                       </select>
                     </div>
 
-                    {/* Schedule toggle */}
                     <div className="form-check form-switch d-flex align-items-center mb-3">
                       <label className="form-check-label me-3">Schedule</label>
                       <input
@@ -366,6 +376,21 @@ export default function BroadcastManager() {
                         onChange={() => setSchedule(!schedule)}
                       />
                     </div>
+
+                    {schedule && (
+                      <div className="mb-3">
+                        <label className="form-label">
+                          Select Date &amp; Time
+                        </label>
+                        <input
+                          type="datetime-local"
+                          className="form-control"
+                          value={scheduledTime}
+                          onChange={(e) => setScheduledTime(e.target.value)}
+                          required
+                        />
+                      </div>
+                    )}
                   </div>
                   <div className="modal-footer">
                     <button

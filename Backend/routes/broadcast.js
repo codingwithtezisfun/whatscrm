@@ -7,41 +7,55 @@ const { sign } = require('jsonwebtoken')
 const validateUser = require('../middlewares/user.js')
 const { checkPlan } = require('../middlewares/plan.js')
 
-// adding campaign 
+// Adding campaign
 router.post('/add_new', validateUser, checkPlan, async (req, res) => {
     try {
-        const { title, templet, phonebook, scheduleTimestamp, example } = req.body
+        console.log("Received POST /api/broadcast/add_new request");
+        console.log("Request Body:", req.body); // Log entire request body
+
+        const { title, templet, phonebook, scheduleTimestamp, example } = req.body;
 
         if (!title || !templet?.name || !phonebook || !scheduleTimestamp) {
-            return res.json({ success: false, msg: "Please enter all details" })
+            console.log("Validation failed: Missing required fields");
+            return res.json({ success: false, msg: "Please enter all details" });
         }
 
-        const { id } = phonebook
+        const { id } = phonebook;
 
         if (!id) {
-            return res.json({ msg: "Invalid phonebook provided" })
+            console.log("Invalid phonebook provided:", phonebook);
+            return res.json({ success: false, msg: "Invalid phonebook provided" });
         }
 
-        const getMetaAPI = await query(`SELECT * FROM meta_api WHERE uid = ?`, [req.decode.uid])
+        console.log("Fetching meta API keys...");
+        const getMetaAPI = await query(`SELECT * FROM meta_api WHERE uid = ?`, [req.decode.uid]);
+        console.log("Meta API Response:", getMetaAPI);
 
         if (getMetaAPI.length < 1) {
-            return res.json({ msg: "We could not find your meta API keys" })
+            console.log("No Meta API keys found for user:", req.decode.uid);
+            return res.json({ success: false, msg: "We could not find your meta API keys" });
         }
 
-        const getPhonebookContacts = await query(`SELECT * FROM contact where phonebook_id = ? AND uid = ?`, [id, req.decode.uid])
+        console.log("Fetching phonebook contacts...");
+        const getPhonebookContacts = await query(`SELECT * FROM contact WHERE phonebook_id = ? AND uid = ?`, [id, req.decode.uid]);
+        console.log("Phonebook Contacts Response:", getPhonebookContacts);
 
         if (getPhonebookContacts.length < 1) {
-            return res.json({ success: false, msg: "The phonebook you have selected does not have any mobile number in it" })
+            console.log("Phonebook is empty:", id);
+            return res.json({ success: false, msg: "The phonebook you have selected does not have any mobile number in it" });
         }
 
-        const getMetaMobileDetails = await getMetaNumberDetail("v22.0", getMetaAPI[0]?.business_phone_number_id, getMetaAPI[0]?.access_token)
+        console.log("Fetching Meta mobile details...");
+        const getMetaMobileDetails = await getMetaNumberDetail("v22.0", getMetaAPI[0]?.business_phone_number_id, getMetaAPI[0]?.access_token);
+        console.log("Meta Mobile Details:", getMetaMobileDetails);
 
         if (getMetaMobileDetails.error) {
-            return res.json({ success: false, msg: "Either your meta API are invalid or your access token has been expired" })
+            console.log("Invalid Meta API or expired token.");
+            return res.json({ success: false, msg: "Either your meta API are invalid or your access token has expired" });
         }
 
-        const broadcast_id = randomstring.generate()
-
+        const broadcast_id = randomstring.generate();
+        console.log("Generated Broadcast ID:", broadcast_id);
 
         const broadcast_logs = getPhonebookContacts.map((i) => [
             req.decode.uid,
@@ -52,37 +66,59 @@ router.post('/add_new', validateUser, checkPlan, async (req, res) => {
             "PENDING",
             JSON.stringify(example),
             JSON.stringify(i)
-        ])
+        ]);
 
-        const getUser = await query(`SELECT * FROM user WHERE uid = ?`, [req.decode.uid])
+        console.log("Generated Broadcast Logs:", broadcast_logs);
 
-        await query(`
-                INSERT INTO broadcast_log (
-                    uid,
-                    broadcast_id,
-                    templet_name,
-                    sender_mobile,
-                    send_to,
-                    delivery_status,
-                    example,
-                    contact
-                ) VALUES ?`, [broadcast_logs])
+        console.log("Fetching user details...");
+        const getUser = await query(`SELECT * FROM user WHERE uid = ?`, [req.decode.uid]);
+        console.log("User Details:", getUser);
+
+        console.log("Inserting into broadcast_log...");
+        const insertLogResult = await query(`
+            INSERT INTO broadcast_log (
+                uid,
+                broadcast_id,
+                templet_name,
+                sender_mobile,
+                send_to,
+                delivery_status,
+                example,
+                contact
+            ) VALUES ?`, [broadcast_logs]);
+        console.log("Broadcast Log Insert Result:", insertLogResult);
 
         const scheduleDate = scheduleTimestamp ? new Date(scheduleTimestamp) : null;
+        console.log("Schedule Date:", scheduleDate);
 
-        await query(`INSERT INTO broadcast (broadcast_id, uid, title, templet, phonebook, status, schedule, timezone) VALUES (
-            ?,?,?,?,?,?,?,?
-        )`, [
-            broadcast_id, req.decode.uid, title, JSON.stringify(templet), JSON.stringify(phonebook), "QUEUE", scheduleDate, getUser[0]?.timezone || "Asia/Kolkata"
-        ])
+        console.log("Inserting into broadcast table...");
+        const insertBroadcastResult = await query(`
+            INSERT INTO broadcast (broadcast_id, uid, title, templet, phonebook, status, schedule, timezone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+            broadcast_id,
+            req.decode.uid,
+            title,
+            JSON.stringify(templet),
+            JSON.stringify(phonebook),
+            "QUEUE",
+            scheduleDate,
+            getUser[0]?.timezone || "Asia/Kolkata"
+        ]);
+        console.log("Broadcast Insert Result:", insertBroadcastResult);
 
-        res.json({ success: true, msg: "Your broadcast has been added" })
+        if (insertBroadcastResult.affectedRows === 0) {
+            console.log("Database insertion failed.");
+            return res.json({ success: false, msg: "Failed to insert broadcast into database" });
+        }
+
+        res.json({ success: true, msg: "Your broadcast has been added" });
 
     } catch (err) {
-        console.log(err)
-        res.json({ success: false, msg: "Something went wrong", err })
+        console.error("Error adding broadcast:", err);
+        res.json({ success: false, msg: "Something went wrong", error: err });
     }
-})
+});
+
 
 
 // get all campaign 

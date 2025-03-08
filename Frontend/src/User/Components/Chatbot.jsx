@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../Styles/chatbot.css"; // Ensure styling remains intact
 import AutoChatbot from "../Pages/AutoChatbot";
+import TemplateManager from "../Pages/TemplateManager";
 
 const Chatbot = () => {
   const [currentTab, setCurrentTab] = useState("auto-chatbot");
@@ -32,10 +33,7 @@ const Chatbot = () => {
         )}
 
         {currentTab === "templates" && (
-          <div>
-            <h2>Saved Templates</h2>
-            <p>View and manage saved chatbot templates.</p>
-          </div>
+         <TemplateManager/>
         )}
       </div>
     </div>

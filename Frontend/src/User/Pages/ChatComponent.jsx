@@ -27,7 +27,6 @@ import alertSound from "../../assets/notifications/notification-pluck-off-269290
 import notify from "../../assets/notifications/notification-sound-2-253324.mp3";
 import treble from "../../assets/notifications/simple-notification-152054.mp3";
 
-
 const ChatComponent = () => {
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
