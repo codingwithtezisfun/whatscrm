@@ -88,5 +88,23 @@
     "status": "",
     "star": false,
     "route": "INCOMING"
+  },
+  {
+    "type": "text",
+    "metaChatId": "wamid.HBgMMjU0Nzk2OTIyNzA1FQIAERgSMDUzMzY5MEQ1RTFGODk4OUIwAA==",
+    "msgContext": {
+      "type": "text",
+      "text": {
+        "preview_url": true,
+        "body": "sawa babygirl"
+      }
+    },
+    "reaction": "",
+    "timestamp": 1741530927,
+    "senderName": "Nduati 🖤",
+    "senderMobile": "254796922705",
+    "status": "failed",
+    "star": false,
+    "route": "OUTGOING"
   }
 ]

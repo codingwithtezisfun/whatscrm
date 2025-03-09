@@ -3,13 +3,14 @@
 /* Container for the user icon and dropdown */
 .usermenu-container {
     margin-right: 1rem;
+    z-index: 100000 !important;
   }
   
   /* Custom dropdown menu overrides */
   .custom-dropdown-menu {
     min-width: 180px;
     right: 0;
-    z-index: 1000;
+    z-index: 1000000;
   }
   
   /* 

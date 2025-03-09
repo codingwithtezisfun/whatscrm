@@ -20,23 +20,14 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(fileUpload());
 
 const allowedOrigins = [
-    "https://whatscrm-api.web.app",
-    "https://whatscrm-api.web.app/api",
-    "https://whatscrm.dotcreative.co.ke",
-    "https://whatscrm.dotcreative.co.ke/api",
     "http://localhost:5173"
-];
-
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, origin || "*");
-        } else {
-            callback(new Error("CORS not allowed"));
-        }
-    },
-    credentials: true
-}));
+  ];
+  
+  app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"]
+  }));
 
 app.use((req, res, next) => {
     const origin = allowedOrigins.includes(req.headers.origin) ? req.headers.origin : "";
@@ -51,6 +42,7 @@ app.use((req, res, next) => {
 
     next();
 });
+
 
 // Setup MySQL Connection Pool
 const pool = mysql.createPool({
@@ -83,6 +75,9 @@ app.use((req, res, next) => {
 // routers 
 const userRoute = require('./routes/user')
 app.use('/api/user', userRoute)
+
+const fileuploadRoute = require('./routes/fileupload')
+app.use('/api/fileupload', fileuploadRoute)
 
 const webRoute = require('./routes/web')
 app.use('/api/web', webRoute)
@@ -117,6 +112,19 @@ app.use('/api/agent', agentRoute)
 const currentDir = process.cwd();
 
 app.use(express.static(path.resolve(currentDir, "./client/public")));
+app.use('/meta-media', express.static(path.join(currentDir, 'client/public'), {
+    setHeaders: (res) => {
+        res.setHeader("Access-Control-Allow-Origin", "*"); 
+        res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    }
+}));
+
+app.use('/meta-media', (req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+    next();
+  }, express.static(path.join(__dirname, 'client/public/meta-media')));
+
 
 app.get("*", function (request, response) {
     response.sendFile(path.resolve(currentDir, "./client/public", "index.html"));

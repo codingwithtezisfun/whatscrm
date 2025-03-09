@@ -8,6 +8,7 @@
     font-size: 0.9rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.15);
     padding: 0.5rem;
+    z-index: 1 !important;
   }
   
   .node-header {

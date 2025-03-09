@@ -1,6 +1,7 @@
 .chatbot-layout {
     display: flex;
-    height: calc(100vh - 100px); /* if you have a navbar above */
+    height: calc(100vh - 100px); 
+    z-index: 1 !important;
   }
   
   .chatbot-sidebar {

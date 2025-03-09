@@ -239,7 +239,7 @@ async function saveWebhookConversation(body, uid) {
             saveMessage(body, uid, "image", {
                 "type": "image",
                 "image": {
-                    "link": `${process.env.FRONTENDURI}/meta-media/${fileName}`,
+                    "link": `${process.env.BACKENDURI}/meta-media/${fileName}`,
                     "caption": body?.entry[0]?.changes[0]?.value?.messages[0]?.image?.caption || ""
                 }
             })
@@ -259,7 +259,7 @@ async function saveWebhookConversation(body, uid) {
             saveMessage(body, uid, "video", {
                 "type": "video",
                 "video": {
-                    "link": `${process.env.FRONTENDURI}/meta-media/${fileName}`,
+                    "link": `${process.env.BACKURI}/meta-media/${fileName}`,
                     "caption": body?.entry[0]?.changes[0]?.value?.messages[0]?.video?.caption
                 }
             })
@@ -281,7 +281,7 @@ async function saveWebhookConversation(body, uid) {
             saveMessage(body, uid, "document", {
                 "type": "document",
                 "document": {
-                    "link": `${process.env.FRONTENDURI}/meta-media/${fileName}`,
+                    "link": `${process.env.BACKURI}/meta-media/${fileName}`,
                     "caption": body?.entry[0]?.changes[0]?.value?.messages[0]?.document?.caption
                 }
             })
@@ -301,7 +301,7 @@ async function saveWebhookConversation(body, uid) {
             saveMessage(body, uid, "audio", {
                 "type": "audio",
                 "audio": {
-                    "link": `${process.env.FRONTENDURI}/meta-media/${fileName}`
+                    "link": `${process.env.BACKURI}/meta-media/${fileName}`
                 }
             })
         }
@@ -457,7 +457,7 @@ async function downloadAndSaveMedia(token, mediaId) {
 
         const config = {
             method: 'get',
-            url: getUrl?.data?.url, //PASS THE URL HERE, WHICH YOU RECEIVED WITH THE HELP OF MEDIA ID
+            url: getUrl?.data?.url,
             headers: {
                 'Authorization': `Bearer ${token}`
             },

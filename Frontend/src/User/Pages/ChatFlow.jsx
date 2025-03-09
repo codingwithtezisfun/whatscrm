@@ -339,8 +339,42 @@ const ChatFlow = () => {
       </div>
 
       <div className="d-flex" style={{ height: "calc(100% - 50px)" }}>
-        {/* Sidebar with grouped node types */}
-        {isSidebarOpen && (
+
+        {/* Flow builder area */}
+        <div 
+          className="flow-container" 
+          style={{ 
+            flex: 1, 
+            height: "100%", 
+            position: "relative" 
+          }}
+          ref={reactFlowWrapper}
+        >
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            nodeTypes={nodeTypes}
+            onInit={onInit}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            fitView
+            proOptions={{ hideAttribution: true }}
+          >
+            <MiniMap
+              style={{ height: 80, width: 120, bottom: 10, left: 10 }}
+              zoomable
+              pannable
+            />
+            <Controls style={{ top: 10, left: 10, width: 20, height: 200 }} />
+            <Background />
+          </ReactFlow>
+        </div>
+
+                {/* Sidebar with grouped node types */}
+                {isSidebarOpen && (
           <div 
             className="node-sidebar" 
             style={{ 
@@ -454,39 +488,6 @@ const ChatFlow = () => {
             ))}
           </div>
         )}
-
-        {/* Flow builder area */}
-        <div 
-          className="flow-container" 
-          style={{ 
-            flex: 1, 
-            height: "100%", 
-            position: "relative" 
-          }}
-          ref={reactFlowWrapper}
-        >
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            nodeTypes={nodeTypes}
-            onInit={onInit}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            fitView
-            proOptions={{ hideAttribution: true }}
-          >
-            <MiniMap
-              style={{ height: 80, width: 120, bottom: 10, left: 10 }}
-              zoomable
-              pannable
-            />
-            <Controls style={{ top: 10, left: 10, width: 20, height: 200 }} />
-            <Background />
-          </ReactFlow>
-        </div>
       </div>
     </div>
   );

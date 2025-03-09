@@ -29,6 +29,9 @@ function executeQueries(queries, connection) {
   });
 }
 
+
+
+
 function findTargetNodes(nodes, edges, incomingWord) {
   const matchingEdges = edges.filter(
     (edge) => edge.sourceHandle === incomingWord
@@ -488,6 +491,11 @@ async function saveWebhookConversation(body, uid) {
       chatId: chatId,
       msgId:
         body?.entry[0]?.changes[0]?.value?.messages[0]?.reaction?.message_id,
+    });
+
+    io.to(getId[0]?.socket_id).emit("update_conversations", {
+      chats: chats,
+      notificationOff: true,
     });
 
     // setting up for agent

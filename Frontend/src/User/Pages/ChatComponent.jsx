@@ -1,671 +1,679 @@
-import React, { useState, useEffect, useRef } from "react";
-import io from "socket.io-client";
-import axios from "axios";
-import {
-  FaSearch,
-  FaBell,
-  FaPaperclip,
-  FaPaperPlane,
-  FaStar,
-  FaTimes,
-  FaMicrophone,
-  FaRegSmile,
-} from "react-icons/fa";
-import { LiaCheckDoubleSolid } from "react-icons/lia";
-import { MdCheck } from "react-icons/md";
-import Picker from "emoji-picker-react";
-import BASE_URL from "../../BaseUrl";
-import "../Styles/chat.css";
-import Swal from "sweetalert2";
-import { jwtDecode } from "jwt-decode";
-import { IoFilter } from "react-icons/io5";
-import { FaTrash, FaUserPlus, FaTag } from "react-icons/fa";
+"use client"
 
-import chime from "../../assets/notifications/notification-18-270129.mp3";
-import ding from "../../assets/notifications/notification-22-270130.mp3";
-import alertSound from "../../assets/notifications/notification-pluck-off-269290.mp3";
-import notify from "../../assets/notifications/notification-sound-2-253324.mp3";
-import treble from "../../assets/notifications/simple-notification-152054.mp3";
+import { useState, useEffect, useRef } from "react"
+import io from "socket.io-client"
+import axios from "axios"
+import { FaSearch, FaBell, FaPaperclip, FaPaperPlane, FaStar, FaTimes, FaMicrophone, FaRegSmile } from "react-icons/fa"
+import { LiaCheckDoubleSolid } from "react-icons/lia"
+import { MdCheck } from "react-icons/md"
+import Picker from "emoji-picker-react"
+import { jwtDecode } from "jwt-decode"
+import { IoFilter } from "react-icons/io5"
+import { FaTrash, FaUserPlus, FaTag } from "react-icons/fa"
+import BASE_URL from "../../BaseUrl"
+import { fetchMediaUrl, renderMessageContent } from "./FetchMedia";
+
+// Notification sounds
+import chime from "../../assets/notifications/notification-18-270129.mp3"
+import ding from "../../assets/notifications/notification-22-270130.mp3"
+import alertSound from "../../assets/notifications/notification-pluck-off-269290.mp3"
+import notify from "../../assets/notifications/notification-sound-2-253324.mp3"
+import treble from "../../assets/notifications/simple-notification-152054.mp3"
 
 const ChatComponent = () => {
-  const [chats, setChats] = useState([]);
-  const [selectedChat, setSelectedChat] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [search, setSearch] = useState("");
-  const [messageText, setMessageText] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [attachment, setAttachment] = useState(null);
-
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [showReactionPickerForMsg, setShowReactionPickerForMsg] = useState(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordedChunks, setRecordedChunks] = useState([]);
-  const mediaRecorderRef = useRef(null);
-
-  const token = localStorage.getItem("userToken");
-  const { uid } = jwtDecode(token);
-
-  const messagesEndRef = useRef(null);
-  const socketRef = useRef(null);
-  const fileInputRef = useRef(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  const toggleDropdown = () => {
-    setDropdownOpen((prev) => !prev);
-  };
-
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setDropdownOpen(false);
-    }
-  };
-
-  const [showTagModal, setShowTagModal] = useState(false);
-  const [showSaveContactModal, setShowSaveContactModal] = useState(false);
+  const [chats, setChats] = useState([])
+  const [selectedChat, setSelectedChat] = useState(null)
+  const [messages, setMessages] = useState([])
+  const [search, setSearch] = useState("")
+  const [messageText, setMessageText] = useState("")
+  const [sortOrder, setSortOrder] = useState("asc")
+  const [attachment, setAttachment] = useState(null)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [showReactionPickerForMsg, setShowReactionPickerForMsg] = useState(null)
+  const [isRecording, setIsRecording] = useState(false)
+  const [recordedChunks, setRecordedChunks] = useState([])
+  const [statusFilter, setStatusFilter] = useState("")
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [notificationSound, setNotificationSound] = useState(localStorage.getItem("notificationSound") || "")
+  const [showBellDropdown, setShowBellDropdown] = useState(false)
+  const [showTagModal, setShowTagModal] = useState(false)
+  const [showSaveContactModal, setShowSaveContactModal] = useState(false)
+  const [tagName, setTagName] = useState("")
+  const [chatTags, setChatTags] = useState([])
   const [contactDetails, setContactDetails] = useState({
     contactName: "",
     phoneNumber: "",
     phoneBookName: "Default",
-    phoneBookId: "default-id"
-  });
-  const [tagName, setTagName] = useState("");
+    phoneBookId: "default-id",
+    var1: "",
+    var2: "",
+    var3: "",
+    var4: "",
+    var5: "",
+  })
+  const [phonebooks, setPhonebooks] = useState([])
+  const [loadingPB, setLoadingPB] = useState(false)
 
-  const [phonebooks, setPhonebooks] = useState([]);
-    const [loadingPB, setLoadingPB] = useState(false);
+  // Refs
+  const messagesEndRef = useRef(null)
+  const socketRef = useRef(null)
+  const fileInputRef = useRef(null)
+  const mediaRecorderRef = useRef(null)
+  const dropdownRef = useRef(null)
+  const filterDropdownRef = useRef(null)
+  const bellDropdownRef = useRef(null)
 
+  // Get user token and ID
+  const token = localStorage.getItem("userToken") || ""
+  const uid = token ? jwtDecode(token).uid : ""
+
+  // Notification sound options
+  const notificationOptions = [
+    { label: "Chime", url: chime },
+    { label: "Ding", url: ding },
+    { label: "Alert", url: alertSound },
+    { label: "Notify", url: notify },
+    { label: "Treble", url: treble },
+  ]
+
+  // Initialize notification sound on mount
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-//add  defaulst notification sound if none on mount
-  useEffect(() => {
-    const storedSound = localStorage.getItem("notificationSound");
+    const storedSound = localStorage.getItem("notificationSound")
     if (!storedSound) {
-      const defaultOption = notificationOptions.find(opt => opt.label.toLowerCase() === "notify");
-      const defaultSound = defaultOption ? defaultOption.url : "";
-      localStorage.setItem("notificationSound", defaultSound);
-      setNotificationSound(defaultSound);
+      const defaultOption = notificationOptions.find((opt) => opt.label.toLowerCase() === "notify")
+      const defaultSound = defaultOption ? defaultOption.url : ""
+      localStorage.setItem("notificationSound", defaultSound)
+      setNotificationSound(defaultSound)
     } else {
-      setNotificationSound(storedSound);
+      setNotificationSound(storedSound)
     }
-  }, []);
-  
+  }, [])
 
-    useEffect(() => {
-      console.log("Initializing socket connection...");
-      fetchChats();
-
-      // ====================
-      // Sockets Connection
-      // ====================
+  // Socket connection
+  useEffect(() => {
+    console.log("Initializing socket connection...")
+    fetchChats()
 
     socketRef.current = io(BASE_URL, {
       auth: { token },
       transports: ["websocket"],
-    });
-    console.log("Socket connected:", socketRef.current);
-    socketRef.current.emit("user_connected", { userId: uid });
+    })
 
-    socketRef.current.on("update_chats", async (data) => {
-      console.log("Received update_chats event:", data);
-      await fetchChats();
+    socketRef.current.emit("user_connected", { userId: uid })
+
+    socketRef.current.on("update_chats", async () => {
+      await fetchChats()
       if (selectedChat?.chat_id) {
-        if (data.chats.some((c) => c.chat_id === selectedChat.chat_id)) {
-          fetchConversation(selectedChat.chat_id);
-        }
+        fetchConversation(selectedChat.chat_id)
       }
-    });
+    })
 
     socketRef.current.on("push_new_msg", (data) => {
-      console.log("Received push_new_msg event:", data);
       if (selectedChat && data.chatId === selectedChat.chat_id) {
-        setMessages((prev) => [...prev, data.msg]);
+        setMessages((prev) => [...prev, data.msg])
       }
-      console.log("New message logged:", data.msg);
-    });
+    })
 
     socketRef.current.on("update_delivery_status", (data) => {
-      console.log("Received update_delivery_status event:", data);
       if (selectedChat && data.chatId === selectedChat.chat_id) {
         setMessages((prev) =>
-          prev.map((msg) =>
-            msg.metaChatId === data.msgId ? { ...msg, status: data.status } : msg
-          )
-        );
+          prev.map((msg) => (msg.metaChatId === data.msgId ? { ...msg, status: data.status } : msg)),
+        )
       }
-    });
+    })
 
     socketRef.current.on("push_new_reaction", (data) => {
-      console.log("Received push_new_reaction event:", data);
       if (selectedChat && data.chatId === selectedChat.chat_id) {
         setMessages((prev) =>
-          prev.map((msg) =>
-            msg.metaChatId === data.msgId ? { ...msg, reaction: data.reaction } : msg
-          )
-        );
+          prev.map((msg) => (msg.metaChatId === data.msgId ? { ...msg, reaction: data.reaction } : msg)),
+        )
       }
-    });
+    })
 
     socketRef.current.on("update_conversations", (data) => {
-      console.log("Received update_conversations event:", data);
-    
-      if (data.notificationOff) { 
-        // Get the sound from state or localStorage
-        const soundUrl = notificationSound || localStorage.getItem("notificationSound");
+      if (!data.notificationOff) {
+        const soundUrl = notificationSound || localStorage.getItem("notificationSound")
         if (soundUrl) {
-          const audio = new Audio(soundUrl);
-          audio.play().catch(err => console.error("Error playing sound:", err));
+          const audio = new Audio(soundUrl)
+          audio.play().catch((err) => console.error("Error playing sound:", err))
         }
       }
-    });
+    })
 
     return () => {
       if (socketRef.current) {
-        console.log("Disconnecting socket...");
-        socketRef.current.disconnect();
+        socketRef.current.disconnect()
       }
-    };
-  }, [uid, selectedChat?.chat_id]);
+    }
+  }, [uid, selectedChat?.chat_id, notificationSound, token])
 
-  
-
+  // Scroll to bottom when messages change
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight
     }
-  }, [messages]);
+  }, [messages])
 
+  // Click outside handlers
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false)
+      }
+      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
+        setShowFilterDropdown(false)
+      }
+      if (bellDropdownRef.current && !bellDropdownRef.current.contains(event.target)) {
+        setShowBellDropdown(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
+  // Load phonebooks when save contact modal opens
+  useEffect(() => {
+    if (showSaveContactModal) {
+      loadPhonebooks()
+    }
+  }, [showSaveContactModal])
+
+  // Fetch tags when tag modal opens
+  useEffect(() => {
+    if (showTagModal) {
+      fetchTags()
+    }
+  }, [showTagModal])
+
+  // Fetch chats from API
   const fetchChats = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/inbox/get_chats`, {
         headers: { Authorization: `Bearer ${token}` },
-      });
+      })
       if (res.data.success) {
-        setChats(res.data.data);
+        setChats(res.data.data)
       } else {
-        console.error("Failed to fetch chats:", res.data.msg);
+        console.error("Failed to fetch chats:", res.data.msg)
       }
     } catch (error) {
-      console.error("Error fetching chats:", error);
+      console.error("Error fetching chats:", error)
     }
-  };
+  }
 
+  // Fetch conversation messages
   const fetchConversation = async (chatId) => {
     try {
       const response = await axios.post(
         `${BASE_URL}/api/inbox/get_convo`,
         { chatId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
       if (response.data.success) {
-        setMessages(response.data.data);
-        fetchTags();
+        setMessages(response.data.data)
       } else {
-        console.error("Failed to fetch conversation:", response.data.msg);
+        console.error("Failed to fetch conversation:", response.data.msg)
       }
     } catch (error) {
-      console.error("Error fetching conversation:", error);
+      console.error("Error fetching conversation:", error)
     }
-  };
+  }
 
+  // Fetch chat status
+  const fetchChatStatus = async (chatId) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/inbox/get_chat_status/${chatId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      if (response.data.success) {
+        setSelectedChat((prevChat) =>
+          prevChat
+            ? {
+                ...prevChat,
+                chat_status: response.data.status,
+              }
+            : null,
+        )
+      }
+    } catch (error) {
+      console.error("Error fetching chat status:", error)
+    }
+  }
+
+  // Fetch tags for a chat
+  const fetchTags = async () => {
+    if (!selectedChat || !selectedChat.chat_id) return
+
+    try {
+      const res = await axios.get(`${BASE_URL}/api/user/get_tags/${selectedChat.chat_id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      if (res.data.success) {
+        setChatTags(res.data.tags || [])
+      } else {
+        setChatTags([])
+      }
+    } catch (error) {
+      console.error("Error fetching tags:", error)
+      setChatTags([])
+    }
+  }
+
+  // Load phonebooks
+  const loadPhonebooks = async () => {
+    setLoadingPB(true)
+    try {
+      const res = await axios.get(`${BASE_URL}/api/phonebook/get_by_uid`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (res.data.success && Array.isArray(res.data.data)) {
+        const mappedPhonebooks = res.data.data.map((pb) => ({
+          id: pb.id,
+          phonebook_name: pb.name,
+        }))
+
+        setPhonebooks(mappedPhonebooks)
+      } else {
+        setPhonebooks([])
+      }
+    } catch (error) {
+      console.error("Error fetching phonebooks:", error)
+      setPhonebooks([])
+    } finally {
+      setLoadingPB(false)
+    }
+  }
+
+  // Handle chat selection
   const handleChatClick = (chat) => {
-    setSelectedChat(chat);
-    fetchConversation(chat.chat_id);
-    fetchChatStatus(chat.chat_id);
-  };
-  
-  const [statusFilter, setStatusFilter] = useState(""); 
-  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+    setSelectedChat(chat)
+    fetchConversation(chat.chat_id)
+    fetchChatStatus(chat.chat_id)
+  }
 
-  const sortedChats = chats
-  .filter(chat =>
-    (chat.sender_name || "").toLowerCase().includes(search.toLowerCase()) ||
-    (chat.sender_mobile || "").toLowerCase().includes(search.toLowerCase())
-  )
-  .filter(chat =>
-    statusFilter ? chat.chat_status === statusFilter : true
-  )
-  .sort((a, b) =>
-    sortOrder === "asc"
-      ? (a.sender_name || "").localeCompare(b.sender_name || "")
-      : (b.sender_name || "").localeCompare(a.sender_name || "")
-  );
-
+  // Toggle sort order
   const handleSortToggle = () => {
-    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
-  };
+    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
+  }
 
-  const filterDropdownRef = useRef(null);
-
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
-      setShowFilterDropdown(false);
-    }
-  };
-
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
-
-
+  // Send text message
   const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!messageText.trim() || !selectedChat) return;
+    e.preventDefault()
+    if (!messageText.trim() || !selectedChat) return
+
     const payload = {
       text: messageText,
       toNumber: selectedChat.sender_mobile,
       toName: selectedChat.sender_name,
       chatId: selectedChat.chat_id,
-    };
+    }
+
     try {
       const res = await axios.post(`${BASE_URL}/api/inbox/send_text`, payload, {
         headers: { Authorization: `Bearer ${token}` },
-      });
+      })
+
       if (res.data.success) {
-        setMessageText("");
+        setMessageText("")
       } else {
-        console.error("Message send failed:", res.data.msg);
-        Swal.fire({
-          icon: "error",
-          title: "Message Failed",
-          text: res.data.msg || "Something went wrong. Please try again.",
-        });
+        console.error("Message send failed:", res.data.msg)
+        alert(res.data.msg || "Failed to send message")
       }
     } catch (err) {
-      console.error("Error sending message:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: err.message || "An unexpected error occurred.",
-      });
+      console.error("Error sending message:", err)
+      alert("Error sending message")
     }
-  };
+  }
 
+  // Handle file attachment click
   const handleAttachmentClick = () => {
     if (fileInputRef.current) {
-      fileInputRef.current.click();
+      fileInputRef.current.click()
     }
-  };
+  }
 
+  // Process file selection
   const handleAttachmentChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file || !selectedChat) return;
-    e.target.value = null;
-    const reader = new FileReader();
+    const file = e.target.files?.[0]
+    if (!file || !selectedChat) return
+
+    // Reset file input
+    e.target.value = ""
+
+    // Create preview
+    const reader = new FileReader()
     reader.onloadend = () => {
       setAttachment({
         file,
         preview: reader.result,
         fileType: file.type,
         fileName: file.name,
-      });
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleSendAttachment = async () => {
-    if (!attachment || !selectedChat) return;
-    try {
-      const { file, fileType } = attachment;
-      console.log("Sending attachment of type:", fileType);
-      const uploadedUrl = await dummyUploadFile(file);
-      let endpoint = "";
-      let payload = {};
-      if (fileType.startsWith("image/")) {
-        endpoint = "/api/inbox/send_image";
-        payload = {
-          url: uploadedUrl,
-          toNumber: selectedChat.sender_mobile,
-          toName: selectedChat.sender_name,
-          chatId: selectedChat.chat_id,
-          caption: "",
-        };
-      } else if (fileType.startsWith("video/")) {
-        endpoint = "/api/inbox/send_video";
-        payload = {
-          url: uploadedUrl,
-          toNumber: selectedChat.sender_mobile,
-          toName: selectedChat.sender_name,
-          chatId: selectedChat.chat_id,
-          caption: "",
-        };
-      } else if (fileType.startsWith("audio/")) {
-        endpoint = "/api/inbox/send_audio";
-        payload = {
-          url: uploadedUrl,
-          toNumber: selectedChat.sender_mobile,
-          toName: selectedChat.sender_name,
-          chatId: selectedChat.chat_id,
-        };
-      } else {
-        endpoint = "/api/inbox/send_doc";
-        payload = {
-          url: uploadedUrl,
-          toNumber: selectedChat.sender_mobile,
-          toName: selectedChat.sender_name,
-          chatId: selectedChat.chat_id,
-          caption: "",
-        };
-      }
-      const res = await axios.post(`${BASE_URL}${endpoint}`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.data.success) {
-        console.log("Attachment sent successfully");
-        setAttachment(null);
-      } else {
-        console.error("Attachment send failed:", res.data.msg);
-        Swal.fire({
-          icon: "error",
-          title: "Attachment Failed",
-          text: res.data.msg || "Something went wrong. Please try again.",
-        });
-      }
-    } catch (err) {
-      console.error("Error sending attachment:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: err.message || "An unexpected error occurred.",
-      });
+      })
     }
-  };
+    reader.readAsDataURL(file)
+  }
 
-  const dummyUploadFile = (file) => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve(reader.result);
-      };
-      reader.readAsDataURL(file);
+ // Additional state for attachment caption:
+const [attachmentCaption, setAttachmentCaption] = useState("");
+
+const loadMediaForMessages = async (messages) => {
+  const updatedMessages = await Promise.all(
+    messages.map(async (msg) => {
+      if (msg.msgContext?.image) {
+        const { link, id } = msg.msgContext.image;
+        // If the link is invalid (or contains "undefined") and an image id exists:
+        if ((!link || link.includes("undefined")) && id) {
+          const fetchedUrl = await fetchMediaUrl(id);
+          return { ...msg, fetchedUrl };
+        }
+      }
+      return msg;
+    })
+  );
+  setMessages(updatedMessages);
+};
+
+
+
+
+// Updated attachment preview to include caption input:
+{attachment && (
+  <div className="attachment-preview">
+    <div className="attachment-content">
+      {attachment.fileType.startsWith("image/") ? (
+        <img
+          src={attachment.preview || "/placeholder.svg"}
+          alt="attachment preview"
+          className="attachment-img"
+        />
+      ) : attachment.fileType.startsWith("video/") ? (
+        <video controls className="attachment-video">
+          <source src={attachment.preview} type={attachment.fileType} />
+          Your browser does not support the video tag.
+        </video>
+      ) : attachment.fileType.startsWith("audio/") ? (
+        <audio controls className="attachment-audio">
+          <source src={attachment.preview} type={attachment.fileType} />
+          Your browser does not support the audio element.
+        </audio>
+      ) : (
+        <div className="attachment-doc">
+          <p>{attachment.fileName}</p>
+        </div>
+      )}
+    </div>
+    <div className="attachment-caption">
+      <input
+        type="text"
+        placeholder="Add a caption..."
+        value={attachmentCaption}
+        onChange={(e) => setAttachmentCaption(e.target.value)}
+      />
+    </div>
+    <button className="attachment-close" onClick={() => { setAttachment(null); setAttachmentCaption(""); }}>
+      <FaTimes />
+    </button>
+    <button className="send-attachment-btn" onClick={handleSendAttachment}>
+      Send Attachment
+    </button>
+  </div>
+)}
+
+// Upload file to the backend (which then uploads to WhatsApp)
+const uploadFile = async (file) => {
+  console.log("[FRONTEND] Starting file upload process using express-fileupload...");
+  const formData = new FormData();
+  formData.append('file', file);
+  try {
+    console.log("[FRONTEND] Sending file to /api/fileupload/uploadMedia endpoint");
+    const response = await axios.post(`${BASE_URL}/api/fileupload/uploadMedia`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`
+      },
     });
-  };
+    console.log("[FRONTEND] Upload response:", response.data);
+    if (response.data.success) {
+      // Return the WhatsApp media data (for example, { id: "2430206863994949" })
+      return response.data.data;
+    } else {
+      throw new Error(response.data.msg);
+    }
+  } catch (error) {
+    console.error("[FRONTEND] File upload failed:", error);
+    throw error;
+  }
+};
 
-  // New function to send reactions via socket
+
+async function handleSendAttachment() {
+  if (!attachment || !selectedChat) return;
+  try {
+    console.log("[FRONTEND] Initiating attachment send process...");
+    // Upload the file and get the media identifier from the backend.
+    const uploadedMedia = await uploadFile(attachment.file);
+    console.log("[FRONTEND] Received media data from backend:", uploadedMedia);
+    // Use the returned media ID
+    const mediaIdentifier = uploadedMedia.id ? uploadedMedia.id : uploadedMedia;
+
+    let endpoint = "";
+    let payload = {};
+    // Build payload with mediaId and include the caption from attachmentCaption.
+    if (attachment.fileType.startsWith("image/")) {
+      endpoint = "/api/inbox/send_image";
+      payload = {
+        mediaId: mediaIdentifier, // using mediaId here
+        toNumber: selectedChat.sender_mobile,
+        toName: selectedChat.sender_name,
+        chatId: selectedChat.chat_id,
+        caption: attachmentCaption,  // include caption
+      };
+    } else if (attachment.fileType.startsWith("video/")) {
+      endpoint = "/api/inbox/send_video";
+      payload = {
+        mediaId: mediaIdentifier,
+        toNumber: selectedChat.sender_mobile,
+        toName: selectedChat.sender_name,
+        chatId: selectedChat.chat_id,
+        caption: attachmentCaption,
+      };
+    } else if (attachment.fileType.startsWith("audio/")) {
+      endpoint = "/api/inbox/send_audio";
+      payload = {
+        mediaId: mediaIdentifier,
+        toNumber: selectedChat.sender_mobile,
+        toName: selectedChat.sender_name,
+        chatId: selectedChat.chat_id,
+      };
+    } else {
+      endpoint = "/api/inbox/send_doc";
+      payload = {
+        mediaId: mediaIdentifier,
+        toNumber: selectedChat.sender_mobile,
+        toName: selectedChat.sender_name,
+        chatId: selectedChat.chat_id,
+        caption: attachmentCaption,
+      };
+    }
+    console.log("[FRONTEND] Payload for sending attachment:", payload);
+
+    // Send the attachment message using the proper endpoint.
+    const res = await axios.post(`${BASE_URL}${endpoint}`, payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    console.log("[FRONTEND] Send attachment response:", res.data);
+    if (res.data.success) {
+      setAttachment(null);
+      setAttachmentCaption("");
+    } else {
+      alert(res.data.msg || "Failed to send attachment");
+    }
+  } catch (err) {
+    console.error("[FRONTEND] Error sending attachment:", err);
+    alert("Error sending attachment");
+  }
+};
+
+
+
+  // Send reaction to message
   const handleSendReaction = (msg, emoji) => {
-    if (!selectedChat) return;
+    if (!selectedChat) return
+
     socketRef.current.emit("push_new_reaction", {
       chatId: selectedChat.chat_id,
       msgId: msg.metaChatId,
       reaction: emoji,
-    });
-    setMessages((prev) =>
-      prev.map((m) =>
-        m.metaChatId === msg.metaChatId ? { ...m, reaction: emoji } : m
-      )
-    );
-    setShowReactionPickerForMsg(null);
-  };
+    })
 
+    setMessages((prev) => prev.map((m) => (m.metaChatId === msg.metaChatId ? { ...m, reaction: emoji } : m)))
 
-  const onEmojiClick = (emojiData, event) => {
-    setMessageText((prev) => prev + emojiData.emoji);
-    setShowEmojiPicker(false);
-  };
-  
+    setShowReactionPickerForMsg(null)
+  }
 
-  // Voice recording: start recording using MediaRecorder API
+  // Add emoji to message text
+  const onEmojiClick = (emojiData) => {
+    setMessageText((prev) => prev + emojiData.emoji)
+    setShowEmojiPicker(false)
+  }
+
+  // Start voice recording
   const startRecording = async () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      alert("Your browser does not support voice recording");
-      return;
+      alert("Your browser does not support voice recording")
+      return
     }
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-      setRecordedChunks([]);
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mediaRecorder = new MediaRecorder(stream)
+      mediaRecorderRef.current = mediaRecorder
+      setRecordedChunks([])
+
       mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) {
-          setRecordedChunks((prev) => prev.concat(e.data));
+          setRecordedChunks((prev) => [...prev, e.data])
         }
-      };
-      mediaRecorder.onstop = handleVoiceRecordingStop;
-      mediaRecorder.start();
-      setIsRecording(true);
-    } catch (error) {
-      console.error("Error accessing microphone", error);
-    }
-  };
+      }
 
-  // Stop recording and send voice message
+      mediaRecorder.onstop = handleVoiceRecordingStop
+      mediaRecorder.start()
+      setIsRecording(true)
+    } catch (error) {
+      console.error("Error accessing microphone", error)
+    }
+  }
+
+  // Stop voice recording
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
+      mediaRecorderRef.current.stop()
+      setIsRecording(false)
     }
-  };
+  }
 
-  // When recording stops, send the audio blob as a voice message
+  // Process and send voice recording
   const handleVoiceRecordingStop = async () => {
-    const blob = new Blob(recordedChunks, { type: "audio/webm" });
-    const reader = new FileReader();
+    if (!selectedChat) return
+
+    const blob = new Blob(recordedChunks, { type: "audio/webm" })
+    const reader = new FileReader()
+
     reader.onloadend = async () => {
-      const voiceUrl = reader.result;
+      const voiceUrl = reader.result
+
       try {
         const payload = {
           url: voiceUrl,
           toNumber: selectedChat.sender_mobile,
           toName: selectedChat.sender_name,
           chatId: selectedChat.chat_id,
-        };
+        }
+
         const res = await axios.post(`${BASE_URL}/api/inbox/send_audio`, payload, {
           headers: { Authorization: `Bearer ${token}` },
-        });
+        })
+
         if (!res.data.success) {
-          Swal.fire({
-            icon: "error",
-            title: "Voice Message Failed",
-            text: res.data.msg || "Something went wrong. Please try again.",
-          });
+          alert(res.data.msg || "Failed to send voice message")
         }
       } catch (err) {
-        console.error("Error sending voice message:", err);
-      }
-    };
-    reader.readAsDataURL(blob);
-  };
-
-  // Render message status
-  const renderMessageStatus = (msg) => {
-    if (msg.route === "OUTGOING") {
-      if (msg.status === "read") {
-        return <LiaCheckDoubleSolid className="message-status-read" />;
-      } else if (msg.status === "delivered") {
-        return <LiaCheckDoubleSolid className="message-status-delivered" />;
-      } else {
-        return <MdCheck className="message-status-sent" />;
+        console.error("Error sending voice message:", err)
       }
     }
-    return null;
-  };
 
-  // Render interactive reply button
-  const renderInteractiveReply = (msg) => {
-    if (msg.type === "button" && msg.msgContext?.interactive) {
-      return (
-        <div className="reply-options">
-          {msg.msgContext.interactive.action.buttons.map((btn, idx) => (
-            <button key={idx} className="reply-btn">
-              {btn.reply.title}
-            </button>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
+    reader.readAsDataURL(blob)
+  }
 
-  // Render message content based on type
-  const renderMessageContent = (msg) => {
-    if (msg.msgContext?.text?.body) {
-      return <span className="message-text">{msg.msgContext.text.body}</span>;
-    } else if (msg.msgContext?.image?.link) {
-      return (
-        <img
-          src={msg.msgContext.image.link}
-          alt="Sent"
-          className="message-img"
-        />
-      );
-    } else if (msg.msgContext?.video?.link) {
-      return (
-        <video controls className="message-video">
-          <source src={msg.msgContext.video.link} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      );
-    } else if (msg.msgContext?.document?.link) {
-      return (
-        <div className="message-doc">
-          <p>{msg.msgContext.document.caption || "Document"}</p>
-        </div>
-      );
-    } else if (msg.msgContext?.audio?.link) {
-      return (
-        <audio controls className="message-audio">
-          <source src={msg.msgContext.audio.link} type="audio/webm" />
-          Your browser does not support the audio element.
-        </audio>
-      );
-    }
-    return <span className="message-text">Unsupported message type</span>;
-  };
-
+  // Update chat status
   const updateChatStatus = async (status) => {
+    if (!selectedChat) return
+
     try {
       await axios.post(
         `${BASE_URL}/api/inbox/update_chat_status`,
         { chatId: selectedChat.chat_id, status },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      // Update the local state to reflect the new status
-      setSelectedChat({ ...selectedChat, chat_status: status });
-      fetchChats();
-    } catch (error) {
-      console.error("Failed to update chat status", error);
-      Swal.fire({
-        icon: "error",
-        title: "Update Failed",
-        text: error.response?.data?.msg || "Unable to update status.",
-      });
-    }
-  };
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
 
-  const fetchChatStatus = async (chatId) => {
-    try {
-      const response = await axios.get(`${BASE_URL}/api/inbox/get_chat_status/${chatId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      
-      if (response.data.success) {
-        setSelectedChat(prevChat => ({
-          ...prevChat,
-          chat_status: response.data.status
-        }));
-      } else {
-        console.error("Failed to fetch chat status:", response.data.msg);
-      }
+      setSelectedChat({ ...selectedChat, chat_status: status })
+      fetchChats()
     } catch (error) {
-      console.error("Error fetching chat status:", error);
+      console.error("Failed to update chat status", error)
+      alert("Failed to update status")
     }
-  };
+  }
 
+  // Delete chat
   const deleteChat = async (chatId) => {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "This action will permanently delete the chat!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    });
-  
-    if (!result.isConfirmed) return;
-  
+    if (!confirm("Are you sure you want to delete this chat?")) return
+
     try {
       const res = await axios.post(
         `${BASE_URL}/api/inbox/del_chat`,
         { chatId },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-  
-      if (res.data.success) {
-        Swal.fire("Deleted!", res.data.msg, "success");
-        setChats(chats.filter(chat => chat.chat_id !== chatId));
-        setSelectedChat(null);
-      } else {
-        Swal.fire("Error", res.data.msg, "error");
-      }
-    } catch (error) {
-      console.error("Error deleting chat:", error);
-      Swal.fire("Error", "Could not delete the chat", "error");
-    }
-  };
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
 
-  const loadPhonebooks = async () => {
-    setLoadingPB(true);
-    try {
-      const res = await axios.get(`${BASE_URL}/api/phonebook/get_by_uid`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.data.success && Array.isArray(res.data.data)) {
-        const mappedPhonebooks = res.data.data.map(pb => ({
-          id: pb.id,
-          phonebook_name: pb.name 
-        }));
-  
-        setPhonebooks(mappedPhonebooks);
+      if (res.data.success) {
+        alert(res.data.msg || "Chat deleted successfully")
+        setChats(chats.filter((chat) => chat.chat_id !== chatId))
+        setSelectedChat(null)
       } else {
-        setPhonebooks([]);
+        alert(res.data.msg || "Failed to delete chat")
       }
     } catch (error) {
-      console.error("Error fetching phonebooks:", error);
-      setPhonebooks([]);
-    } finally {
-      setLoadingPB(false);
+      console.error("Error deleting chat:", error)
+      alert("Could not delete the chat")
     }
-  };
-  
-  
-  
-  useEffect(() => {
-    if (showSaveContactModal) {
-      console.log("Loading phonebooks..."); 
-      loadPhonebooks();
-    }
-  }, [showSaveContactModal]);
-    
-  
+  }
+
+  // Check if contact exists and show save modal
   const checkAndSaveContact = async (mobile) => {
-  console.log(mobile + "mobile");
-  
     try {
       const res = await axios.post(
         `${BASE_URL}/api/user/check_contact`,
         { mobile },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-  
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+
       if (res.data.success) {
-        Swal.fire("Info", "This contact already exists in your phonebook.", "info");
+        alert("This contact already exists in your phonebook.")
       } else {
         const defaultPhonebook =
           Array.isArray(res.data.phonebook) && res.data.phonebook.length > 0
             ? res.data.phonebook[0]
-            : { id: "default-id", phonebook_name: "Default" };
-  
-        setShowSaveContactModal(true);
+            : { id: "default-id", phonebook_name: "Default" }
+
+        setShowSaveContactModal(true)
         setContactDetails({
-          contactName: selectedChat.sender_name,
+          contactName: selectedChat?.sender_name || "",
           phoneNumber: mobile,
           phoneBookName: defaultPhonebook.phonebook_name,
           phoneBookId: defaultPhonebook.id,
@@ -673,253 +681,217 @@ useEffect(() => {
           var2: "",
           var3: "",
           var4: "",
-          var5: ""
-        });
+          var5: "",
+        })
       }
     } catch (error) {
-      Swal.fire("error", "Error checking contact:", "error");
+      alert("Error checking contact")
     }
-  };
-  
-  
+  }
+
+  // Save contact to phonebook
   const saveContact = async () => {
     try {
-      const res = await axios.post(
-        `${BASE_URL}/api/user/save_contact`,
-        contactDetails,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await axios.post(`${BASE_URL}/api/user/save_contact`, contactDetails, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
       if (res.data.success) {
-        Swal.fire("Success", res.data.msg, "success");
-        setShowSaveContactModal(false);
+        alert(res.data.msg || "Contact saved successfully")
+        setShowSaveContactModal(false)
       } else {
-        Swal.fire("Error", res.data.msg, "error");
+        alert(res.data.msg || "Failed to save contact")
       }
     } catch (error) {
-      console.error("Error saving contact:", error);
-      Swal.fire("Error", "Failed to save contact", "error");
+      console.error("Error saving contact:", error)
+      alert("Failed to save contact")
     }
-  };
+  }
 
-  useEffect(() => {
-    if (showTagModal) {;
-    }
-  }, [showTagModal]);
-  
-
+  // Save tag for chat
   const saveTag = async () => {
-    if (!tagName.trim()) {
-      Swal.fire("Warning", "Please enter a tag", "warning");
-      return;
+    if (!tagName.trim() || !selectedChat) {
+      alert("Please enter a tag")
+      return
     }
+
     try {
       const res = await axios.post(
         `${BASE_URL}/api/user/push_tag`,
         { chatId: selectedChat.chat_id, tag: tagName },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+
       if (res.data.success) {
-        Swal.fire("Success", res.data.msg, "success");
-        // setShowTagModal(false);
-        fetchChats();
-        fetchTags();
+        alert(res.data.msg || "Tag added successfully")
+        fetchChats()
+        fetchTags()
+        setTagName("")
       } else {
-        Swal.fire("Error", res.data.msg, "error");
+        alert(res.data.msg || "Failed to add tag")
       }
     } catch (error) {
-      console.error("Error adding tag:", error);
-      Swal.fire("Error", "Could not add tag", "error");
+      console.error("Error adding tag:", error)
+      alert("Could not add tag")
     }
-  };
-
-const [chatTags, setChatTags] = useState([]);
-
-const fetchTags = async () => {
-  if (!selectedChat || !selectedChat.chat_id) return;
-
-  try {
-    const res = await axios.get(`${BASE_URL}/api/user/get_tags/${selectedChat.chat_id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (res.data.success) {
-      setChatTags(res.data.tags || []);
-    } else {
-      setChatTags([]);
-    }
-  } catch (error) {
-    console.error("Error fetching tags:", error);
-    setChatTags([]);
   }
-};
 
-// Fetch tags when the modal opens
-useEffect(() => {
-  if (showTagModal) {
-    fetchTags();
-  }
-}, [showTagModal]);
-
+  // Delete tag from chat
   const deleteTag = async (tag) => {
-    try {
-      await axios.post(`${BASE_URL}/api/user/del_tag`, { chatId: selectedChat.chat_id, tag }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-  
-      Swal.fire("Deleted!", "Tag has been removed.", "success");
-      fetchTags();
-    } catch (error) {
-      console.error("Failed to delete tag:", error);
-      Swal.fire("Error", "Could not delete the tag.", "error");
-    }
-  };
+    if (!selectedChat) return
 
+    try {
+      await axios.post(
+        `${BASE_URL}/api/user/del_tag`,
+        { chatId: selectedChat.chat_id, tag },
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+
+      alert("Tag has been removed.")
+      fetchTags()
+    } catch (error) {
+      console.error("Failed to delete tag:", error)
+      alert("Could not delete the tag.")
+    }
+  }
+
+  // Select notification sound
+  const handleNotificationSelect = (soundUrl) => {
+    setNotificationSound(soundUrl)
+    localStorage.setItem("notificationSound", soundUrl)
+    setShowBellDropdown(false)
+
+    const audio = new Audio(soundUrl)
+    audio.play().catch((err) => console.error("Error playing sound:", err))
+  }
+
+  // Generate avatar color based on name
   const getAvatarColor = (name) => {
     const colors = [
-      "#FF0000", "#FF4D4D", "#FF6666", "#FF3333", "#CC0000", 
-      "#FFA500", "#FFB347", "#FFC04C", "#FF8C00",           
-      "#008000", "#32CD32", "#00FF7F", "#2E8B57",           
-      "#0000FF", "#1E90FF", "#6495ED", "#4682B4",            
-      "#808080", "#A9A9A9", "#C0C0C0", "#D3D3D3",             
-      "#000000", "#222222", "#333333", "#444444",             
-      "#00FFFF", "#00CED1", "#40E0D0", "#48D1CC", "#5F9EA0"    
-    ];
-    if (!name) return colors[0];
-    // Use the char code of the first letter modulo the number of colors
-    const index = name.charCodeAt(0) % colors.length;
-    return colors[index];
-  };
+      "#FF0000",  "#FF4D4D", "#FF6666", "#FF3333",
+      "#CC0000",  "#FFA500", "#FFB347", "#FFC04C",
+      "#FF8C00",  "#008000", "#32CD32", "#00FF7F",
+      "#2E8B57", "#0000FF", "#1E90FF", "#6495ED",
+      "#4682B4",  "#808080", "#A9A9A9", "#C0C0C0",
+      "#D3D3D3",  "#000000", "#222222", "#333333",
+      "#444444",  "#00FFFF", "#00CED1", "#40E0D0",
+      "#48D1CC",  "#5F9EA0"
+    ]
 
+    if (!name) return colors[0]
+    const index = name.charCodeAt(0) % colors.length
+    return colors[index]
+  }
+
+  // Avatar placeholder component
   const AvatarPlaceholder = ({ seed }) => {
-    const color = getAvatarColor(seed);
-    const letter = seed ? seed.charAt(0).toUpperCase() : "?";
+    const color = getAvatarColor(seed)
+    const letter = seed ? seed.charAt(0).toUpperCase() : "?"
+
     return (
       <div className="avatar-placeholder" style={{ backgroundColor: color }}>
         {letter}
       </div>
-    );
-  }; 
-  // ======================
-  // Notification sounds
-  // ======================
-  const [notificationSound, setNotificationSound] = useState(localStorage.getItem("notificationSound") || "");
-  const [showBellDropdown, setShowBellDropdown] = useState(false);
+    )
+  }
 
-  const notificationOptions = [
-    { label: "Chime", url: chime },
-    { label: "Ding", url: ding },
-    { label: "Alert", url: alertSound },
-    { label: "Notify", url: notify },
-    { label: "Treble", url: treble }
-  ];
-  
-
-  const bellDropdownRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutsideBell = (event) => {
-      if (bellDropdownRef.current && !bellDropdownRef.current.contains(event.target)) {
-        setShowBellDropdown(false);
+  // Render message status indicator
+  const renderMessageStatus = (msg) => {
+    if (msg.route === "OUTGOING") {
+      if (msg.status === "read") {
+        return <LiaCheckDoubleSolid className="message-status-read" />
+      } else if (msg.status === "delivered") {
+        return <LiaCheckDoubleSolid className="message-status-delivered" />
+      } else {
+        return <MdCheck className="message-status-sent" />
       }
-    };
-
-    document.addEventListener("mousedown", handleClickOutsideBell);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutsideBell);
-    };
-  }, []);
-
-  const handleNotificationSelect = (soundUrl) => {
-    setNotificationSound(soundUrl);
-    localStorage.setItem("notificationSound", soundUrl);
-    setShowBellDropdown(false);
-    
-    const audio = new Audio(soundUrl);
-    audio.play().catch(err => console.error("Error playing sound:", err));
-  };
-  
-
-  
+    }
+    return null
+  }
+  // Filter and sort chats
+  const sortedChats = chats
+    .filter(
+      (chat) =>
+        (chat.sender_name || "").toLowerCase().includes(search.toLowerCase()) ||
+        (chat.sender_mobile || "").toLowerCase().includes(search.toLowerCase()),
+    )
+    .filter((chat) => (statusFilter ? chat.chat_status === statusFilter : true))
+    .sort((a, b) =>
+      sortOrder === "asc"
+        ? (a.sender_name || "").localeCompare(b.sender_name || "")
+        : (b.sender_name || "").localeCompare(a.sender_name || ""),
+    )
 
   return (
     <div className="chat-container">
+      {/* Sidebar with chat list */}
       <div className="chat-sidebar">
         <div className="sidebar-top">
-        <div className="_search-container d-flex flex-row align-items-center">
-          <div className="_search-box me-2">
-            <FaSearch className="icon" />
-            <input
-              type="text"
-              placeholder="Search by name/mobile"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <button
-              className="_filter-button"
-              onClick={() => setShowFilterDropdown((prev) => !prev)}
-            >
-           <IoFilter />
-            </button>
-          </div>
-
-          {showFilterDropdown && (
-          <div className="_filter-dropdown" ref={filterDropdownRef}>
-            <div className="_filter-row">
-              <label>Sort Order:</label>
-              <button
-                className="_sort-button"
-                onClick={() => {
-                  handleSortToggle();
-                  setShowFilterDropdown(false);
-                }}
-              >
-                {sortOrder === "asc" ? "Ascending ⬆" : "Descending ⬇"}
+          <div className="_search-container d-flex flex-row align-items-center">
+            <div className="_search-box me-2">
+              <FaSearch className="icon" />
+              <input
+                type="text"
+                placeholder="Search by name/mobile"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <button className="_filter-button" onClick={() => setShowFilterDropdown((prev) => !prev)}>
+                <IoFilter />
               </button>
             </div>
-            <div className="_filter-row">
-              <label>Filter by Status:</label>
-              <select
-                value={statusFilter}
-                onChange={(e) => {
-                  setStatusFilter(e.target.value);
-                  setShowFilterDropdown(false);
-                }}
-              >
-                <option value="">All</option>
-                <option value="open">Open</option>
-                <option value="pending">Pending</option>
-                <option value="resolved">Resolved</option>
-              </select>
+
+            {showFilterDropdown && (
+              <div className="_filter-dropdown" ref={filterDropdownRef}>
+                <div className="_filter-row">
+                  <label>Sort Order:</label>
+                  <button
+                    className="_sort-button"
+                    onClick={() => {
+                      handleSortToggle()
+                      setShowFilterDropdown(false)
+                    }}
+                  >
+                    {sortOrder === "asc" ? "Ascending ⬆" : "Descending ⬇"}
+                  </button>
+                </div>
+                <div className="_filter-row">
+                  <label>Filter by Status:</label>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => {
+                      setStatusFilter(e.target.value)
+                      setShowFilterDropdown(false)
+                    }}
+                  >
+                    <option value="">All</option>
+                    <option value="open">Open</option>
+                    <option value="pending">Pending</option>
+                    <option value="resolved">Resolved</option>
+                  </select>
+                </div>
+              </div>
+            )}
+
+            <div className="_search-icons">
+              <FaBell className="icon bell-icon" onClick={() => setShowBellDropdown((prev) => !prev)} />
+              {showBellDropdown && (
+                <div className="bell-dropdown" ref={bellDropdownRef}>
+                  <ul>
+                    {notificationOptions.map((opt) => (
+                      <li key={opt.label} onClick={() => handleNotificationSelect(opt.url)}>
+                        {opt.label}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
-        )}
-
-        <div className="_search-icons">
-          <FaBell
-            className="icon bell-icon"
-            onClick={() => setShowBellDropdown(prev => !prev)}
-          />
-          {showBellDropdown && (
-            <div className="bell-dropdown" ref={bellDropdownRef}>
-              <ul>
-                {notificationOptions.map(opt => (
-                  <li key={opt.label} onClick={() => handleNotificationSelect(opt.url)}>
-                    {opt.label}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-
-
-        </div>
         </div>
 
         <div className="chat-list">
-          {sortedChats.length === 0 && (
-            <p className="no-chats">No chats found</p>
-          )}
+          {sortedChats.length === 0 && <p className="no-chats">No chats found</p>}
 
           {sortedChats.map((chat) => (
             <div
@@ -933,33 +905,36 @@ useEffect(() => {
 
               <div className="chat-info">
                 <div>
-                <p className="chat-name">{chat.sender_name}</p>
-                <p className="chat-mobile">{chat.sender_mobile}</p>
+                  <p className="chat-name">{chat.sender_name}</p>
+                  <p className="chat-mobile">{chat.sender_mobile}</p>
                 </div>
                 <div>
-                <p className={`chat-status ${
-                  chat.chat_status === "open"
-                    ? "status-open"
-                    : chat.chat_status === "pending"
-                    ? "status-pending"
-                    : "status-resolved"
-                }`}>
-                  {chat.chat_status.charAt(0).toUpperCase() + chat.chat_status.slice(1)}
-                </p>
+                  <p
+                    className={`chat-status ${
+                      chat.chat_status === "open"
+                        ? "status-open"
+                        : chat.chat_status === "pending"
+                          ? "status-pending"
+                          : "status-resolved"
+                    }`}
+                  >
+                    {chat.chat_status ? chat.chat_status.charAt(0).toUpperCase() + chat.chat_status.slice(1) : "Open"}
+                  </p>
                 </div>
               </div>
             </div>
           ))}
-
         </div>
       </div>
+
+      {/* Main chat window */}
       <div className="chat-main">
         {selectedChat ? (
           <div className="chat-window">
             <div className="chat-header">
-            <div className="header-avatar">
-              <AvatarPlaceholder seed={selectedChat.sender_name} />
-            </div>
+              <div className="header-avatar">
+                <AvatarPlaceholder seed={selectedChat.sender_name} />
+              </div>
 
               <div className="header-info">
                 <div className="header-left">
@@ -983,15 +958,10 @@ useEffect(() => {
                   />
 
                   {/* Add Chat Tag Icon */}
-                  <FaTag
-                    className="header-icon tag-icon me-4"
-                    onClick={() => setShowTagModal(true)}
-                    title="Add Tag"
-                  />
+                  <FaTag className="header-icon tag-icon me-4" onClick={() => setShowTagModal(true)} title="Add Tag" />
 
-              
                   <div className="btn-group" ref={dropdownRef}>
-                    <button className="btn dropdown-toggle" onClick={toggleDropdown}>
+                    <button className="btn dropdown-toggle" onClick={() => setDropdownOpen(!dropdownOpen)}>
                       {selectedChat?.chat_status || "Select Status"}
                     </button>
 
@@ -1000,8 +970,8 @@ useEffect(() => {
                         <button
                           className={`dropdown-item ${selectedChat?.chat_status === "open" ? "active" : ""}`}
                           onClick={() => {
-                            updateChatStatus("open");
-                            setDropdownOpen(false);
+                            updateChatStatus("open")
+                            setDropdownOpen(false)
                           }}
                         >
                           Open
@@ -1009,17 +979,17 @@ useEffect(() => {
                         <button
                           className={`dropdown-item ${selectedChat?.chat_status === "pending" ? "active" : ""}`}
                           onClick={() => {
-                            updateChatStatus("pending");
-                            setDropdownOpen(false);
+                            updateChatStatus("pending")
+                            setDropdownOpen(false)
                           }}
                         >
                           Pending
                         </button>
                         <button
-                          className={`dropdown-item ${selectedChat?.chat_status === "solved" ? "active" : ""}`}
+                          className={`dropdown-item ${selectedChat?.chat_status === "resolved" ? "active" : ""}`}
                           onClick={() => {
-                            updateChatStatus("solved");
-                            setDropdownOpen(false);
+                            updateChatStatus("resolved")
+                            setDropdownOpen(false)
                           }}
                         >
                           Resolved
@@ -1029,7 +999,7 @@ useEffect(() => {
                   </div>
                 </div>
               </div>
-              </div>
+            </div>
 
             <div className="chat-body" ref={messagesEndRef}>
               {messages.length === 0 ? (
@@ -1038,67 +1008,49 @@ useEffect(() => {
                 messages.map((msg, index) => (
                   <div
                     key={index}
-                    className={`chat_message mt-4 ${
-                      msg.route === "OUTGOING" ? "chat_receiver" : "chat-sender"
-                    }`}
+                    className={`chat_message mt-4 ${msg.route === "OUTGOING" ? "chat_receiver" : "chat-sender"}`}
                   >
                     <span className="chat_name">{msg.senderName}</span>
                     {msg.star && <FaStar className="star-icon" />}
                     {renderMessageContent(msg)}
-                    {renderInteractiveReply(msg)}
-                    <span className="chat_timestemp">
-                      {new Date(msg.timestamp * 1000).toLocaleTimeString()}
-                    </span>
+                    <span className="chat_timestemp">{new Date(msg.timestamp * 1000).toLocaleTimeString()}</span>
                     {renderMessageStatus(msg)}
                     <div className="message-reaction">{msg.reaction}</div>
-                    {/* <button
-                      className="reaction-btn"
+                    <button
+                      className="reaction-btn d-none"
                       onClick={() =>
-                        setShowReactionPickerForMsg(
-                          showReactionPickerForMsg === msg.metaChatId
-                            ? null
-                            : msg.metaChatId
-                        )
+                        setShowReactionPickerForMsg(showReactionPickerForMsg === msg.metaChatId ? null : msg.metaChatId)
                       }
                     >
                       <FaRegSmile />
                     </button>
                     {showReactionPickerForMsg === msg.metaChatId && (
                       <div className="reaction-picker">
-                        <Picker
-                          onEmojiClick={(e, emojiObj) =>
-                            handleSendReaction(msg, emojiObj.emoji)
-                          }
-                        />
+                        <Picker onEmojiClick={(emojiData) => handleSendReaction(msg, emojiData.emoji)} />
                       </div>
-                    )} */}
+                    )}
                   </div>
                 ))
               )}
             </div>
+
             {attachment && (
               <div className="attachment-preview">
                 <div className="attachment-content">
                   {attachment.fileType.startsWith("image/") ? (
                     <img
-                      src={attachment.preview}
+                      src={attachment.preview || "/placeholder.svg"}
                       alt="attachment preview"
                       className="attachment-img"
                     />
                   ) : attachment.fileType.startsWith("video/") ? (
                     <video controls className="attachment-video">
-                      <source
-                        src={attachment.preview}
-                        type={attachment.fileType}
-                      />
+                      <source src={attachment.preview} type={attachment.fileType} />
                       Your browser does not support the video tag.
                     </video>
                   ) : attachment.fileType.startsWith("audio/") ? (
                     <audio controls className="attachment-audio">
-                      <source
-                        src={attachment.preview}
-                        type={attachment.fileType}
-                      />
+                      <source src={attachment.preview} type={attachment.fileType} />
                       Your browser does not support the audio element.
                     </audio>
                   ) : (
@@ -1107,34 +1059,21 @@ useEffect(() => {
                     </div>
                   )}
                 </div>
-                <button
-                  className="attachment-close"
-                  onClick={() => setAttachment(null)}
-                >
+                <button className="attachment-close" onClick={() => setAttachment(null)}>
                   <FaTimes />
                 </button>
-                <button
-                  className="send-attachment-btn"
-                  onClick={handleSendAttachment}
-                >
+                <button className="send-attachment-btn" onClick={handleSendAttachment}>
                   Send Attachment
                 </button>
               </div>
             )}
+
             <div className="chat-footer">
               <button className="attach-btn" onClick={handleAttachmentClick}>
                 <FaPaperclip />
               </button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                onChange={handleAttachmentChange}
-              />
-              <button
-                className="emoji-btn"
-                onClick={() => setShowEmojiPicker((prev) => !prev)}
-              >
+              <input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleAttachmentChange} />
+              <button className="emoji-btn" onClick={() => setShowEmojiPicker((prev) => !prev)}>
                 <FaRegSmile />
               </button>
               {showEmojiPicker && (
@@ -1142,11 +1081,7 @@ useEffect(() => {
                   <Picker onEmojiClick={onEmojiClick} />
                 </div>
               )}
-              <button
-                className="mic-btn"
-                onMouseDown={startRecording}
-                onMouseUp={stopRecording}
-              >
+              <button className="mic-btn" onMouseDown={startRecording} onMouseUp={stopRecording}>
                 <FaMicrophone color={isRecording ? "red" : "inherit"} />
               </button>
               <form onSubmit={handleSendMessage} className="chat-form">
@@ -1169,18 +1104,25 @@ useEffect(() => {
           </div>
         )}
       </div>
+
+      {/* Tag Modal */}
       {showTagModal && (
         <div className="__modal">
           <div className="__modal-content">
             <h4>Add Tag</h4>
             <input
               type="text"
-              placeholder="Enter tag" className="w-100"
+              placeholder="Enter tag"
+              className="w-100"
               value={tagName}
               onChange={(e) => setTagName(e.target.value)}
             />
-            <button className=" w-100" onClick={saveTag}>Save Tag</button>
-            <button className="tag-close-btn w-100" onClick={() => setShowTagModal(false)}>Cancel</button>
+            <button className="w-100" onClick={saveTag}>
+              Save Tag
+            </button>
+            <button className="tag-close-btn w-100" onClick={() => setShowTagModal(false)}>
+              Cancel
+            </button>
 
             {/* Display Existing Tags */}
             <div className="tag-list">
@@ -1189,7 +1131,9 @@ useEffect(() => {
                 chatTags.map((tag, index) => (
                   <div key={index} className="tag-item">
                     <span className="tag-name">{tag}</span>
-                    <button className="delete-tag" onClick={() => deleteTag(tag)}>✖</button>
+                    <button className="delete-tag" onClick={() => deleteTag(tag)}>
+                      ✖
+                    </button>
                   </div>
                 ))
               ) : (
@@ -1200,112 +1144,98 @@ useEffect(() => {
         </div>
       )}
 
+      {/* Save Contact Modal */}
       {showSaveContactModal && (
-      <div className="___modal">
-        <div className="___modal-content">
-          <div>
-          <h3>Save Contact</h3>
-          <label>Name:</label>
-          <input
-            type="text"
-            value={contactDetails.contactName}
-            onChange={(e) =>
-              setContactDetails({ ...contactDetails, contactName: e.target.value })
-            }
-          />
+        <div className="___modal">
+          <div className="___modal-content">
+            <div>
+              <h3>Save Contact</h3>
+              <label>Name:</label>
+              <input
+                type="text"
+                value={contactDetails.contactName}
+                onChange={(e) => setContactDetails({ ...contactDetails, contactName: e.target.value })}
+              />
+            </div>
+            <div>
+              <label>Phone Number:</label>
+              <input
+                type="text"
+                value={contactDetails.phoneNumber}
+                onChange={(e) => setContactDetails({ ...contactDetails, phoneNumber: e.target.value })}
+              />
+            </div>
+            <div>
+              <label>Phonebook:</label>
+              <select
+                value={contactDetails.phoneBookId}
+                onChange={(e) => {
+                  const selectedId = e.target.value
+                  const selectedPb = phonebooks.find((pb) => pb.id === selectedId)
+                  setContactDetails({
+                    ...contactDetails,
+                    phoneBookId: selectedId,
+                    phoneBookName: selectedPb ? selectedPb.phonebook_name : "",
+                  })
+                }}
+              >
+                <option value="">Select Phonebook</option>
+                {phonebooks.map((pb) => (
+                  <option key={pb.id} value={pb.id}>
+                    {pb.phonebook_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label>Var1:</label>
+              <input
+                type="text"
+                value={contactDetails.var1 || ""}
+                onChange={(e) => setContactDetails({ ...contactDetails, var1: e.target.value })}
+              />
+            </div>
+            <div>
+              <label>Var2:</label>
+              <input
+                type="text"
+                value={contactDetails.var2 || ""}
+                onChange={(e) => setContactDetails({ ...contactDetails, var2: e.target.value })}
+              />
+            </div>
+            <div>
+              <label>Var3:</label>
+              <input
+                type="text"
+                value={contactDetails.var3 || ""}
+                onChange={(e) => setContactDetails({ ...contactDetails, var3: e.target.value })}
+              />
+            </div>
+            <div>
+              <label>Var4:</label>
+              <input
+                type="text"
+                value={contactDetails.var4 || ""}
+                onChange={(e) => setContactDetails({ ...contactDetails, var4: e.target.value })}
+              />
+            </div>
+            <div>
+              <label>Var5:</label>
+              <input
+                type="text"
+                value={contactDetails.var5 || ""}
+                onChange={(e) => setContactDetails({ ...contactDetails, var5: e.target.value })}
+              />
+            </div>
+
+            <button onClick={saveContact}>Save</button>
+            <button onClick={() => setShowSaveContactModal(false)}>Cancel</button>
           </div>
-          <div>
-          <label>Phone Number:</label>
-          <input
-            type="text"
-            value={contactDetails.phoneNumber}
-            onChange={(e) =>
-              setContactDetails({ ...contactDetails, phoneNumber: e.target.value })
-            }
-          />
-          </div>
-          <div>
-          <label>Phonebook:</label>
-          <select
-            value={contactDetails.phoneBookId}
-            onChange={(e) => {
-              const selectedId = e.target.value;
-              const selectedPb = phonebooks.find((pb) => pb.id === selectedId);
-              setContactDetails({
-                ...contactDetails,
-                phoneBookId: selectedId,
-                phoneBookName: selectedPb ? selectedPb.phonebook_name : ""
-              });
-            }}
-          >
-            <option value="">Select Phonebook</option>
-            {phonebooks.map((pb) => (
-              <option key={pb.id} value={pb.id}>
-                {pb.phonebook_name}
-              </option>
-            ))}
-          </select>
-          </div>
-          <div>
-          {/* Optional additional fields */}
-          <label>Var1:</label>
-          <input
-            type="text"
-            value={contactDetails.var1 || ""}
-            onChange={(e) =>
-              setContactDetails({ ...contactDetails, var1: e.target.value })
-            }
-          />
-          </div>
-          <div>
-          <label>Var2:</label>
-          <input
-            type="text"
-            value={contactDetails.var2 || ""}
-            onChange={(e) =>
-              setContactDetails({ ...contactDetails, var2: e.target.value })
-            }
-          />
-          </div>
-          <div>
-          <label>Var3:</label>
-          <input
-            type="text"
-            value={contactDetails.var3 || ""}
-            onChange={(e) =>
-              setContactDetails({ ...contactDetails, var3: e.target.value })
-            }
-          />
-          </div>
-          <div>
-          <label>Var4:</label>
-          <input
-            type="text"
-            value={contactDetails.var4 || ""}
-            onChange={(e) =>
-              setContactDetails({ ...contactDetails, var4: e.target.value })
-            }
-          />
-          </div>
-          <div>
-          <label>Var5:</label>
-          <input
-            type="text"
-            value={contactDetails.var5 || ""}
-            onChange={(e) =>
-              setContactDetails({ ...contactDetails, var5: e.target.value })
-            }
-          />
-          </div>
-          
-          <button onClick={saveContact}>Save</button>
-          <button onClick={() => setShowSaveContactModal(false)}>Cancel</button>
         </div>
-      </div>
-    )}
-
+      )}
     </div>
-  );
-};
+  )
+}
 
-export default ChatComponent;
+export default ChatComponent
+
