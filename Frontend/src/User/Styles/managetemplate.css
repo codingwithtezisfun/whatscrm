@@ -1,159 +1,84 @@
+/* WhatsApp Template Preview Styles */
 .whatsapp-bubble {
-  background:var(--background-color);
+  background: white;
   border: 1px solid #ddd;
-  color: var(--text-color);
+  color: #333;
   border-radius: 8px;
   padding: 1rem;
   margin-top: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
 .bubble-section {
   margin-bottom: 0.5rem;
 }
+
 .attachments-section {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
+
 .attachment {
   border: 1px solid #ccc;
   padding: 0.25rem;
   border-radius: 4px;
   width: 100%;
   height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #f8f9fa;
 }
+
 .attachment-thumbnail {
   max-width: 100%;
   max-height: 100%;
+  object-fit: contain;
 }
+
 .buttons-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
+
 .preview-button {
   background: #c7ecee;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
+
+.preview-button:hover {
+  background: #a3e4dc;
+}
+
+.footer-section {
+  font-size: 0.8rem;
+  color: #666;
+}
+
 .time-section {
   text-align: right;
   font-size: 0.8rem;
   color: #888;
 }
-/* Floating Labels */
-.floating-label-group {
-  position: relative;
-  margin-bottom: 1rem;
-}
 
-.floating-input {
-  min-width: 250px;
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  background: transparent;
-}
-.floating-input-name {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  background: transparent;
-}
-
-.floating-label {
-  position: absolute;
-  top: 0px;
-  left: 12px;
-  background: var(--card-bg) !important;
-  padding: 0 4px;
-  color: var(--text-color);
-  transition: all 0.2s ease;
-  pointer-events: none;
-}
-
-/* .floating-input:focus + .floating-label,
-.floating-input:not(:placeholder-shown) + .floating-label {
-  top: -8px;
-  left: 8px;
-  font-size: 12px;
-  color: #007bff;
-} */
-
-.custom-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-  color: var(--text-color);
-}
-.custom-modal-overlay option{
-  background-color: var(--card-bg);
-  color: var(--text-color);
-}
-
-.custom-modal-content {
-  background: var(--card-bg);
-  padding: 2rem;
-  border-radius: 8px;
-  max-width:80vw;
-
-}
-
-.modal-title {
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-/* Layout for modal body */
-.custom-modal-body {
-  display: flex;
-  gap: 1rem;
-}
-
-/* Form Side (2-column grid) */
-.custom-form-side {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.custom-modal-row {
-  display: flex;
-  flex-direction: column;
-}
-.custom-modal-row textarea{
-  color: var(--text-color);
-}
-.custom-modal-row.full-width {
-  grid-column: span 2;
-}
-
-/* Emulator Side */
-.custom-emulator-side {
-  flex: 1;
-}
-
-/* Smartphone Preview Styles */
+/* Smartphone Preview */
 .smartphone-preview {
-  border: 2px solid #ffca0a7e;
+  border: 2px solid rgba(255, 202, 10, 0.5);
   border-radius: 20px;
   padding: 0.7rem;
   background: black;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  width: 320px;
-  height: 550px;
-  margin-left: 50px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 320px !important;
+  height: 550px !important;
+  margin: 0 auto;
 }
 
 .preview-box {
@@ -163,82 +88,99 @@
   border: 1px solid #ccc;
   height: 96%;
   position: relative;
+  overflow: auto;
 }
-.preview-box-camera{
+
+.preview-box-camera {
   position: absolute;
   top: 5px;
   left: 49%;
   z-index: 10;
   color: black;
 }
-
-/* Modal Actions */
-.custom-modal-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-}
-.custom-modal-actions button {
-  width: 300px;
+.custom-template-modal{
+  width: 1140px;
 }
 
-/* File Input */
-.file-input {
-  margin-top: 0.5rem;
+/* Modal customizations */
+.modal-xl {
+  min-width: 1140px;
 }
 
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .smartphone-preview {
+    width: 100%;
+    height: 400px;
+  }
 
+  .custom-modal-body {
+    flex-direction: column;
+  }
 
+  .custom-form-side {
+    grid-template-columns: 1fr;
+  }
 
-
-/* broadcast css  */
-._broadcast-container {
-  display: flex;
-  height: calc(100vh - 100px);
-  background-color: var(--background-color);
+  .custom-modal-actions button {
+    width: 100%;
+  }
 }
 
-/* Sidebar Styles */
-._sidebar {
-  width: 250px;
-  background-color: var(--card-bg);
-  box-shadow: 0 0px 5px black;
-  border-radius: 1px;
-  color: white;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+/* Bootstrap overrides */
+.btn-outline-primary:hover,
+.btn-outline-info:hover,
+.btn-outline-success:hover,
+.btn-outline-danger:hover {
+  color: #fff;
 }
 
-._sidebar-title {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-  font-weight: bold;
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
 }
 
-._sidebar-button {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  text-align: left;
-  transition: background 0.3s ease;
+/* Custom styles for form elements */
+.form-control:focus,
+.form-select:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-._sidebar-button:hover {
-  background-color: #495057;
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .whatsapp-bubble {
+    background: #1f2937;
+    border-color: #374151;
+    color: #e5e7eb;
+  }
+
+  .attachment {
+    border-color: #4b5563;
+    background: #374151;
+  }
+
+  .preview-button {
+    background: #3b82f6;
+    color: white;
+  }
+
+  .preview-button:hover {
+    background: #2563eb;
+  }
+
+  .footer-section {
+    color: #9ca3af;
+  }
+
+  .time-section {
+    color: #9ca3af;
+  }
+
+  .preview-box {
+    background: #1f2937;
+    border-color: #374151;
+    color: #e5e7eb;
+  }
 }
 
-._sidebar-button.active {
-  background-color: #007bff;
-  color: white;
-}
-
-/* Content Area */
-._content {
-  flex-grow: 1;
-  padding: 20px;
-  overflow-y: auto;
-}

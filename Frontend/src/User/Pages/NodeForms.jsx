@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Handle, Position } from "reactflow";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -107,35 +107,28 @@ export const SimpleTextNode = ({ data, isConnectable, id }) => {
 
           {/* List of sub-options, each with its own handle */}
           {initialOptions.map((opt, idx) => (
-            <div
-              key={idx}
-              className="option-row d-flex align-items-center mb-2"
-              style={{ position: "relative" }}
-            >
-              {/* Dynamic handle for each sub-option */}
-              <Handle
-                type="source"
-                position={Position.Right}
-                // Each handle needs a unique ID; "option-idx" ensures that
-                id={`option-${idx}`}
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  right: "-10px",
-                  background: "#555",
-                }}
-                isConnectable={isConnectable}
-              />
-              <span>{opt.text}</span>
-              <button
-                className="delete-option-btn"
-                onClick={() => handleRemoveOption(idx)}
-              >
-                <MdDelete />
-              </button>
-            </div>
-          ))}
+          <div key={idx} className="option-row d-flex align-items-center mb-2" style={{ position: "relative" }}>
+            {/* Each handle gets the actual text as an ID instead of "option-0" */}
+            <Handle
+              type="source"
+              position={Position.Right}
+              id={opt.text}  // ✅ Now uses actual text
+              style={{
+                position: "absolute",
+                top: "50%",
+                transform: "translateY(-50%)",
+                right: "-10px",
+                background: "#555",
+              }}
+              isConnectable={isConnectable}
+            />
+            <span>{opt.text}</span>
+            <button className="delete-option-btn" onClick={() => handleRemoveOption(idx)}>
+              <MdDelete />
+            </button>
+          </div>
+        ))}
+
         </div>
       </div>
 
@@ -150,6 +143,143 @@ export const SimpleTextNode = ({ data, isConnectable, id }) => {
   );
 };
 
+export const DefaultMessageNode = ({ data, isConnectable, id }) => {
+  // Use local state for options to allow dynamic child nodes
+  const [options, setOptions] = useState(
+    Array.isArray(data.options) ? data.options : [{ text: "{{OTHER_MSG}}" }]
+  );
+  const [newOptionText, setNewOptionText] = useState("");
+
+  // Whenever the local options change, update the parent node's data
+  useEffect(() => {
+    data.onChange({ ...data, options });
+  }, [options]);
+
+  // Update the node's message value
+  const handleChange = (e) => {
+    data.onChange({ ...data, message: e.target.value });
+  };
+
+  // Remove the entire node
+  const handleRemoveNode = () => {
+    if (data.onRemove) data.onRemove(id);
+  };
+
+  // Save this node as a template (example logic)
+  const handleSaveTemplate = () => {
+    const content = {
+      message: data.message || "",
+      options,
+    };
+    if (data.saveTemplate) {
+      data.saveTemplate("defaultMessage", "DefaultMessageNode", content);
+    }
+  };
+
+  // Add a new sub-option (child node)
+  const handleAddOption = () => {
+    if (!newOptionText.trim()) return;
+    const updatedOptions = [...options, { text: newOptionText }];
+    setOptions(updatedOptions);
+    setNewOptionText("");
+  };
+
+  // Remove a sub-option
+  const handleRemoveOption = (index) => {
+    const updatedOptions = [...options];
+    updatedOptions.splice(index, 1);
+    setOptions(updatedOptions);
+  };
+
+  return (
+    <div className="bg-white rounded shadow p-3 w-100 border position-relative">
+      {/* Node Header */}
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <span>Default Message</span>
+        <div>
+          <button className="btn btn-link p-0" onClick={handleRemoveNode}>
+            <MdDelete size={20} />
+          </button>
+          <button className="btn btn-link p-0 ms-2" onClick={handleSaveTemplate}>
+            <IoSaveSharp size={20} />
+          </button>
+        </div>
+      </div>
+
+      {/* Node Body */}
+      <div className="mb-3">
+        <label className="form-label">Message:</label>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="{{OTHER_MSG}}"
+          value={data.message || ""}
+          onChange={handleChange}
+        />
+      </div>
+
+      {/* Add Option */}
+      <div className="mb-2">
+        <div className="input-group">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Add option"
+            value={newOptionText}
+            onChange={(e) => setNewOptionText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleAddOption();
+            }}
+          />
+          <button className="btn btn-secondary" onClick={handleAddOption}>
+            <IoIosCloseCircle size={16} />
+          </button>
+        </div>
+      </div>
+
+      {/* Options List */}
+      {options.map((opt, idx) => (
+        <div
+          key={idx}
+          className="d-flex align-items-center justify-content-between bg-light rounded p-2 mb-2 position-relative"
+        >
+          <span className="text-dark">{opt.text}</span>
+          <button className="btn btn-sm btn-outline-danger ms-2" onClick={() => handleRemoveOption(idx)}>
+            <IoIosCloseCircle size={16} />
+          </button>
+          {/* Handle for each sub-option */}
+          <Handle
+            type="source"
+            position={Position.Right}
+            id={opt.text} 
+            style={{
+              opacity: 0,
+              position: "absolute",
+              right: 0,
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "#555",
+            }}
+            isConnectable={isConnectable}
+          />
+        </div>
+      ))}
+
+      {/* Input Handle */}
+      <Handle
+        type="target"
+        position={Position.Left}
+        isConnectable={isConnectable}
+        style={{
+          background: "#555",
+          width: "8px",
+          height: "8px",
+          left: "-4px",
+        }}
+      />
+    </div>
+  );
+};
 // ----------------- Image Message Node -----------------
 export const ImageMessageNode = ({ data, isConnectable, id }) => {
   // Ensure sub-captions array exists

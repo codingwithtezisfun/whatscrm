@@ -20,7 +20,14 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(fileUpload());
 
 const allowedOrigins = [
-    "http://localhost:5173"
+    "http://localhost:5174",
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3010",
+    "https://whatscrm-sigma.vercel.app",
+    "https://whatscrm.dotcreative.co.ke",
+    "https://82a5-102-217-65-78.ngrok-free.app",
   ];
   
   app.use(cors({
@@ -42,7 +49,6 @@ app.use((req, res, next) => {
 
     next();
 });
-
 
 // Setup MySQL Connection Pool
 const pool = mysql.createPool({

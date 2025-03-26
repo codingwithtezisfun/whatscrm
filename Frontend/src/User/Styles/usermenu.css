@@ -33,6 +33,7 @@
     width: 100%;
     background-color: var(--card-bg);
     color: var(--text-color);
+    z-index: 10000000 !important;
   }
   .custom-modal-content label {
     font-weight: bold;

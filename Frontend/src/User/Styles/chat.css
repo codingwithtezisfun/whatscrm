@@ -793,3 +793,7 @@
 .bell-dropdown li:hover {
   background-color: #f1f1f1;
 }
+.message-img{
+  width: 350px;
+  height:200px
+}

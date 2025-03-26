@@ -176,20 +176,22 @@ router.post('/send_templet', validateUser, checkPlan, async (req, res) => {
 })
 
 
-// send_image endpoint
-router.post('/send_image', validateUser, checkPlan, async (req, res) => {
+/router.post('/send_image', validateUser, checkPlan, async (req, res) => {
     try {
-      const { url, mediaId, toNumber, toName, chatId, caption } = req.body;
-      if ((!url && !mediaId) || !toNumber || !toName || !chatId) {
+      // Now accept mediaUrl in addition to url and mediaId
+      const { mediaUrl, url, mediaId, toNumber, toName, chatId, caption } = req.body;
+      if ((!mediaUrl && !url && !mediaId) || !toNumber || !toName || !chatId) {
         return res.json({ success: false, msg: "Not enough input provided" });
       }
   
-      // Build the message object based on mediaId or URL
+      // Build the message object: priority to mediaUrl, then mediaId, then url.
       const msgObj = {
         type: "image",
-        image: mediaId 
-          ? { id: mediaId, caption: caption || "" }
-          : { link: url, caption: caption || "" }
+        image: mediaUrl 
+          ? { link: mediaUrl, caption: caption || "" } 
+          : mediaId 
+            ? { id: mediaId, caption: caption || "" }
+            : { link: url, caption: caption || "" }
       };
   
       const savObj = {
@@ -207,27 +209,28 @@ router.post('/send_image', validateUser, checkPlan, async (req, res) => {
   
       const resp = await sendMetaMsg(req.decode.uid, msgObj, toNumber, savObj, chatId);
       res.json(resp);
-    } catch (err) {
+    } catch (err) { 
       console.log(err);
       res.json({ err, success: false, msg: "Something went wrong" });
     }
   });
   
-  // send_video endpoint
   router.post('/send_video', validateUser, checkPlan, async (req, res) => {
     try {
-      const { url, mediaId, toNumber, toName, chatId, caption } = req.body;
-      if ((!url && !mediaId) || !toNumber || !toName || !chatId) {
+      const { mediaUrl, url, mediaId, toNumber, toName, chatId, caption } = req.body;
+      if ((!mediaUrl && !url && !mediaId) || !toNumber || !toName || !chatId) {
         return res.json({ success: false, msg: "Not enough input provided" });
       }
-  
+    
       const msgObj = {
         type: "video",
-        video: mediaId 
-          ? { id: mediaId, caption: caption || "" }
-          : { link: url, caption: caption || "" }
+        video: mediaUrl 
+          ? { link: mediaUrl, caption: caption || "" } 
+          : mediaId 
+            ? { id: mediaId, caption: caption || "" }
+            : { link: url, caption: caption || "" }
       };
-  
+    
       const savObj = {
         type: "video",
         metaChatId: "",
@@ -240,7 +243,7 @@ router.post('/send_image', validateUser, checkPlan, async (req, res) => {
         star: false,
         route: "OUTGOING"
       };
-  
+    
       const resp = await sendMetaMsg(req.decode.uid, msgObj, toNumber, savObj, chatId);
       res.json(resp);
     } catch (err) {
@@ -249,21 +252,22 @@ router.post('/send_image', validateUser, checkPlan, async (req, res) => {
     }
   });
   
-  // send_doc endpoint
   router.post('/send_doc', validateUser, checkPlan, async (req, res) => {
     try {
-      const { url, mediaId, toNumber, toName, chatId, caption } = req.body;
-      if ((!url && !mediaId) || !toNumber || !toName || !chatId) {
+      const { mediaUrl, url, mediaId, toNumber, toName, chatId, caption } = req.body;
+      if ((!mediaUrl && !url && !mediaId) || !toNumber || !toName || !chatId) {
         return res.json({ success: false, msg: "Not enough input provided" });
       }
-  
+    
       const msgObj = {
         type: "document",
-        document: mediaId 
-          ? { id: mediaId, caption: caption || "" }
-          : { link: url, caption: caption || "" }
+        document: mediaUrl 
+          ? { link: mediaUrl, caption: caption || "" } 
+          : mediaId 
+            ? { id: mediaId, caption: caption || "" }
+            : { link: url, caption: caption || "" }
       };
-  
+    
       const savObj = {
         type: "document",
         metaChatId: "",
@@ -276,7 +280,7 @@ router.post('/send_image', validateUser, checkPlan, async (req, res) => {
         star: false,
         route: "OUTGOING"
       };
-  
+    
       const resp = await sendMetaMsg(req.decode.uid, msgObj, toNumber, savObj, chatId);
       res.json(resp);
     } catch (err) {
@@ -284,22 +288,24 @@ router.post('/send_image', validateUser, checkPlan, async (req, res) => {
       res.json({ err, success: false, msg: "Something went wrong" });
     }
   });
+
   
-  // send_audio endpoint
   router.post('/send_audio', validateUser, checkPlan, async (req, res) => {
     try {
-      const { url, mediaId, toNumber, toName, chatId } = req.body;
-      if ((!url && !mediaId) || !toNumber || !toName || !chatId) {
+      const { mediaUrl, url, mediaId, toNumber, toName, chatId } = req.body;
+      if ((!mediaUrl && !url && !mediaId) || !toNumber || !toName || !chatId) {
         return res.json({ success: false, msg: "Not enough input provided" });
       }
-  
+    
       const msgObj = {
         type: "audio",
-        audio: mediaId 
-          ? { id: mediaId }
-          : { link: url }
+        audio: mediaUrl 
+          ? { link: mediaUrl } 
+          : mediaId 
+            ? { id: mediaId }
+            : { link: url }
       };
-  
+    
       const savObj = {
         type: "audio",
         metaChatId: "",
@@ -312,7 +318,7 @@ router.post('/send_image', validateUser, checkPlan, async (req, res) => {
         star: false,
         route: "OUTGOING"
       };
-  
+    
       const resp = await sendMetaMsg(req.decode.uid, msgObj, toNumber, savObj, chatId);
       res.json(resp);
     } catch (err) {
@@ -320,6 +326,7 @@ router.post('/send_image', validateUser, checkPlan, async (req, res) => {
       res.json({ err, success: false, msg: "Something went wrong" });
     }
   });
+  
   
 
 // send text message 

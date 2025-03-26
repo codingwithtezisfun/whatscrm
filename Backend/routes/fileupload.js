@@ -1,119 +1,50 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
-const FormData = require('form-data');
-const { query } = require('../database/dbpromise'); 
+const fs = require('fs');
+const path = require('path');
+const randomstring = require('randomstring');
 const validateUser = require('../middlewares/user.js');
 
-async function fetchMetaDetails(uid) {
-  console.log('[FILEUPLOAD] Fetching meta details for uid:', uid);
-  const getMeta = await query(`SELECT * FROM meta_api WHERE uid = ?`, [uid]);
-  if (getMeta.length < 1) {
-    throw new Error('Unable to find API details for this user');
-  }
-  const waToken = getMeta[0]?.access_token;
-  const waNumId = getMeta[0]?.business_phone_number_id;
-  if (!waToken || !waNumId) {
-    throw new Error('Please add your meta token and phone number ID');
-  }
-  console.log('[FILEUPLOAD] Retrieved meta details:', { waToken, waNumId });
-  return { waToken, waNumId };
-}
+const UPLOAD_DIR = path.join(__dirname, '../client/public/meta-media');
 
-async function uploadMediaToWhatsApp(waToken, waNumId, file, mimeType) {
-  const url = `https://graph.facebook.com/v22.0/${waNumId}/media`;
-  console.log('[FILEUPLOAD] Uploading media to WhatsApp at URL:', url);
-  
-  const formData = new FormData();
-  formData.append('messaging_product', 'whatsapp');
-  formData.append('file', file.data, {
-    filename: file.name,
-    contentType: file.mimetype
-  });
-  formData.append('type', mimeType);
-
-  try {
-    const response = await axios.post(url, formData, {
-      headers: {
-        'Authorization': `Bearer ${waToken}`,
-        ...formData.getHeaders()
-      }
-    });
-    console.log('[FILEUPLOAD] WhatsApp upload response:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('[FILEUPLOAD] Error uploading media to WhatsApp:',
-      error.response ? error.response.data : error);
-    throw error;
-  }
+// Ensure the directory exists
+if (!fs.existsSync(UPLOAD_DIR)) {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
 router.post('/uploadMedia', validateUser, async (req, res) => {
   console.log('[FILEUPLOAD] /uploadMedia endpoint called.');
+
   try {
     if (!req.files || !req.files.file) {
       console.error('[FILEUPLOAD] No file provided.');
       return res.status(400).json({ success: false, msg: 'No file provided' });
     }
-    
+
     const file = req.files.file;
-    console.log('[FILEUPLOAD] Received file:', file.name, file.mimetype);
+    const ext = path.extname(file.name); // Get file extension
+    const randomSt = randomstring.generate(); // Generate random filename
+    const fileName = `${randomSt}${ext}`; // Append the extension
+    const filePath = path.join(UPLOAD_DIR, fileName);
 
-    const uid = req.decode && req.decode.uid;
-    if (!uid) {
-      console.error('[FILEUPLOAD] Unauthorized: No uid in req.decode.');
-      return res.status(401).json({ success: false, msg: 'Unauthorized' });
-    }
-    
-    const { waToken, waNumId } = await fetchMetaDetails(uid);
-    console.log('[FILEUPLOAD] Fetched meta details for uid:', uid);
+    // Save the file to the specified directory
+    file.mv(filePath, (err) => {
+      if (err) {
+        console.error('[FILEUPLOAD] Error saving file:', err);
+        return res.status(500).json({ success: false, msg: 'Error saving file' });
+      }
 
-    const result = await uploadMediaToWhatsApp(waToken, waNumId, file, file.mimetype);
-    
-    res.json({ success: true, data: result });
+      const fileUrl = `/meta-media/${fileName}`; // Relative path for frontend use
+      console.log('[FILEUPLOAD] File stored successfully:', fileUrl);
+      res.json({ success: true, fileUrl });
+    });
   } catch (error) {
     console.error('[FILEUPLOAD] Error in /uploadMedia endpoint:', error);
-    res.status(500).json({ success: false, msg: 'Error uploading media to WhatsApp', error: error.toString() });
+    res.status(500).json({ success: false, msg: 'Error processing media', error: error.toString() });
   }
 });
 
-router.get('/meta-media/:mediaId', validateUser, async (req, res) => {
-  console.log('[FILEUPLOAD] /meta-media endpoint called for mediaId:', req.params.mediaId);
-  try {
-    const mediaId = req.params.mediaId;
-    const uid = req.decode && req.decode.uid;
-    if (!uid) {
-      console.error('[FILEUPLOAD] Unauthorized: No uid in req.decode.');
-      return res.status(401).json({ success: false, msg: 'Unauthorized' });
-    }
-    
-    const { waToken } = await fetchMetaDetails(uid);
-    
-    // Get the temporary URL from the WhatsApp Graph API.
-    const graphUrl = `https://graph.facebook.com/v22.0/${mediaId}?access_token=${waToken}`;
-    console.log('[FILEUPLOAD] Fetching media metadata from Graph API URL:', graphUrl);
-    const metaResponse = await axios.get(graphUrl);
-    console.log('[FILEUPLOAD] Media metadata response:', metaResponse.data);
-    
-    if (!metaResponse.data.url) {
-      return res.status(500).json({ success: false, msg: 'No URL returned from WhatsApp.' });
-    }
-    
-    const tempUrl = metaResponse.data.url;
-    console.log('[FILEUPLOAD] Temporary media URL obtained:', tempUrl);
-
-    const mediaResponse = await axios.get(tempUrl, { responseType: 'stream' });
-    
-    const contentType = mediaResponse.headers['content-type'] || 'application/octet-stream';
-    res.setHeader('Content-Type', contentType);
-    
-    mediaResponse.data.pipe(res);
-    
-  } catch (error) {
-    console.error('[FILEUPLOAD] Error in /meta-media endpoint:', error);
-    res.status(500).json({ success: false, msg: 'Error fetching media from WhatsApp', error: error.toString() });
-  }
-});
-
+// Serve uploaded files
+router.use('/meta-media', express.static(UPLOAD_DIR));
 
 module.exports = router;

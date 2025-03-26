@@ -1,11 +1,13 @@
 import axios from "axios";
 import BASE_URL from "../../BaseUrl"; 
+
 const fetchMediaUrl = async (mediaId) => {
-  const backendUri =  BASE_URL;
+  const backendUri = BASE_URL;
   try {
     const response = await axios.get(`${backendUri}/meta-media/${mediaId}`);
-    const mediaUrl = response.data.url;
-    return mediaUrl ? mediaUrl : "/placeholder.svg";
+    // The backend returns the file name (e.g., "1234567890.jpg")
+    const fileName = response.data.file;
+    return fileName ? `${backendUri}/meta-media/${fileName}` : "/placeholder.svg";
   } catch (error) {
     console.error("Error fetching media:", error);
     return "/placeholder.svg";
@@ -18,13 +20,12 @@ const renderMessageContent = (msg) => {
   } else if (msg.msgContext?.image) {
     const { link, id, caption } = msg.msgContext.image;
     let imageUrl = "";
+    // Prefer a direct link if available, otherwise use fetched URL from our API
     if (link && !link.includes("undefined")) {
       imageUrl = link;
-    } 
-    else if (id && msg.fetchedUrl) {
+    } else if (id && msg.fetchedUrl) {
       imageUrl = msg.fetchedUrl;
-    } 
-    else {
+    } else {
       imageUrl = "/placeholder.svg";
     }
     return <img src={imageUrl} alt={caption || "Sent Image"} className="message-img" />;

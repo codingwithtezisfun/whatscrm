@@ -11,7 +11,7 @@ const { checkPlan } = require('../middlewares/plan.js')
 router.post('/add_new', validateUser, checkPlan, async (req, res) => {
     try {
         console.log("Received POST /api/broadcast/add_new request");
-        console.log("Request Body:", req.body); // Log entire request body
+        console.log("Request Body:", req.body);
 
         const { title, templet, phonebook, scheduleTimestamp, example } = req.body;
 

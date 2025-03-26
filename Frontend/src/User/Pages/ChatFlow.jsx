@@ -1,18 +1,13 @@
-import React, { useCallback, useState, useRef, useEffect } from "react";
-import ReactFlow, {
-  addEdge,
-  useNodesState,
-  useEdgesState,
-  Controls,
-  Background,
-  MiniMap,
-} from "reactflow";
-import "reactflow/dist/style.css";
-import "../Styles/chatflow.css";
-import "../Styles/nodes.css";
-import axios from "axios";
-import Swal from "sweetalert2";
-import BASE_URL from "../../BaseUrl";
+"use client"
+
+import { useCallback, useState, useRef, useEffect } from "react"
+import ReactFlow, { addEdge, useNodesState, useEdgesState, Controls, Background, MiniMap } from "reactflow"
+import "reactflow/dist/style.css"
+import "../Styles/chatflow.css"
+import "../Styles/nodes.css"
+import axios from "axios"
+import BASE_URL from "../../BaseUrl"
+import Swal from "sweetalert2"
 
 import {
   SimpleTextNode,
@@ -33,10 +28,12 @@ import {
   OpenAiNode,
   Gpt4Node,
   AddMsgHistoryNode,
-} from "./NodeForms";
+  DefaultMessageNode,
+} from "./NodeForms"
 
 // Map each node type to its corresponding component
 const nodeTypes = {
+  defaultMessage: DefaultMessageNode,
   simpleText: SimpleTextNode,
   imageMessage: ImageMessageNode,
   audioMessage: AudioMessageNode,
@@ -55,15 +52,16 @@ const nodeTypes = {
   openAi: OpenAiNode,
   gpt4: Gpt4Node,
   addMsgHistory: AddMsgHistoryNode,
-};
+}
 
 import { 
   FaFont, FaImage, FaMusic, FaVideo, FaFileAlt, FaRegListAlt, 
   FaLocationArrow, FaUserTie, FaBan, FaPlug, FaKeyboard, 
-  FaCodeBranch, FaExchangeAlt, FaTimesCircle, FaRobot, 
+  FaCodeBranch, FaExchangeAlt, FaTimesCircle, FaRobot,
   FaBrain, FaHistory, FaChevronDown, FaChevronUp, FaSearch 
 } from "react-icons/fa";
-import { MdSmartButton, MdOutlineAccessibility } from "react-icons/md";
+
+import { MdSmartButton,MdOutlineAccessibility } from "react-icons/md";
 
 // Node definitions grouped by category
 const nodeGroups = [
@@ -73,6 +71,7 @@ const nodeGroups = [
     color: "#4dabf7",
     icon: <FaFont size={20} />,
     nodes: [
+      { label: "Default Message", type: "defaultMessage", color: "#fg6b6b", icon: <FaKeyboard size={20} />, description: "Send a simple text message" },
       { label: "Simple Text", type: "simpleText", color: "#ff6b6b", icon: <FaFont size={20} />, description: "Send a simple text message" },
       { label: "Image Message", type: "imageMessage", color: "#4dabf7", icon: <FaImage size={20} />, description: "Send an image with caption" },
       { label: "Audio Message", type: "audioMessage", color: "#f06292", icon: <FaMusic size={20} />, description: "Send an audio message" },
@@ -120,26 +119,30 @@ const nodeGroups = [
 ];
 
 // Flatten node definitions for search
-const allNodeDefinitions = nodeGroups.flatMap(group => group.nodes);
+const allNodeDefinitions = nodeGroups.flatMap((group) => group.nodes)
 
 const ChatFlow = () => {
-  const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [flowTitle, setFlowTitle] = useState("");
-  const [expandedGroups, setExpandedGroups] = useState({});
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredGroups, setFilteredGroups] = useState(nodeGroups);
+  const reactFlowWrapper = useRef(null)
+  const [nodes, setNodes, onNodesChange] = useNodesState([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState([])
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [flowTitle, setFlowTitle] = useState("")
+  const [expandedGroups, setExpandedGroups] = useState({})
+  const [searchTerm, setSearchTerm] = useState("")
+  const [filteredGroups, setFilteredGroups] = useState(nodeGroups)
+  const [flows, setFlows] = useState([])
+  const [selectedFlow, setSelectedFlow] = useState(null)
 
-  // Initialize expanded state for all groups
+  // Initialize expanded state for all groups and fetch flows
   useEffect(() => {
-    const initialExpandedState = {};
-    nodeGroups.forEach(group => {
-      initialExpandedState[group.id] = false;
-    });
-    setExpandedGroups(initialExpandedState);
-  }, []);
+    const initialExpandedState = {}
+    nodeGroups.forEach((group) => {
+      initialExpandedState[group.id] = false
+    })
+    setExpandedGroups(initialExpandedState)
+    fetchFlows()
+  }, [])
+
 
   // Filter nodes based on search term
   useEffect(() => {
@@ -172,22 +175,19 @@ const ChatFlow = () => {
   }, [searchTerm]);
 
   // Keep a ref to the ReactFlow instance
-  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState(null)
   const onInit = useCallback((instance) => {
-    setReactFlowInstance(instance);
-    instance.fitView();
-  }, []);
+    setReactFlowInstance(instance)
+    instance.fitView()
+  }, [])
 
-  const onConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    []
-  );
+  const onConnect = useCallback((connection) => setEdges((eds) => addEdge(connection, eds)), [])
 
   const handleRemoveNode = (nodeId) => {
-    setNodes((nds) => nds.filter((node) => node.id !== nodeId));
-  };
-  
-  // Add a node by clicking
+    setNodes((nds) => nds.filter((node) => node.id !== nodeId))
+  }
+
+ // Add a node by clicking
   const handleAddNode = (nodeType) => {
     const position = { x: 250, y: 100 };
     
@@ -215,16 +215,16 @@ const ChatFlow = () => {
 
   // Handle drag and drop
   const onDragStart = (event, nodeType) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.effectAllowed = 'move';
-  };
+    event.dataTransfer.setData("application/reactflow", nodeType)
+    event.dataTransfer.effectAllowed = "move"
+  }
 
   const onDragOver = useCallback((event) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-  }, []);
+    event.preventDefault()
+    event.dataTransfer.dropEffect = "move"
+  }, [])
 
-  const onDrop = useCallback(
+const onDrop = useCallback(
     (event) => {
       event.preventDefault();
 
@@ -276,13 +276,13 @@ const ChatFlow = () => {
   };
 
   const toggleGroup = (groupId) => {
-    setExpandedGroups(prev => ({
+    setExpandedGroups((prev) => ({
       ...prev,
-      [groupId]: !prev[groupId]
-    }));
-  };
+      [groupId]: !prev[groupId],
+    }))
+  }
 
-  const handleSaveFlow = async () => {
+ const handleSaveFlow = async () => {
     try {
       const token = localStorage.getItem("userToken");
   
@@ -313,6 +313,7 @@ const ChatFlow = () => {
   
       if (response.data.success) {
         Swal.fire("Success", "Flow was saved successfully!", "success");
+        fetchFlows()
       } else {
         Swal.fire("Error", response.data.msg || "Failed to save flow", "error");
       }
@@ -320,7 +321,49 @@ const ChatFlow = () => {
       console.error("Save Flow Error:", err);
       Swal.fire("Error", err.message || "Unexpected error occurred", "error");
     }
+    fetchFlows()
   };
+
+
+  const fetchFlows = async () => {
+    try {
+      const token = localStorage.getItem("userToken")
+      const response = await axios.get(`${BASE_URL}/api/chat_flow/get_mine`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (response.data.success) {
+        setFlows(response.data.data)
+      }
+    } catch (error) {
+      console.error("Error fetching flows:", error)
+    }
+  }
+
+  const fetchFlowDetails = async (flowId) => {
+    try {
+      const token = localStorage.getItem("userToken")
+      const response = await axios.post(
+        `${BASE_URL}/api/chat_flow/get_by_flow_id`,
+        { flowId },
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      if (response.data.success) {
+        setNodes(response.data.nodes)
+        setEdges(response.data.edges)
+        setSelectedFlow(flowId)
+        setFlowTitle(response.data.title || "")
+      }
+    } catch (error) {
+      console.error("Error fetching flow details:", error)
+    }
+  }
+
+  const handleCreateNew = () => {
+    setNodes([])
+    setEdges([])
+    setSelectedFlow(null)
+    setFlowTitle("")
+  }
 
   return (
     <div className="chatflow-container">
@@ -332,21 +375,37 @@ const ChatFlow = () => {
           onChange={(e) => setFlowTitle(e.target.value)}
           className="flow-title-input"
         />
-        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-          {isSidebarOpen ? "Hide Nodes" : "Show Nodes"}
-        </button>
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>{isSidebarOpen ? "Hide Nodes" : "Show Nodes"}</button>
         <button onClick={handleSaveFlow}>Save Flow</button>
       </div>
 
       <div className="d-flex" style={{ height: "calc(100% - 50px)" }}>
+        {/* Left Panel - Flow List */}
+        <div className="col-md-2 bg-light p-3" style={{ height: "100%", overflowY: "auto" }}>
+          <h5 className="mb-3">My Flows</h5>
+          <button className="btn btn-primary btn-sm mb-3 w-100" onClick={handleCreateNew}>
+            Create New
+          </button>
+          <div className="list-group">
+            {flows.map((flow) => (
+              <button
+                key={flow.id}
+                className={`list-group-item list-group-item-action ${selectedFlow === flow.flow_id ? "active" : ""}`}
+                onClick={() => fetchFlowDetails(flow.flow_id)}
+              >
+                {flow.title}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Flow builder area */}
-        <div 
-          className="flow-container" 
-          style={{ 
-            flex: 1, 
-            height: "100%", 
-            position: "relative" 
+        <div
+          className="flow-container"
+          style={{
+            flex: 1,
+            height: "100%",
+            position: "relative",
           }}
           ref={reactFlowWrapper}
         >
@@ -363,27 +422,23 @@ const ChatFlow = () => {
             fitView
             proOptions={{ hideAttribution: true }}
           >
-            <MiniMap
-              style={{ height: 80, width: 120, bottom: 10, left: 10 }}
-              zoomable
-              pannable
-            />
+            <MiniMap style={{ height: 80, width: 120, bottom: 10, left: 10 }} zoomable pannable />
             <Controls style={{ top: 10, left: 10, width: 20, height: 200 }} />
             <Background />
           </ReactFlow>
         </div>
 
-                {/* Sidebar with grouped node types */}
-                {isSidebarOpen && (
-          <div 
-            className="node-sidebar" 
-            style={{ 
-              width: "280px", 
-              height: "100%", 
-              overflowY: "auto", 
-              background: "#f8f9fa", 
+        {/* Sidebar with grouped node types */}
+        {isSidebarOpen && (
+          <div
+            className="node-sidebar"
+            style={{
+              width: "280px",
+              height: "100%",
+              overflowY: "auto",
+              background: "#f8f9fa",
               borderRight: "1px solid #dee2e6",
-              padding: "10px"
+              padding: "10px",
             }}
           >
             <div className="search-container" style={{ marginBottom: "15px" }}>
@@ -394,20 +449,20 @@ const ChatFlow = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="form-control"
-                  style={{ 
-                    paddingLeft: "30px", 
+                  style={{
+                    paddingLeft: "30px",
                     borderRadius: "4px",
-                    border: "1px solid #ced4da"
+                    border: "1px solid #ced4da",
                   }}
                 />
-                <FaSearch 
-                  style={{ 
-                    position: "absolute", 
-                    left: "10px", 
-                    top: "50%", 
+                <FaSearch
+                  style={{
+                    position: "absolute",
+                    left: "10px",
+                    top: "50%",
                     transform: "translateY(-50%)",
-                    color: "#6c757d"
-                  }} 
+                    color: "#6c757d",
+                  }}
                 />
                 {searchTerm && (
                   <button
@@ -420,7 +475,7 @@ const ChatFlow = () => {
                       background: "none",
                       border: "none",
                       color: "#6c757d",
-                      cursor: "pointer"
+                      cursor: "pointer",
                     }}
                   >
                     ×
@@ -431,14 +486,14 @@ const ChatFlow = () => {
 
             {filteredGroups.map((group) => (
               <div key={group.id} className="node-group mb-3">
-                <div 
+                <div
                   className="group-header d-flex justify-content-between align-items-center p-2"
                   onClick={() => toggleGroup(group.id)}
-                  style={{ 
+                  style={{
                     backgroundColor: group.color,
                     color: "white",
                     borderRadius: "4px",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                 >
                   <div className="d-flex align-items-center">
@@ -447,31 +502,31 @@ const ChatFlow = () => {
                   </div>
                   {expandedGroups[group.id] ? <FaChevronUp /> : <FaChevronDown />}
                 </div>
-                
+
                 {expandedGroups[group.id] && (
                   <div className="group-content mt-2">
                     {group.nodes.map((node) => (
                       <div
                         key={node.type}
                         className="node-item d-flex align-items-center p-2 mb-2"
-                        style={{ 
-                          backgroundColor: "white", 
+                        style={{
+                          backgroundColor: "white",
                           border: `1px solid ${node.color}`,
                           borderLeft: `4px solid ${node.color}`,
                           borderRadius: "4px",
-                          cursor: "grab"
+                          cursor: "grab",
                         }}
                         onClick={() => handleAddNode(node.type)}
                         draggable
                         onDragStart={(e) => onDragStart(e, node.type)}
                       >
-                        <div 
-                          className="node-icon me-2" 
-                          style={{ 
+                        <div
+                          className="node-icon me-2"
+                          style={{
                             color: node.color,
                             display: "flex",
                             alignItems: "center",
-                            justifyContent: "center"
+                            justifyContent: "center",
                           }}
                         >
                           {node.icon}
@@ -490,7 +545,8 @@ const ChatFlow = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ChatFlow;
+export default ChatFlow
+

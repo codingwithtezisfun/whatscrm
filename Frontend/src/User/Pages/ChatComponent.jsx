@@ -12,6 +12,8 @@ import { IoFilter } from "react-icons/io5"
 import { FaTrash, FaUserPlus, FaTag } from "react-icons/fa"
 import BASE_URL from "../../BaseUrl"
 import { fetchMediaUrl, renderMessageContent } from "./FetchMedia";
+import Swal from "sweetalert2";
+
 
 // Notification sounds
 import chime from "../../assets/notifications/notification-18-270129.mp3"
@@ -424,24 +426,24 @@ const loadMediaForMessages = async (messages) => {
     </button>
   </div>
 )}
-
-// Upload file to the backend (which then uploads to WhatsApp)
+// Upload file to the backend and get the file URL
 const uploadFile = async (file) => {
-  console.log("[FRONTEND] Starting file upload process using express-fileupload...");
+  console.log("[FRONTEND] Starting file upload process...");
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
+
   try {
     console.log("[FRONTEND] Sending file to /api/fileupload/uploadMedia endpoint");
     const response = await axios.post(`${BASE_URL}/api/fileupload/uploadMedia`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${token}`
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
       },
     });
     console.log("[FRONTEND] Upload response:", response.data);
     if (response.data.success) {
-      // Return the WhatsApp media data (for example, { id: "2430206863994949" })
-      return response.data.data;
+      // Returns a relative URL, e.g. "/meta-media/filename.PNG"
+      return response.data.fileUrl;
     } else {
       throw new Error(response.data.msg);
     }
@@ -451,74 +453,76 @@ const uploadFile = async (file) => {
   }
 };
 
-
 async function handleSendAttachment() {
   if (!attachment || !selectedChat) return;
+
   try {
-    console.log("[FRONTEND] Initiating attachment send process...");
-    // Upload the file and get the media identifier from the backend.
-    const uploadedMedia = await uploadFile(attachment.file);
-    console.log("[FRONTEND] Received media data from backend:", uploadedMedia);
-    // Use the returned media ID
-    const mediaIdentifier = uploadedMedia.id ? uploadedMedia.id : uploadedMedia;
+    // Display loading alert while uploading
+    Swal.fire({
+      title: "Uploading...",
+      text: "Please wait as we upload your image",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    // Upload the file and receive a relative URL
+    const fileUrl = await uploadFile(attachment.file);
+    console.log("[FRONTEND] File uploaded successfully. URL:", fileUrl);
+
+    if (!fileUrl) {
+      console.error("[FRONTEND] Upload failed or invalid response.");
+      Swal.fire("Upload Failed", "Unable to upload the file. Please try again.", "error");
+      return;
+    }
+
+    // Convert the relative URL to an absolute URL using BASE_URL.
+    const mediaUrl = new URL(fileUrl, BASE_URL).href;
+    console.log("[FRONTEND] Constructed absolute media URL:", mediaUrl);
 
     let endpoint = "";
     let payload = {};
-    // Build payload with mediaId and include the caption from attachmentCaption.
+
     if (attachment.fileType.startsWith("image/")) {
       endpoint = "/api/inbox/send_image";
-      payload = {
-        mediaId: mediaIdentifier, // using mediaId here
-        toNumber: selectedChat.sender_mobile,
-        toName: selectedChat.sender_name,
-        chatId: selectedChat.chat_id,
-        caption: attachmentCaption,  // include caption
-      };
     } else if (attachment.fileType.startsWith("video/")) {
       endpoint = "/api/inbox/send_video";
-      payload = {
-        mediaId: mediaIdentifier,
-        toNumber: selectedChat.sender_mobile,
-        toName: selectedChat.sender_name,
-        chatId: selectedChat.chat_id,
-        caption: attachmentCaption,
-      };
     } else if (attachment.fileType.startsWith("audio/")) {
       endpoint = "/api/inbox/send_audio";
-      payload = {
-        mediaId: mediaIdentifier,
-        toNumber: selectedChat.sender_mobile,
-        toName: selectedChat.sender_name,
-        chatId: selectedChat.chat_id,
-      };
     } else {
       endpoint = "/api/inbox/send_doc";
-      payload = {
-        mediaId: mediaIdentifier,
-        toNumber: selectedChat.sender_mobile,
-        toName: selectedChat.sender_name,
-        chatId: selectedChat.chat_id,
-        caption: attachmentCaption,
-      };
     }
+
+    payload = {
+      mediaUrl, // Use the absolute URL
+      toNumber: selectedChat.sender_mobile,
+      toName: selectedChat.sender_name,
+      chatId: selectedChat.chat_id,
+      caption: attachmentCaption,
+    };
+
     console.log("[FRONTEND] Payload for sending attachment:", payload);
 
-    // Send the attachment message using the proper endpoint.
     const res = await axios.post(`${BASE_URL}${endpoint}`, payload, {
       headers: { Authorization: `Bearer ${token}` },
     });
+
     console.log("[FRONTEND] Send attachment response:", res.data);
+    Swal.close(); // Close the loading alert
+
     if (res.data.success) {
       setAttachment(null);
       setAttachmentCaption("");
+      Swal.fire("Success", "Attachment sent successfully!", "success");
     } else {
-      alert(res.data.msg || "Failed to send attachment");
+      Swal.fire("Failed", res.data.msg || "Failed to send attachment", "error");
     }
   } catch (err) {
     console.error("[FRONTEND] Error sending attachment:", err);
-    alert("Error sending attachment");
+    Swal.fire("Error", "Error sending attachment. Please try again.", "error");
   }
-};
+}
 
 
 

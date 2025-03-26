@@ -306,7 +306,7 @@ router.post('/update_meta', validateUser, async (req, res) => {
             return res.json({ success: false, msg: "Please fill all the fields" })
         }
 
-        const resp = await getBusinessPhoneNumber("v18.0", business_phone_number_id, access_token)
+        const resp = await getBusinessPhoneNumber("v22.0", business_phone_number_id, access_token)
 
         if (resp?.error) {
             return res.json({ success: false, msg: resp?.error?.message || "Please check your details" })
@@ -359,7 +359,7 @@ router.post('/add_meta_templet', validateUser, checkPlan, async (req, res) => {
             return res.json({ success: false, msg: "Please fill your meta API keys" })
         }
 
-        const resp = await createMetaTemplet("v18.0", getAPIKEYS[0]?.waba_id, getAPIKEYS[0]?.access_token, req.body)
+        const resp = await createMetaTemplet("v22.0", getAPIKEYS[0]?.waba_id, getAPIKEYS[0]?.access_token, req.body)
 
         if (resp.error) {
             res.json({ msg: resp?.error?.error_user_msg || resp?.error?.message })
@@ -383,7 +383,7 @@ router.get('/get_my_meta_templets', validateUser, async (req, res) => {
             return res.json({ success: false, msg: "Please check your meta API keys" })
         }
 
-        const resp = await getAllTempletsMeta("v18.0", getMETA[0]?.waba_id, getMETA[0]?.access_token)
+        const resp = await getAllTempletsMeta("v22.0", getMETA[0]?.waba_id, getMETA[0]?.access_token)
 
         if (resp?.error) {
             res.json({ success: false, msg: resp?.error?.message || "Please check your API" })
@@ -409,7 +409,7 @@ router.post('/del_meta_templet', validateUser, async (req, res) => {
             return res.json({ success: false, msg: "Please check your meta API keys" })
         }
 
-        const resp = await delMetaTemplet("v18.0", getMETA[0]?.waba_id, getMETA[0]?.access_token, name)
+        const resp = await delMetaTemplet("v22.0", getMETA[0]?.waba_id, getMETA[0]?.access_token, name)
 
         if (resp.error) {
             return res.json({ success: false, msg: resp?.error?.error_user_title || "Please check your API" })
@@ -461,9 +461,9 @@ router.post('/return_media_url_meta', validateUser, async (req, res) => {
         setTimeout(async () => {
             const { fileSizeInBytes, mimeType } = await getFileInfo(`${__dirname}/../client/public/media/${filename}`)
 
-            const getSession = await getSessionUploadMediaMeta('v18.0', getMETA[0]?.app_id, getMETA[0]?.access_token, fileSizeInBytes, mimeType)
+            const getSession = await getSessionUploadMediaMeta('v22.0', getMETA[0]?.app_id, getMETA[0]?.access_token, fileSizeInBytes, mimeType)
 
-            const uploadFile = await uploadFileMeta(getSession?.id, `${__dirname}/../client/public/media/${filename}`, "v18.0", getMETA[0]?.access_token)
+            const uploadFile = await uploadFileMeta(getSession?.id, `${__dirname}/../client/public/media/${filename}`, "v22.0", getMETA[0]?.access_token)
 
             if (!uploadFile?.success) {
                 return res.json({ success: false, msg: "Please check your meta API" })

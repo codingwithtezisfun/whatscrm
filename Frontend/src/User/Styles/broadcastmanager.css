@@ -97,3 +97,96 @@
     background-color: var(--card-bg) !important;
     color: var(--text-color) !important;
   }
+
+.table-hover.broadcast-table tbody tr:hover {
+  background-color: #f9f9f9; /* Light gray hover */
+}
+
+/* Modal Backdrop: covers entire screen with dark overlay */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Content: white background with padding and rounded corners */
+.modal-content {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 4px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Header styling */
+.modal-content h4 {
+  color: #000;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Form Group styling */
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label styling: black text */
+.form-group label {
+  color: #000;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Input & Select styling: white background, light gray border */
+.form-group input,
+.form-group select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Template Details section */
+.template-details {
+  background: #f9f9f9;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+/* Button styling */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: #fff;
+}
+

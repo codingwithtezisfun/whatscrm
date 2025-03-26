@@ -33,13 +33,14 @@ function executeQueries(queries, connection) {
 
 
 function findTargetNodes(nodes, edges, incomingWord) {
+  const normalizedInput = incomingWord.trim().toLowerCase();
   const matchingEdges = edges.filter(
-    (edge) => edge.sourceHandle === incomingWord
+    (edge) => edge.sourceHandle.trim().toLowerCase() === normalizedInput
   );
   const targetNodeIds = matchingEdges.map((edge) => edge.target);
-  const targetNodes = nodes.filter((node) => targetNodeIds.includes(node.id));
-  return targetNodes;
+  return nodes.filter((node) => targetNodeIds.includes(node.id));
 }
+
 
 function getReply(nodes, edges, incomingWord) {
   const getNormal = findTargetNodes(nodes, edges, incomingWord);
